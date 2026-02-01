@@ -773,15 +773,15 @@ function renderTitle() {
   return `<div class="screen title-screen">
     <h1 class="pixel">THE CMO GAME</h1>
     <div class="subtitle pixel">MARKETING SIMULATOR</div>
-    <div class="tagline">Navigate 12 months of growth targets, PR crises, and budget battles.</div>
+    <div class="tagline">12 months to launch a hit product... or go broke trying.</div>
     <div class="card" style="max-width:500px;margin:20px auto;text-align:center">
       <input type="text" id="playerName" placeholder="Enter Your Name" maxlength="20" style="display:block;margin:0 auto" autofocus>
       <div style="margin-top:10px;font-size:0.85rem;color:var(--muted)">
-        Do you build brand equity or chase short-term sales?<br>Your choices will send you to the C-Suite... or the unemployment line.
+        Do you build brand equity or chase short-term sales?<br>Win and you're in the C-Suite. Lose and you're #OpenToWork.
       </div>
     </div>
     <div class="btn-group">
-      <button class="btn primary" data-action="startGame">Launch Your Product</button>
+      <button class="btn primary" data-action="startGame">Start New Campaign</button>
       ${G.hasSave ? '<button class="btn gold" data-action="continueGame">📂 Resume Strategy</button>' : ''}
     </div>
     <div class="btn-group">
