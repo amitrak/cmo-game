@@ -96,6 +96,19 @@ const PRESETS = {
   allOutBlitz: { name: '🚀 All Out Blitz', brand: 60000, performance: 60000, pr: 60000, events: 60000 }
 };
 
+const RANKS = [
+  { rank: 1, title: 'Director of Marketing', icon: '📋', short: 'Director' },
+  { rank: 2, title: 'Senior Director of Marketing', icon: '📊', short: 'Sr. Director' },
+  { rank: 3, title: 'VP of Marketing', icon: '⭐', short: 'VP' },
+  { rank: 4, title: 'EVP of Marketing', icon: '🏆', short: 'EVP' },
+  { rank: 5, title: 'CMO', icon: '👑', short: 'CMO' }
+];
+
+const EVENT_EFFICACY = {
+  premium: 1.5, lifestyle: 1.5, enterprise: 1.5, government: 1.5,
+  value: 0.0, disruptor: 0.5, smb: 0.75, consumer: 0.75
+};
+
 // ===== CONFLICTS =====
 const CONFLICTS = [
   {
@@ -287,6 +300,54 @@ const CONFLICTS = [
       { text: 'Keep marketing but shift to brand storytelling', cost: 5000, brandEquity: 6, revMult: 0.6, ceoPat: 0, outcome: 'You use the downtime to invest in content: founder story, behind-the-scenes, production quality features. People fall in love with the brand even before they can buy. Marketing lesson: When you can\'t sell, tell stories.' },
       { text: 'Source from a backup manufacturer at 2x cost ($30k premium)', cost: 30000, brandEquity: 0, revMult: 0.9, ceoPat: 10, outcome: 'Product keeps flowing, but margins are razor-thin. The backup quality is slightly lower. Three 1-star reviews mention it. Marketing lesson: Quality consistency IS marketing.' }
     ]
+  },
+  {
+    id: 'hockey_stick', type: 'pressure', title: '📈 The Hockey Stick',
+    text: 'Revenue just popped 1,500% overnight. The CEO is popping champagne and asking what lever you pulled. But your attribution dashboard is empty and you have no idea what\'s driving the spike in sales. Do you take the credit or check the receipts?',
+    choices: [
+      { text: '"I optimized the funnel. It\'s paying off." (Claim Credit)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -50, gameOver: 0.3, luck: [0.25, { ceoPat: 100, override: 'It was real! A mega-influencer tweeted about {product} and sales exploded organically. You\'re a genius — or at least everyone thinks you are. The CEO gives you a standing ovation at the all-hands. Marketing lesson: Sometimes it\'s better to be lucky than good.' }], outcome: 'Finance walks in with a grim face. "Those orders? Credit card testing fraud from a bot farm in Eastern Europe." The refunds destroy your Q3 net revenue. The CEO stares at you. "You said this was YOUR strategy." Marketing lesson: Never claim credit for numbers you can\'t explain.' },
+      { text: '"Let me verify the data source first." (Investigate)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, weakAnalyticsPenalty: true, luck: [0.8, { ceoPat: 20, cost: -50000, override: 'You find 10,000 fraudulent orders and block them before shipping. You just saved the company $50k in shipping costs. The CEO respects the diligence. "This is why we have you." Marketing lesson: The unglamorous work of checking the data is the most valuable thing a marketer can do.' }], outcome: 'It was real sales. An organic Reddit thread drove genuine traffic. And you just told the CEO you "needed to verify" your own numbers. "Do you... not know what\'s happening in your own department?" Marketing lesson: Sometimes the data is real and hesitation costs you credibility.' },
+      { text: '"Our AI-driven omnichannel synergy is kicking in." (Buzzword Bluff)', cost: 0, brandEquity: -5, revMult: 1.0, ceoPat: -40, luck: [0.5, { ceoPat: 10, brandEquity: 0, cost: 20000, override: 'The CEO nods blankly. "Good. Keep... synergizing." You survive the meeting. But Finance discovers the fraud next month — costing you $20k in chargebacks. Marketing lesson: Buzzwords buy time, not results.' }], outcome: 'The CEO perks up. "Excellent! Present the full attribution model to the Board tomorrow." You spend all night faking a slide deck. The Board asks three follow-up questions you can\'t answer. Your credibility craters. Marketing lesson: If you can\'t explain it simply, you don\'t understand it — and neither does your slide deck.' },
+      { text: '"Gen Z found us. We must be trending on TikTok." (Hype Gamble)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -60, luck: [0.1, { ceoPat: 150, override: 'You open TikTok and... you actually ARE trending. A creator with 5M followers made a meme about {product}. The CEO promotes you to "Chief Hype Officer" on the spot. Marketing lesson: Even a blind squirrel finds a nut sometimes.' }], outcome: 'You open TikTok. You have 4 views — three of which are you. The sales are bots. The CEO asks if you actually know what "Skibidi" means. You do not. An uncomfortable silence fills the room. Marketing lesson: "We\'re viral" is not a strategy. It\'s a prayer.' }
+    ]
+  },
+  {
+    id: 'premium_typo', type: 'crisis', title: '🐨 Quality Control',
+    condition: (g) => ['premium', 'lifestyle'].includes(g.positioning) && g.product !== 'software',
+    text: 'The first 50,000 units of {product} just arrived from the factory. They look beautiful. Except the tagline reads: "World Class Koala Tea." Somebody in production thought it was intentional. You launch in 48 hours.',
+    choices: [
+      { text: '"It\'s not a typo. It\'s a Save the Wildlife campaign." (Lean In)', cost: 15000, brandEquity: 0, revMult: 1.0, ceoPat: -5, luck: [0.5, { brandEquity: 12, revMult: 1.15, ceoPat: 10, override: 'The "Koala Tea" limited edition becomes a collector\'s item! People are reselling them for 3x on eBay. You donate 1% to a koala sanctuary. The internet loves it. Marketing lesson: Sometimes mistakes are the best marketing.' }], outcome: 'Premium customers don\'t want "quirky." They want flawless. Returns spike 20%. "Wait, do you sell {product} or tea?" Support tickets flood in asking for brewing instructions. Marketing lesson: Premium positioning means premium execution. Every. Single. Time.' },
+      { text: '"Trash them. Reprint everything." (Nuclear Option)', cost: 35000, brandEquity: 2, revMult: 0.95, ceoPat: -15, outcome: 'You miss the launch date. The CEO\'s vein is visible from across the room. But the grammar is perfect and your brand integrity survives. Marketing lesson: The cost of fixing mistakes early is always less than the cost of explaining them later.' },
+      { text: '"Sticker over it. Ship them to the discount channel." (Compromise)', cost: 20000, brandEquity: -2, revMult: 1.0, ceoPat: 5, outcome: 'You salvage the misprints through discount outlets and get clean inventory into premium channels. The team stays all night putting stickers on boxes. One employee quits to work at a literal zoo. Marketing lesson: Creative problem-solving beats perfectionism.' }
+    ]
+  },
+  {
+    id: 'visionary_ceo', type: 'pressure', title: '🎨 The "Creative" Director',
+    text: 'It\'s 11 PM on a Friday. The CEO just Slacked you a mocked-up ad they made in Canva. It uses Comic Sans, three different shades of neon green, and a meme format from 2014. They say: "I think this is the bold direction {product} has been missing."',
+    choices: [
+      { text: '"Love the energy! Let\'s test it." (Yes Man)', cost: 5000, brandEquity: -5, revMult: 0.95, ceoPat: 15, luck: [0.5, { brandEquity: 3, revMult: 1.05, ceoPat: 25, override: 'It performs terribly as an ad. But the CEO is THRILLED to see their vision realized. They become your biggest internal champion. "This is what happens when marketing LISTENS." Marketing lesson: Sometimes managing up IS the strategy.' }], outcome: 'You spend $5k producing the CEO\'s "vision." The result looks like a fever dream. Customers are confused. Your design team considers a group resignation. The CEO blames you for "executing it poorly." Marketing lesson: Saying yes to every executive idea is a fast track to brand incoherence.' },
+      { text: '"Fascinating. Let me run a quick focus group." (Slow Roll)', cost: 2000, brandEquity: 0, revMult: 1.0, ceoPat: -5, outcome: 'The focus group buys you time. Results come back mixed (you made sure the questions were framed that way). "The data doesn\'t support a pivot right now." The CEO forgets about it by Monday. Marketing lesson: Data is the best shield against bad executive ideas.' },
+      { text: '"With respect, please never open Canva again." (Hard Truth)', cost: 0, brandEquity: 2, revMult: 1.0, ceoPat: -15, luck: [0.2, { ceoPat: 15, brandEquity: 5, override: 'The CEO stares at you for an uncomfortable 8 seconds. Then: "You know what? I respect that. Nobody else has the guts to push back." You just earned something money can\'t buy: executive trust. Marketing lesson: Respectful pushback is a leadership skill.' }], outcome: 'The CEO\'s face goes blank. "I see." The next three meetings are tense. Your budget review is suddenly "re-prioritized." You were right, but being right doesn\'t always win. Marketing lesson: HOW you deliver the truth matters as much as the truth itself.' }
+    ]
+  },
+  {
+    id: 'influencer_contract', type: 'crisis', title: '🤳 The Brand Ambassador',
+    condition: (g) => g.product !== 'software' && g.launchTactics.includes('influencer'),
+    text: 'You paid a Gen Z influencer to promote {product}. They just posted the video. They mispronounced the brand name, the logo is backward, and you can clearly see a competitor\'s product on their desk. The comments are brutal.',
+    choices: [
+      { text: '"Delete it. Refund our money. Now." (The Clawback)', cost: 0, brandEquity: -5, revMult: 0.95, ceoPat: 0, luck: [0.4, { brandEquity: 0, revMult: 1.0, ceoPat: 5, cost: -50000, override: 'They\'re scared of your legal team. You get the money back and they block you. Petty? Sure. But $50k is $50k. Marketing lesson: Contracts exist for a reason.' }], outcome: 'They post screenshots of your angry emails. The caption: "Imagine being this pressed over a product launch." You are now a "Cringe Brand." Marketing lesson: The internet always sides with the creator, not the corporation.' },
+      { text: '"Reshoot it. Here\'s $10k rush fee." (The Edit)', cost: 10000, brandEquity: -2, revMult: 0.95, ceoPat: 0, luck: [0.3, { brandEquity: 5, revMult: 1.05, ceoPat: 5, override: 'The reshoot nails it. Raw, authentic, and the influencer actually seems to love {product} this time. Comments flip positive. Marketing lesson: Great influencer content requires great creative briefs.' }], outcome: 'The new video is polished, safe, and boring. It gets 4,000 views. Fans notice the re-upload. Comments flood in: "What are they hiding??" Conspiracy theories start spreading. Marketing lesson: You can\'t reshoot trust.' },
+      { text: '"We love the competitor too, but we taste better" (The Comment)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: 0, luck: [0.5, { brandEquity: 8, revMult: 1.05, ceoPat: 10, override: 'Your comment gets more likes than the video. Adweek writes about your "Savvy Social Strategy." You just won the internet for a day. Marketing lesson: Self-awareness is the most disarming brand voice.' }], outcome: 'You used a slang term incorrectly. The replies are brutal: "Silence, Brand." Your Social Media Manager cries in the bathroom. Marketing lesson: One clever comment can\'t fix a bad campaign.' }
+    ]
+  },
+  {
+    id: 'ai_pivot', type: 'pressure', title: '🤖 The Board Meeting',
+    text: 'Your stock is down 4%. A Board Member interrupts your {product} presentation: "Why aren\'t we using Generative AI to replace your entire copywriting team? I heard ChatGPT is free." The room goes quiet.',
+    choices: [
+      { text: '"AI is a tool, not a replacement." (The Defense)', cost: 0, brandEquity: 2, revMult: 1.0, ceoPat: -5, luck: [0.3, { ceoPat: 15, brandEquity: 5, override: 'The Board respects your commitment to quality. "Finally, someone who cares about the craft." You get approved for an AI integration budget ON your terms. Marketing lesson: Measured confidence wins in boardrooms.' }], outcome: 'They roll their eyes. The minutes read: "Marketing resistant to innovation." They cut your headcount budget by 10% anyway. Marketing lesson: Boards want transformation, not caution. Even when caution is correct.' },
+      { text: '"Already on it. Let me fire the writers." (Malicious Compliance)', cost: 0, brandEquity: -3, revMult: 1.0, ceoPat: 10, luck: [0.8, { brandEquity: 3, revMult: 1.1, ceoPat: 20, cost: -15000, override: 'The AI copy is... actually fine? Content production triples. You save $15k/month. Your entire creative team hates you, but the Board thinks you\'re a visionary. Marketing lesson: Sometimes the expedient answer is the right answer.' }], outcome: 'The AI writes a press release announcing a {product} feature that doesn\'t exist. Legal has a panic attack. You rehire the writers at a 20% premium. Marketing lesson: AI-washing is the new greenwashing.' },
+      { text: '"We\'re deploying LLM-driven semantic optimization layers." (Buzzword Salad)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: 5, luck: [0.6, { ceoPat: 15, override: 'The Board nods blankly. Nobody wants to admit they don\'t know what "semantic optimization" means. Meeting adjourns early. You survived another quarter. Marketing lesson: Sometimes the meta-strategy is managing the room, not the work.' }], outcome: 'The CTO is in the room. She asks: "Which LLM are you fine-tuning and what\'s your inference latency?" You stutter. You sweat. You are exposed. Marketing lesson: If you can\'t explain it simply, someone in the room WILL call your bluff.' }
+    ]
   }
 ];
 
@@ -332,7 +393,10 @@ function initState() {
     siteRevBonus: 0,
     futureRevBonus: 0,
     _launchRevBoost: 0,
-    title: 'VP of Marketing',
+    rank: 1,
+    title: 'Director of Marketing',
+    brandMomentum: 0,
+    promotionHistory: [],
     gameOver: false,
     gameOverReason: '',
     consecutiveBad: 0,
@@ -367,6 +431,10 @@ function loadGame() {
       G = JSON.parse(saved);
       // Ensure hasSave is true so they don't lose the button if they quit again immediately
       G.hasSave = true;
+      // Migration for new fields
+      if (G.rank === undefined) G.rank = 3; // old VP save = rank 3
+      if (G.brandMomentum === undefined) G.brandMomentum = 0;
+      if (G.promotionHistory === undefined) G.promotionHistory = [];
       render();
     }
   } catch (e) { console.error('Load failed', e); }
@@ -411,6 +479,20 @@ function runConfetti(type) {
       confetti(Object.assign({}, defaults, { particleCount, origin: { x: rand(0.1, 0.3), y: Math.random() - 0.2 } }));
       confetti(Object.assign({}, defaults, { particleCount, origin: { x: rand(0.7, 0.9), y: Math.random() - 0.2 } }));
     }, 250);
+  } else if (type === 'promotion') {
+    confetti({
+      particleCount: 150,
+      spread: 90,
+      origin: { y: 0.5 },
+      colors: ['#ffd700', '#ff6b35', '#00ff41']
+    });
+  } else if (type === 'recordSmash') {
+    confetti({
+      particleCount: 200,
+      spread: 100,
+      origin: { y: 0.6 },
+      colors: ['#ff0000', '#ffd700', '#00ff41', '#ff6b35']
+    });
   }
 }
 
@@ -429,8 +511,31 @@ function rand(min, max) { return Math.random() * (max - min) + min; }
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
+function getRankTitle(rank) {
+  return RANKS.find(r => r.rank === rank) || RANKS[0];
+}
+
+function getEventEfficacy() {
+  return EVENT_EFFICACY[G.positioning] !== undefined ? EVENT_EFFICACY[G.positioning] : 1.0;
+}
+
+function getAssetQualityMod() {
+  const pos = G.positioning;
+  const isPremiumLike = ['premium', 'lifestyle', 'enterprise', 'government'].includes(pos);
+  const isValue = pos === 'value';
+  let mod = 1.0;
+  if (isPremiumLike) {
+    if (G.brandTier === 'diy' || G.siteTier === 'template') mod *= 0.6;
+  } else if (isValue) {
+    if (G.brandTier === 'worldClass') mod *= 0.95;
+    if (G.researchTier === 'basic') mod *= 1.05;
+  }
+  return mod;
+}
+
 function shuffleConflicts() {
-  let pool = [...CONFLICTS];
+  // Filter conflicts by conditions (e.g. premium-only, influencer-only)
+  let pool = CONFLICTS.filter(c => !c.condition || c.condition(G));
   // Ensure mix of types
   let crises = pool.filter(c => c.type === 'crisis');
   let positive = pool.filter(c => c.type === 'positive');
@@ -522,25 +627,46 @@ function calcMonthlyRevenue(month, allocOverride) {
   const pos = getPositioning();
   const alloc = allocOverride || G.allocation;
 
-  let base = p.baseRevenue;
+  // Scale base revenue 2x for new revenue targets ($10M-$50M range)
+  let base = p.baseRevenue * 2;
   let growth = 1 + (month - 1) * p.growth;
-  let brandMult = 1 + (G.brandEquity / 100) * 0.8;
   let teamMult = calcTeamMultiplier();
   let posMult = pos.revMult;
   let siteMult = 1 + G.siteRevBonus;
   let brandTierMult = 1 + G.prelaunchRevBonus;
   let futureMult = 1 + G.futureRevBonus;
 
-  // Allocation effects
-  let perfBoost = 1 + (alloc.performance / 40000) * 0.25;
-  let prBoost = 1 + (alloc.pr / 25000) * 0.1;
-  let eventBoost = 1 + (alloc.events / 25000) * 0.08;
+  // Asset quality modifier (scam penalty for premium+DIY, diminishing returns for value+worldClass)
+  let assetMod = getAssetQualityMod();
+
+  // --- BRAND ENGINE: exponential, compounding via brandMomentum ---
+  // brandMomentum scales with time: negligible months 1-3, dominant months 9-12
+  let brandMultiplier = 1 + G.brandMomentum * clamp(month / 4, 0, 3);
   let brandAllocBoost = 1 + (alloc.brand / 30000) * 0.05;
 
-  let rev = base * growth * brandMult * teamMult * posMult * siteMult * brandTierMult * futureMult * perfBoost * prBoost * eventBoost * brandAllocBoost;
+  // --- PR boost ---
+  let prBoost = 1 + (alloc.pr / 25000) * 0.1;
 
-  // Randomness: +/- 15%
-  rev *= rand(0.85, 1.15);
+  // --- EVENTS boost: modified by channel efficacy ---
+  let eventEfficacy = getEventEfficacy();
+  let eventBoost = 1 + (alloc.events / 25000) * 0.08 * eventEfficacy;
+
+  // Brand equity still provides a baseline boost (but smaller now that brandMomentum is the main engine)
+  let equityBoost = 1 + (G.brandEquity / 100) * 0.3;
+
+  // Base revenue from brand engine (everything except performance)
+  let baseRev = base * growth * brandMultiplier * equityBoost * teamMult * posMult *
+                siteMult * brandTierMult * futureMult * prBoost * eventBoost * brandAllocBoost * assetMod;
+
+  // --- PERFORMANCE ENGINE: linear, additive, no compound ---
+  // $1 in → ~$1.5 out this month only, doesn't multiply with brand
+  let perfRevenue = alloc.performance * 1.5;
+
+  // Total revenue = brand engine + performance engine
+  let rev = baseRev + perfRevenue;
+
+  // Randomness: +/- 25% (higher variance for "blowout quarters")
+  rev *= rand(0.75, 1.25);
 
   return Math.round(rev);
 }
@@ -566,12 +692,23 @@ function calcBrandEquityChange(alloc) {
   change += alloc.pr * ALLOC_CATEGORIES[2].equityPerDollar;
   change += alloc.events * ALLOC_CATEGORIES[3].equityPerDollar;
 
+  // Premium + cheap assets: halve positive brand equity gains ("scam modifier")
+  const isPremiumLike = ['premium', 'lifestyle', 'enterprise', 'government'].includes(G.positioning);
+  if (isPremiumLike && (G.brandTier === 'diy' || G.siteTier === 'template')) {
+    if (change > 0) change *= 0.5;
+  }
+
   return change;
 }
 
 function processMonth() {
   const alloc = G.allocation;
   const totalSpend = alloc.brand + alloc.performance + alloc.pr + alloc.events + G.teamCostPerMonth;
+
+  // Update brand momentum (the compounding flywheel engine)
+  G.brandMomentum += (alloc.brand / 30000) * 0.04;
+  G.brandMomentum *= 1.12; // 12% compound growth per month
+  G.brandMomentum = clamp(G.brandMomentum, 0, 5); // cap to prevent runaway
 
   // Deduct spend
   G.budget -= totalSpend;
@@ -602,11 +739,11 @@ function processMonth() {
     else if (rev < prev * 0.85) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
   }
 
-  // Extra CEO patience drain when pacing behind targets
+  // Extra CEO vibes drain when pacing behind targets (scaled to new $50M ceiling)
   if (G.monthlyRevenue.length >= 2) {
     const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
-    if (annualized < 10000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
-    else if (annualized < 25000000) G.ceoPat = clamp(G.ceoPat - 2, 0, 100);
+    if (annualized < 20000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+    else if (annualized < 40000000) G.ceoPat = clamp(G.ceoPat - 2, 0, 100);
   }
 
   // Fire-everyone extra CEO patience drain
@@ -620,7 +757,7 @@ function processMonth() {
     G.consecutiveZeroSpend++;
     if (G.consecutiveZeroSpend >= 3) {
       G.gameOver = true;
-      G.gameOverReason = 'Three months of zero marketing spend. The CEO called an emergency board meeting. "What exactly is our VP of Marketing doing?" Nobody had a good answer. Your desk has been reassigned.';
+      G.gameOverReason = 'Three months of zero marketing spend. The CEO called an emergency board meeting. "What exactly is our ' + G.title + ' doing?" Nobody had a good answer. Your desk has been reassigned.';
     }
   } else {
     G.consecutiveZeroSpend = 0;
@@ -641,6 +778,58 @@ function processMonth() {
   saveGame();
 
   return { rev, totalSpend, beChange, bonus: 0 };
+}
+
+function checkPromotion(quarter) {
+  const rev = G.totalRevenue;
+  let promoted = false;
+  let skipped = false;
+  let message = '';
+
+  if (quarter === 1) { // Month 3 — Survival check
+    if (rev >= 2500000) {
+      if (G.rank < 4) { G.rank++; promoted = true; }
+      message = 'Strong Q1 performance. The CEO noticed. "Keep this up."';
+    } else {
+      message = 'Q1 was below expectations. The board is watching. You need to pick it up.';
+    }
+  } else if (quarter === 2) { // Month 6 — Growth check
+    if (rev >= 10000000 && G.rank < 3) {
+      // Catch-up: skip a rank
+      G.rank = Math.min(G.rank + 2, 4);
+      promoted = true;
+      skipped = true;
+      message = 'Exceptional H1 numbers. The board couldn\'t ignore it. You skipped a rank.';
+    } else if (rev >= 8000000 && G.rank < 4) {
+      G.rank++;
+      promoted = true;
+      message = 'H1 numbers are strong. The board is impressed. "You\'re on the right track."';
+    } else {
+      message = 'Growth is lagging behind targets. The board exchanged glances. Not a good sign.';
+    }
+  } else if (quarter === 3) { // Month 9 — Scale check
+    if (rev >= 25000000 && G.rank < 4) {
+      // Catch-up: skip a rank
+      G.rank = Math.min(G.rank + 2, 4);
+      promoted = true;
+      skipped = true;
+      message = 'Phenomenal trajectory. The board couldn\'t promote you fast enough.';
+    } else if (rev >= 18000000 && G.rank < 4) {
+      G.rank++;
+      promoted = true;
+      message = 'On track for a massive year. The CEO is telling the board about you.';
+    } else {
+      message = 'You\'re behind pace. Q4 needs to be extraordinary to turn this around.';
+    }
+  }
+
+  if (promoted) {
+    const rankInfo = getRankTitle(G.rank);
+    G.title = rankInfo.title;
+    G.promotionHistory.push({ quarter, rank: G.rank, month: G.turn });
+  }
+
+  return { promoted, skipped, message, quarter, rank: G.rank, rankInfo: getRankTitle(G.rank) };
 }
 
 function processHoliday(tacticIndices) {
@@ -696,7 +885,11 @@ function applyConflictChoice(conflictIdx, choiceIdx) {
 
   // Check for luck
   if (choice.luck) {
-    const [chance, luckyEffects] = choice.luck;
+    let [chance, luckyEffects] = choice.luck;
+    // Weak analytics penalty: doubles negative outcome chance
+    if (choice.weakAnalyticsPenalty && (G.researchTier === 'none' || G.brandTier === 'diy')) {
+      chance = Math.max(0, 2 * chance - 1);
+    }
     if (Math.random() < chance) {
       isLucky = true;
       outcome = luckyEffects.override || outcome;
@@ -781,15 +974,18 @@ function saveScore() {
 }
 
 function getShareText() {
-  const grade = G.totalRevenue >= 25000000 ? '🏆' : G.totalRevenue >= 12000000 ? '⭐' : '💀';
-  return `🎮 The Marketing Trail ${grade}
-📦 ${G.productName} (${PRODUCTS[G.product].name})
+  const grade = G.rank >= 5 ? ' 👑' : '';
+  return `🎮 I just played The CMO Game!
+
+👔 Final Title: ${G.title}${grade}
+📦 Product: ${G.productName}
 💰 Revenue: ${fmt(G.totalRevenue)}
 🏗️ Brand Equity: ${Math.round(G.brandEquity)}/100
-👔 Final Title: ${G.title}
 🗓️ Survived: ${G.turn}/12 months
 
-Can you beat my score?`;
+Think you can do better? Play free at cmogame.com
+
+#CMOGame #MarketingSimulator`;
 }
 
 // ===== RENDERING =====
@@ -809,11 +1005,52 @@ function render() {
     case 'conflictResult': app.innerHTML = renderConflictResult(); break;
     case 'allocation': app.innerHTML = renderAllocation(); break;
     case 'monthResults': app.innerHTML = renderMonthResults(); break;
+    case 'promotionReview': app.innerHTML = renderPromotionReview(); break;
     case 'holiday': app.innerHTML = renderHoliday(); break;
     case 'holidayResults': app.innerHTML = renderHolidayResults(); break;
     case 'finalResults': app.innerHTML = renderFinalResults(); break;
     case 'gameOver': app.innerHTML = renderGameOver(); break;
     case 'leaderboard': app.innerHTML = renderLeaderboard(); break;
+  }
+
+  // Post-render effects (script tags don't execute via innerHTML)
+  if (G._pendingConfetti) {
+    const type = G._pendingConfetti;
+    G._pendingConfetti = null;
+    setTimeout(() => runConfetti(type), 300);
+  }
+  if (G._pendingChart) {
+    const chartData = G._pendingChart;
+    G._pendingChart = null;
+    setTimeout(() => {
+      const el = document.getElementById('revenueChart');
+      if (el) new Chart(el, {
+        type: 'line',
+        data: {
+          labels: chartData.labels,
+          datasets: [{
+            label: 'Revenue',
+            data: chartData.data,
+            borderColor: '#00ff41',
+            backgroundColor: 'rgba(0, 255, 65, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: 'Revenue Growth', color: '#8b949e' }
+          },
+          scales: {
+            y: { grid: { color: '#30363d' }, ticks: { color: '#8b949e' } },
+            x: { grid: { display: false }, ticks: { color: '#8b949e' } }
+          }
+        }
+      });
+    }, 100);
   }
 }
 
@@ -828,19 +1065,22 @@ function renderStatsBar() {
   const runwayMonths = monthlyBurn > 0 ? Math.floor(G.budget / monthlyBurn) : 99;
   const runRateWarning = runwayMonths < monthsLeft;
 
-  // Revenue pacing color: annualize based on months played
+  // Revenue pacing color: annualize based on months played (scaled to $50M target)
   let revColor = 'money';
   if (G.turn >= 1 && G.monthlyRevenue.length > 0) {
     const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
-    if (annualized >= 25000000) revColor = 'equity'; // green
-    else if (annualized >= 10000000) revColor = 'money'; // amber
+    if (annualized >= 50000000) revColor = 'equity'; // green
+    else if (annualized >= 20000000) revColor = 'money'; // amber
     else revColor = 'danger'; // red
   }
 
+  const rankInfo = getRankTitle(G.rank);
+
   return `<div class="stats-bar">
-    <div class="stat"><div class="label">Remaining Budget</div><div class="value money">${fmtFull(G.budget)}</div>
+    <div class="stat"><div class="label">Title</div><div class="value" style="font-size:.7rem">${rankInfo.icon} ${rankInfo.short}</div></div>
+    <div class="stat"><div class="label">Budget</div><div class="value money">${fmtFull(G.budget)}</div>
       ${G.turn >= 1 ? `<div style="font-size:.6rem;margin-top:3px;color:${runRateWarning ? 'var(--red)' : 'var(--muted)'}">~${runwayMonths}mo runway${runRateWarning ? ' ⚠️' : ''}</div>` : ''}</div>
-    <div class="stat"><div class="label">Total Revenue</div><div class="value ${revColor}">${fmtFull(G.totalRevenue)}</div></div>
+    <div class="stat"><div class="label">Revenue</div><div class="value ${revColor}">${fmtFull(G.totalRevenue)}</div></div>
     <div class="stat"><div class="label">Brand Equity</div><div class="value equity">${Math.round(G.brandEquity)}/100</div>
       <div class="progress-bar"><div class="fill ${equityColor}" style="width:${G.brandEquity}%"></div></div></div>
     <div class="stat"><div class="label">CEO Vibes</div><div class="value ${ceoColor === 'red' ? 'danger' : ''}">${Math.round(G.ceoPat)}/100</div>
@@ -854,18 +1094,21 @@ function renderStatsBar() {
 
 function renderTitle() {
   return `<div class="screen title-screen">
+    <video class="title-video" autoplay muted playsinline>
+      <source src="Media/Opening Video.webm" type="video/webm">
+    </video>
     <h1 class="pixel">THE CMO GAME</h1>
     <div class="subtitle pixel">MARKETING SIMULATOR</div>
-    <div class="tagline">12 months to launch a hit product... or go broke trying.</div>
+    <div class="tagline">12 months to climb from Director to CMO... or end up #OpenToWork.</div>
     <div class="card" style="max-width:500px;margin:20px auto;text-align:center">
       <input type="text" id="playerName" placeholder="Enter Your Name" maxlength="20" style="display:block;margin:0 auto" autofocus>
       <div style="margin-top:10px;font-size:0.85rem;color:var(--muted)">
-        Do you build brand equity or chase short-term sales?<br>Win and you're in the C-Suite. Lose and you're #OpenToWork.
+        Build brand equity or chase short-term revenue?<br>Climb the corporate ladder to CMO — or get replaced trying.
       </div>
     </div>
     <div class="btn-group">
       <button class="btn primary" data-action="startGame">Start New Campaign</button>
-      ${G.hasSave ? '<button class="btn gold" data-action="continueGame">📂 Resume Strategy</button>' : ''}
+      ${G.hasSave ? '<button class="btn gold" data-action="continueGame">📂 Resume Campaign</button>' : ''}
     </div>
     <div class="btn-group">
       <button class="btn" style="font-size:.7rem;padding:8px 16px" data-action="showLeaderboard">🏆 Hall of Fame</button>
@@ -1104,10 +1347,11 @@ function renderPreLaunchSummary() {
     return `${r.icon} ${r.name}: ${choice === 'ft' ? '✅ In-House' : choice === 'agency' ? '🔵 Agency' : '❌ Skipped'}`;
   }).join('<br>');
 
+  G._pendingConfetti = 'launch';
   return `<div class="screen">
     <div class="narrative">
       <div class="event-title">🚀 ${G.productName} is Launching!</div>
-      <p>You, <strong>${G.playerName}</strong>, VP of Marketing, are about to launch <strong>${G.productName}</strong> — a ${getPositioning().name.toLowerCase()} ${p.name.toLowerCase()} brand into a market that doesn't know it needs you yet.</p>
+      <p>You, <strong>${G.playerName}</strong>, ${G.title}, are about to launch <strong>${G.productName}</strong> — a ${getPositioning().name.toLowerCase()} ${p.name.toLowerCase()} brand into a market that doesn't know it needs you yet.</p>
       <p style="margin-top:10px">You've assembled your team, invested in your brand, and chosen your launch strategy. The next 12 months will determine whether you're a marketing genius or a cautionary tale in a business school case study.</p>
     </div>
 
@@ -1132,9 +1376,9 @@ function renderPreLaunchSummary() {
     <div class="btn-group" style="margin-top:20px">
       <button class="btn primary" data-action="beginJourney">🚀 Launch Campaign</button>
     </div>
-    <script>setTimeout(() => runConfetti('launch'), 500);</script>
   </div>`;
 }
+
 
 function renderConflict() {
   const conflictIdx = G.turn - 2; // turns 2-11 map to conflicts 0-9
@@ -1240,11 +1484,11 @@ function renderMidYearReview() {
   const roi = spent > 0 ? ((totalRevenue - spent) / spent * 100).toFixed(0) : 0;
 
   let ceoCommentary = '';
-  if (totalRevenue >= 3000000) {
+  if (totalRevenue >= 10000000) {
     ceoCommentary = 'The CEO is ecstatic! "This is exceeding all expectations. Keep up the incredible work!"';
-  } else if (totalRevenue >= 1500000) {
+  } else if (totalRevenue >= 5000000) {
     ceoCommentary = 'The CEO is pleased. "Solid performance. We\'re on track, but there\'s always room to grow."';
-  } else if (totalRevenue >= 500000) {
+  } else if (totalRevenue >= 2000000) {
     ceoCommentary = 'The CEO is concerned. "We need to see more traction. What\'s the plan to accelerate growth?"';
   } else {
     ceoCommentary = 'The CEO is furious. "These numbers are unacceptable. We need a drastic change, or heads will roll!"';
@@ -1360,9 +1604,10 @@ function renderMonthResults() {
   }
 
   let commentary = '';
-  if (rev > 200000) commentary = pick(['🔥 The numbers are looking fire.', '📈 Wall Street is taking notice.', '💰 Revenue printer goes brrr.']);
-  else if (rev > 100000) commentary = pick(['Not bad. The CEO stopped sending passive-aggressive Slacks.', 'Solid month. Your LinkedIn recruiter messages have decreased. Good sign.', 'Your brand is finding its groove.']);
-  else commentary = pick(['It\'s a start. Rome wasn\'t built in a day. But they also had more than $5M.', 'The CEO sent you an article titled "10 Signs Your Marketing Is Failing."', 'Your mom says she\'s proud of you, which is nice but not a KPI.']);
+  if (rev > 3000000) commentary = pick(['🔥 The numbers are on fire. The CEO is practically glowing.', '📈 Wall Street is taking notice. Analysts are using words like "breakout."', '💰 Revenue printer goes brrr. The CFO just smiled — a rare sighting.']);
+  else if (rev > 1000000) commentary = pick(['Not bad. The CEO stopped sending passive-aggressive Slacks.', 'Solid month. Your LinkedIn recruiter messages have decreased. Good sign.', 'Your brand is finding its groove. The momentum is building.']);
+  else if (rev > 500000) commentary = pick(['Decent numbers. Not headline-worthy, but not embarrassing either.', 'The trajectory is okay. The board wants more, but when don\'t they?', 'Growth is there. Just not at the pace the CEO\'s investor deck promised.']);
+  else commentary = pick(['Rough month. Rome wasn\'t built in a day. But they also had more than $5M.', 'The CEO sent you an article titled "10 Signs Your Marketing Is Failing."', 'Your mom says she\'s proud of you, which is nice but not a KPI.']);
 
   let bonusText = '';
   if (r.bonus > 0) {
@@ -1370,10 +1615,53 @@ function renderMonthResults() {
   }
 
   const isLastMonth = G.turn >= 11;
+  const isQuarterEnd = [3, 6, 9].includes(G.turn);
+  // Only show promotion review if we haven't already done it this quarter
+  const promotionDone = G._promotionResult && G._promotionResult.quarter === Math.floor(G.turn / 3);
+
+  // Determine continue button action
+  let continueAction, continueLabel;
+  if (isLastMonth) {
+    continueAction = 'goToHoliday';
+    continueLabel = '🎄 Enter Holiday Season →';
+  } else if (isQuarterEnd && !promotionDone) {
+    continueAction = 'goToPromotionReview';
+    continueLabel = '📋 Quarterly Review →';
+  } else {
+    continueAction = 'nextMonth';
+    continueLabel = 'Continue to Month ' + (G.turn + 1) + ' →';
+  }
+
+  // Scam modifier warning for premium + cheap assets
+  let scamWarning = '';
+  const isPremiumLike = ['premium', 'lifestyle', 'enterprise', 'government'].includes(G.positioning);
+  if (isPremiumLike && (G.brandTier === 'diy' || G.siteTier === 'template')) {
+    scamWarning = `<div class="outcome-box bad" style="margin:10px 0">⚠️ Your premium ${G.productName} is being sold with ${G.siteTier === 'template' ? 'a template website' : 'a DIY brand identity'}. Customers think it's a scam. Revenue and brand growth are taking a massive hit.</div>`;
+  }
+  // Value + events waste warning
+  let eventsWarning = '';
+  if (G.positioning === 'value' && G.allocation.events > 0) {
+    eventsWarning = '<div class="outcome-box neutral" style="margin:10px 0">💸 Events spend on a value product? Your customers want a coupon, not a pop-up shop. That budget is essentially wasted.</div>';
+  }
+
+  // Milestone detection
+  let milestoneText = '';
+  const prevTotal = G.totalRevenue - rev;
+  if (G.totalRevenue >= 50000000 && prevTotal < 50000000) {
+    milestoneText = '<div class="milestone-flash">🚀 MILESTONE: $50M Total Revenue!</div>';
+  } else if (G.totalRevenue >= 25000000 && prevTotal < 25000000) {
+    milestoneText = '<div class="milestone-flash">🔥 MILESTONE: $25M Total Revenue!</div>';
+  } else if (G.totalRevenue >= 10000000 && prevTotal < 10000000) {
+    milestoneText = '<div class="milestone-flash">🎯 MILESTONE: $10M Total Revenue!</div>';
+  }
+
+  G._pendingConfetti = growth > 20 ? 'recordSmash' : rev > lastRev ? 'goodMonth' : null;
 
   return `<div class="screen">
     ${renderStatsBar()}
     <div class="section-title">📊 Month ${G.turn} Results</div>
+    ${milestoneText}
+    ${growth > 20 ? '<div class="milestone-flash">💥 RECORD SMASHED!</div>' : ''}
     <div class="card">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;text-align:center">
         <div>
@@ -1393,15 +1681,49 @@ function renderMonthResults() {
         <div><span class="text-muted">Budget left:</span> <span class="text-amber">${fmtFull(G.budget)}</span></div>
       </div>
     </div>
+    ${scamWarning}${eventsWarning}
     ${bonusText}
     <div style="text-align:center;color:var(--muted);font-style:italic;margin:15px 0">${commentary}</div>
     <div class="btn-group">
-      <button class="btn primary" data-action="${isLastMonth ? 'goToHoliday' : 'nextMonth'}">${isLastMonth ? '🎄 Enter Holiday Season →' : 'Continue to Month ' + (G.turn + 1) + ' →'}</button>
+      <button class="btn primary" data-action="${continueAction}">${continueLabel}</button>
     </div>
-  </div>
-  <script>
-    ${rev > lastRev ? "setTimeout(() => runConfetti('goodMonth'), 300);" : ""}
-  </script>`;
+  </div>`;
+}
+
+function renderPromotionReview() {
+  const result = G._promotionResult;
+  const rankInfo = getRankTitle(G.rank);
+  const isPromoted = result.promoted;
+
+  let nextAction = 'continueAfterPromotion';
+  let nextLabel = 'Continue →';
+
+  G._pendingConfetti = isPromoted ? 'promotion' : null;
+
+  return `<div class="screen">
+    ${renderStatsBar()}
+    <div class="section-title">📋 Quarterly Performance Review — Q${result.quarter}</div>
+    ${isPromoted ? `<div class="promotion-card">
+      <div class="rank-badge">${rankInfo.icon}</div>
+      <div style="font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:10px">PROMOTED</div>
+      <div style="font-size:1.1rem;font-weight:600">${rankInfo.title}</div>
+      <p style="margin-top:12px;color:var(--muted)">${result.message}</p>
+      ${result.skipped ? '<p style="margin-top:8px;color:var(--amber);font-weight:600">⚡ You skipped a rank due to exceptional performance!</p>' : ''}
+    </div>` : `<div class="narrative">
+      <div class="event-title">📊 No Promotion</div>
+      <p>${result.message}</p>
+      <p style="margin-top:10px;color:var(--muted)">Current title: <strong>${rankInfo.icon} ${rankInfo.title}</strong></p>
+    </div>`}
+    <div class="card" style="margin-top:15px">
+      <h3>📈 Career Ladder</h3>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center">
+        ${RANKS.map(r => `<div style="padding:8px 12px;border-radius:8px;font-size:.8rem;border:1px solid ${r.rank === G.rank ? 'var(--green)' : r.rank < G.rank ? 'var(--border)' : 'var(--border)'};background:${r.rank === G.rank ? 'rgba(0,255,65,.15)' : r.rank < G.rank ? 'rgba(255,255,255,.05)' : 'transparent'};color:${r.rank === G.rank ? 'var(--green)' : r.rank < G.rank ? 'var(--muted)' : 'var(--border)'}">${r.icon} ${r.short}${r.rank < G.rank ? ' ✓' : ''}</div>`).join('')}
+      </div>
+    </div>
+    <div class="btn-group" style="margin-top:20px">
+      <button class="btn primary" data-action="${nextAction}">${nextLabel}</button>
+    </div>
+  </div>`;
 }
 
 function renderHoliday() {
@@ -1456,8 +1778,8 @@ function renderHolidayResults() {
       <div style="font-size:.8rem;color:var(--muted);margin-top:3px">Spent: ${fmtFull(r.totalCost)}</div>
     </div>
     <div class="narrative" style="text-align:center">
-      ${r.holidayRev > 500000 ? '🎉 MASSIVE holiday season! Your brand equity paid off in spades. The CFO is buying YOU a gift this year.' :
-      r.holidayRev > 250000 ? '🎄 Solid holiday performance. Not record-breaking, but your year-end bonus is looking healthy.' :
+      ${r.holidayRev > 5000000 ? '🎉 MASSIVE holiday season! Your brand equity paid off in spades. The CFO is buying YOU a gift this year.' :
+      r.holidayRev > 2000000 ? '🎄 Solid holiday performance. Not record-breaking, but your year-end bonus is looking healthy.' :
         '🎅 The holiday season was... underwhelming. Like getting socks as a present. Functional but disappointing.'}
     </div>
     <div class="btn-group">
@@ -1473,31 +1795,60 @@ function renderFinalResults() {
   const spent = G.startingBudget - budgetLeft + G.bonusesReceived;
   const roi = ((totalRev - spent) / spent * 100).toFixed(0);
 
-  // Determine title/result
+  // Q4 Final Determination — 5-tier rank-based endings
   let result, resultEmoji, resultText;
-  if (totalRev >= 25000000) {
+
+  if (totalRev >= 60000000) {
+    // Moonshot: any rank → CMO with god-tier revenue
+    G.rank = 5;
+    G.title = 'CMO';
+    result = 'MOONSHOT TO CMO';
+    resultEmoji = '🚀';
+    resultText = '$60M+ speaks louder than any corporate ladder. The board had no choice but to hand you the keys to the C-Suite. ' + G.productName + ' is a juggernaut.';
+  } else if (G.rank >= 4 && totalRev >= 50000000 && brandEq >= 50) {
+    // Safe Climb: EVP + $50M + strong brand = CMO
+    G.rank = 5;
     G.title = 'CMO';
     result = 'PROMOTED TO CMO';
     resultEmoji = '👑';
-    resultText = 'The board is stunned. You\'ve turned ' + G.productName + ' into a phenomenon. The corner office is yours.';
-  } else if (totalRev >= 12000000) {
-    G.title = 'VP of Marketing';
+    resultText = 'You climbed the ladder, built the brand, and delivered the numbers. The corner office is yours. ' + G.productName + ' is a case study in marketing excellence.';
+  } else if (G.rank >= 4) {
+    // EVP but didn't hit CMO threshold
+    G.title = getRankTitle(G.rank).title;
+    result = 'EVP OF MARKETING';
+    resultEmoji = '🏆';
+    resultText = 'So close to the top. You\'re a powerhouse executive and ' + G.productName + ' had a strong year. But the CMO chair needs $50M and a world-class brand to unlock.';
+  } else if (G.rank >= 3) {
+    G.title = getRankTitle(G.rank).title;
     result = 'VP OF MARKETING';
     resultEmoji = '⭐';
-    resultText = 'Solid year. You\'ve hit your growth targets and kept your seat at the leadership table.';
+    resultText = 'You earned your VP stripes. ' + G.productName + ' showed growth, but the board expected more. The C-Suite remains a dream.';
+  } else if (G.rank >= 2) {
+    G.title = getRankTitle(G.rank).title;
+    result = 'SENIOR DIRECTOR';
+    resultEmoji = '📊';
+    resultText = 'You showed promise but couldn\'t break through. Middle management purgatory awaits. ' + G.productName + ' needed a stronger strategy.';
   } else {
-    G.title = 'Former VP of Marketing';
-    result = 'FIRED';
+    G.title = '#OpenToWork';
+    result = '#OPENTOWORK';
     resultEmoji = '💀';
-    resultText = 'The growth wasn\'t there. The board lost confidence. HR has the box ready for your desk.';
+    resultText = 'No promotions in 12 months. The board lost confidence. ' + G.productName + ' underperformed and so did you. HR has the box ready for your desk.';
   }
 
   const entry = saveScore();
 
+  G._pendingChart = {
+    labels: Array.from({length: G.monthlyRevenue.length}, (_, i) => 'Month ' + (i + 1)),
+    data: [...G.monthlyRevenue]
+  };
+  G._pendingConfetti = G.rank >= 3 ? 'win' : null;
+
   return `<div class="screen">
     <div class="final-score">
+      ${G.rank >= 5 ? '<img class="end-screen-img" src="Media/Congratulations Youre CMO.png" alt="Congratulations, You\'re CMO!">' : ''}
+      ${G.rank < 2 ? '<img class="end-screen-img" src="Media/RIP Your Job.png" alt="RIP Your Job">' : ''}
       <div style="font-size:4rem">${resultEmoji}</div>
-      <div class="pixel" style="color:${result === 'FIRED' ? 'var(--red)' : result === 'VP OF MARKETING' ? 'var(--amber)' : 'var(--green)'};font-size:1.2rem;margin:10px 0">${result}</div>
+      <div class="pixel" style="color:${G.rank >= 5 ? 'var(--green)' : G.rank >= 3 ? 'var(--amber)' : 'var(--red)'};font-size:1.2rem;margin:10px 0">${result}</div>
       <div style="color:var(--muted);margin-bottom:20px">${resultText}</div>
       <div class="big-number">${fmtFull(totalRev)}</div>
       <div style="color:var(--muted)">Total Revenue in 12 Months</div>
@@ -1518,52 +1869,26 @@ function renderFinalResults() {
     </div>
 
     <div class="share-box" id="shareText">${getShareText()}</div>
+    <div class="social-cta">
+      📸 Screenshot your results and share on social media!<br>
+      <span style="color:var(--green);font-weight:600">#CMOGame</span>
+    </div>
 
     <div class="btn-group">
       <button class="btn primary" data-action="copyShare">📋 Copy Score</button>
       <button class="btn gold" data-action="showLeaderboard">🏆 Leaderboard</button>
       <button class="btn" data-action="playAgain">🔄 Play Again</button>
     </div>
-  </div>
-  <script>
-    setTimeout(() => {
-      new Chart(document.getElementById('revenueChart'), {
-        type: 'line',
-        data: {
-          labels: Array.from({length: ${G.monthlyRevenue.length}}, (_, i) => 'Month ' + (i + 1)),
-          datasets: [{
-            label: 'Revenue',
-            data: [${G.monthlyRevenue.join(',')}],
-            borderColor: '#00ff41',
-            backgroundColor: 'rgba(0, 255, 65, 0.1)',
-            fill: true,
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            title: { display: true, text: 'Revenue Growth', color: '#8b949e' }
-          },
-          scales: {
-            y: { grid: { color: '#30363d' }, ticks: { color: '#8b949e' } },
-            x: { grid: { display: false }, ticks: { color: '#8b949e' } }
-          }
-        }
-      });
-      ${result !== 'FIRED' ? "runConfetti('win');" : ""}
-    }, 100);
-  </script>`;
+  </div>`;
 }
 
 function renderGameOver() {
+  G.title = '#OpenToWork';
   saveScore();
   return `<div class="screen game-over">
-    <div class="tombstone">🪦</div>
-    <h1 class="pixel" style="color:var(--red)">GAME OVER</h1>
-    <div style="font-size:1.5rem;margin:15px 0">Your brand has died of market irrelevance.</div>
+    <img class="end-screen-img" src="Media/RIP Your Job.png" alt="RIP Your Job">
+    <h1 class="pixel" style="color:var(--red)">#OPENTOWORK</h1>
+    <div style="font-size:1.5rem;margin:15px 0">Your marketing career has hit a speed bump.</div>
     <div class="card" style="text-align:left;max-width:500px;margin:20px auto">
       <p>${G.gameOverReason}</p>
       <p style="margin-top:10px;font-style:italic;color:var(--muted)">Here lies ${G.productName}. They had a $5M budget and dreams of the C-Suite. They lasted ${G.turn} months.</p>
@@ -1574,6 +1899,10 @@ function renderGameOver() {
       <div class="stat"><div class="label">Brand Equity</div><div class="value">${Math.round(G.brandEquity)}/100</div></div>
     </div>
     <div class="share-box" style="max-width:500px;margin:15px auto">${getShareText()}</div>
+    <div class="social-cta" style="max-width:500px;margin:10px auto">
+      📸 Screenshot your results and share on social media!<br>
+      <span style="color:var(--green);font-weight:600">#CMOGame</span>
+    </div>
     <div class="btn-group">
       <button class="btn primary" data-action="copyShare">📋 Copy Score</button>
       <button class="btn gold" data-action="showLeaderboard">🏆 Leaderboard</button>
@@ -1737,13 +2066,17 @@ document.getElementById('app').addEventListener('click', function (e) {
       G.prelaunchRevBonus = brand.revBonus;
       G.siteRevBonus = site.revBonus;
       if (research.bonus) G.prelaunchRevBonus += research.bonus;
-      // Launch boost
+      // Launch boost (event efficacy modifies launch event tactic)
       let launchRevBoost = 0;
       let launchBrandBoost = 0;
+      const launchEventEfficacy = getEventEfficacy();
       G.launchTactics.forEach(id => {
         const t = LAUNCH_TACTICS.find(t => t.id === id);
-        launchRevBoost += t.revBoost;
-        launchBrandBoost += t.brandBoost;
+        let rb = t.revBoost;
+        let bb = t.brandBoost;
+        if (id === 'event') { rb *= launchEventEfficacy; bb *= launchEventEfficacy; }
+        launchRevBoost += rb;
+        launchBrandBoost += bb;
       });
       G.brandEquity = clamp(G.brandEquity + launchBrandBoost, 0, 100);
       // Store launch boost for month 1 revenue
@@ -1802,17 +2135,32 @@ document.getElementById('app').addEventListener('click', function (e) {
       } else if (G.gameOver) {
         // Caught by processMonth (e.g. zero spend streak)
         G.screen = 'gameOver';
-      } else if (G.turn === 6 && G.totalRevenue < 5000000) {
-        G.gameOver = true;
-        G.gameOverReason = 'Mid-year board review. Total revenue: ' + fmtFull(G.totalRevenue) + '. The target was $5M by month 6. The board called an emergency session. "We need someone who can hit numbers, not just spend budget." You\'ve been let go.';
-        G.screen = 'gameOver';
       } else {
         G.screen = 'monthResults';
       }
       break;
     }
+    case 'goToPromotionReview': {
+      const quarter = Math.floor(G.turn / 3);
+      const promoResult = checkPromotion(quarter);
+      G._promotionResult = promoResult;
+      G.screen = 'promotionReview';
+      saveGame();
+      break;
+    }
+    case 'continueAfterPromotion':
+      if (G.turn === 6 && !G.midYearReviewDone) {
+        // After month 6 promotion, go to mid-year team review
+        G.screen = 'monthResults'; // triggers renderMidYearReview inside renderMonthResults
+      } else {
+        // Continue to next month
+        G.turn++;
+        G.screen = 'conflict';
+      }
+      break;
     case 'nextMonth':
       G.turn++;
+      G._promotionResult = null;
       G.screen = 'conflict';
       break;
     case 'goToHoliday':
