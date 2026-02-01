@@ -36,6 +36,13 @@ const POSITIONINGS = {
   lifestyle: { name: 'Lifestyle', icon: '🌟', brandBonus: 3.0, revMult: 1.1, desc: 'You\'re not selling a product, you\'re selling a vibe. Hope Gen Z agrees.' }
 };
 
+const SOFTWARE_POSITIONINGS = {
+  enterprise: { name: 'Enterprise', icon: '🏢', brandBonus: 1.5, revMult: 1.2, desc: 'Whale hunting. Prepare for 12-month sales cycles, security audits, and procurement hell. But one signed contract makes your year.' },
+  smb: { name: 'Small Business', icon: '🏪', brandBonus: 1.0, revMult: 0.9, desc: 'The SMB hustle. They want Salesforce features on a Spotify budget. Expect high volume, high churn, and support tickets written in ALL CAPS.' },
+  consumer: { name: 'Consumer', icon: '📱', brandBonus: 2.5, revMult: 1.0, desc: 'The B2C lottery. You\'re at the mercy of the App Store gods and Gen Z\'s attention span. You\'re either viral or you\'re invisible.' },
+  government: { name: 'Government', icon: '🏛️', brandBonus: 2.0, revMult: 1.1, desc: 'The long game. Navigate red tape and 100-page RFPs. It takes two years to close a deal, but once you\'re in, the taxpayer funds you forever.' }
+};
+
 const ROLES = [
   { id: 'brand', name: 'Product Marketing', icon: '🎯', ftCost: 50000, agCost: 25000, ftDesc: 'Strategy insights that sharpen your product-market fit.', agDesc: 'Project-based positioning and market research.', ftEffect: 'Compounding product-market fit gains', agEffect: 'Periodic market fit insights', skipEffect: 'Product-market fit decays faster' },
   { id: 'content', name: 'Brand & Creative', icon: '🎨', ftCost: 50000, agCost: 25000, ftDesc: 'In-house engine for ads, social, and brand storytelling.', agDesc: 'Handles execution but with higher margins.', ftEffect: '+15% compounding brand equity', agEffect: '+8% brand equity growth', skipEffect: 'Your brand looks like placeholder text' },
@@ -83,10 +90,10 @@ const ALLOC_CATEGORIES = [
 ];
 
 const PRESETS = {
-  brandBuilder: { name: '🏗️ Brand Builder', brand: 25000, performance: 5000, pr: 10000, events: 10000 },
-  growthMode: { name: '📈 Growth Mode', brand: 5000, performance: 30000, pr: 10000, events: 5000 },
-  balanced: { name: '⚖️ Balanced', brand: 15000, performance: 15000, pr: 10000, events: 10000 },
-  prBlitz: { name: '📢 PR Blitz', brand: 5000, performance: 10000, pr: 25000, events: 10000 }
+  brandBuilder: { name: '🏗️ Brand Builder', brand: 40000, performance: 5000, pr: 5000, events: 10000 },
+  highGrowth: { name: '📈 Growth Hacker', brand: 5000, performance: 40000, pr: 5000, events: 10000 },
+  organic: { name: '🌱 Organic', brand: 0, performance: 0, pr: 0, events: 0 },
+  allOutBlitz: { name: '🚀 All Out Blitz', brand: 60000, performance: 60000, pr: 60000, events: 60000 }
 };
 
 // ===== CONFLICTS =====
@@ -313,7 +320,7 @@ function initState() {
     brandEquity: 10,
     ceoPat: 75,
     turn: 0,
-    maxTurns: 12,
+    maxTurns: 12, // 12 months total including holiday
     allocation: { brand: 50000, performance: 75000, pr: 40000, events: 25000 },
     teamCostPerMonth: 0,
     brandTier: null,
@@ -332,7 +339,11 @@ function initState() {
     lastConflictOutcome: null,
     bonusesReceived: 0,
     hasSave: false,
-    midYearReviewDone: false
+    midYearReviewDone: false,
+    midYearAdjustments: {},
+    allFiredPenalty: false,
+    holidayTactics: [],
+    consecutiveZeroSpend: 0
   };
 
   // Check for save
@@ -406,6 +417,8 @@ function runConfetti(type) {
 // ===== UTILITY FUNCTIONS =====
 function $(s) { return document.querySelector(s); }
 function $$(s) { return document.querySelectorAll(s); }
+function getPositionings() { return G.product === 'software' ? SOFTWARE_POSITIONINGS : POSITIONINGS; }
+function getPositioning() { return getPositionings()[G.positioning]; }
 function fmt(n) {
   if (n >= 1000000) return '$' + (n / 1000000).toFixed(2) + 'M';
   if (n >= 1000) return '$' + (n / 1000).toFixed(0) + 'k';
@@ -432,7 +445,7 @@ function shuffleConflicts() {
     }
   });
 
-  // Build 11 conflicts ensuring variety
+  // Build 10 conflicts ensuring variety (turns 2-11)
   let selected = [];
   // At least 3 crises, 2 positive, 2 pressure, 2 market
   selected.push(...crises.slice(0, 3));
@@ -440,13 +453,13 @@ function shuffleConflicts() {
   selected.push(...pressure.slice(0, 2));
   selected.push(...market.slice(0, 2));
 
-  // Fill remaining 2 slots randomly
+  // Fill remaining 1 slot randomly
   let remaining = [...crises.slice(3), ...positive.slice(2), ...pressure.slice(2), ...market.slice(2)];
   for (let i = remaining.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
   }
-  selected.push(...remaining.slice(0, 2));
+  selected.push(...remaining.slice(0, 1));
 
   // Shuffle the selected conflicts, but try to spread types
   for (let i = selected.length - 1; i > 0; i--) {
@@ -467,30 +480,46 @@ function shuffleConflicts() {
 function calcTeamMultiplier() {
   let mult = 0.7; // base with no team
   const t = G.team;
+  const adj = G.midYearAdjustments || {};
   ROLES.forEach(r => {
-    if (t[r.id] === 'ft') mult += 0.08;
-    else if (t[r.id] === 'agency') mult += 0.06;
+    const scale = adj[r.id] !== undefined ? adj[r.id] : 1.0;
+    if (t[r.id] === 'ft') mult += 0.08 * scale;
+    else if (t[r.id] === 'agency') mult += 0.06 * scale;
     // skip = 0
   });
   // Bonus for performance agency (they're specialists)
-  if (t.growth === 'agency') mult += 0.03;
+  const growthScale = adj.growth !== undefined ? adj.growth : 1.0;
+  if (t.growth === 'agency') mult += 0.03 * growthScale;
   // Bonus for full-time brand strategist
-  if (t.brand === 'ft') mult += 0.02;
+  const brandScale = adj.brand !== undefined ? adj.brand : 1.0;
+  if (t.brand === 'ft') mult += 0.02 * brandScale;
   return mult;
 }
 
 function calcTeamCost() {
   let cost = 0;
+  const adj = G.midYearAdjustments || {};
   ROLES.forEach(r => {
-    if (G.team[r.id] === 'ft') cost += r.ftCost;
-    else if (G.team[r.id] === 'agency') cost += r.agCost;
+    const scale = adj[r.id] !== undefined ? adj[r.id] : 1.0;
+    if (G.team[r.id] === 'ft') cost += r.ftCost * scale;
+    else if (G.team[r.id] === 'agency') cost += r.agCost * scale;
   });
-  G.teamCostPerMonth = cost;
+  G.teamCostPerMonth = Math.round(cost);
+}
+
+function calcReviewTeamCost(adjustments) {
+  let cost = 0;
+  ROLES.forEach(r => {
+    const scale = adjustments[r.id] !== undefined ? adjustments[r.id] : 1.0;
+    if (G.team[r.id] === 'ft') cost += r.ftCost * scale;
+    else if (G.team[r.id] === 'agency') cost += r.agCost * scale;
+  });
+  return Math.round(cost);
 }
 
 function calcMonthlyRevenue(month, allocOverride) {
   const p = PRODUCTS[G.product];
-  const pos = POSITIONINGS[G.positioning];
+  const pos = getPositioning();
   const alloc = allocOverride || G.allocation;
 
   let base = p.baseRevenue;
@@ -529,7 +558,7 @@ function calcBrandEquityChange(alloc) {
   if (t.data === 'ft') change += 0.3;
 
   // Positioning bonus
-  change += POSITIONINGS[G.positioning].brandBonus * 0.3;
+  change += getPositioning().brandBonus * 0.3;
 
   // Allocation effects
   change += alloc.brand * ALLOC_CATEGORIES[0].equityPerDollar;
@@ -554,6 +583,11 @@ function processMonth() {
     rev = Math.round(rev * (1 + G._launchRevBoost));
     G._launchRevBoost = 0;
   }
+  // Apply fire-everyone penalty
+  if (G.allFiredPenalty) {
+    const penaltyMult = rand(0.6, 0.85);
+    rev = Math.round(rev * penaltyMult);
+  }
   G.monthlyRevenue.push(rev);
   G.totalRevenue += rev;
 
@@ -566,6 +600,30 @@ function processMonth() {
     const prev = G.monthlyRevenue[G.monthlyRevenue.length - 2];
     if (rev > prev * 1.1) G.ceoPat = clamp(G.ceoPat + 5, 0, 100);
     else if (rev < prev * 0.85) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
+  }
+
+  // Extra CEO patience drain when pacing behind targets
+  if (G.monthlyRevenue.length >= 2) {
+    const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
+    if (annualized < 10000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+    else if (annualized < 25000000) G.ceoPat = clamp(G.ceoPat - 2, 0, 100);
+  }
+
+  // Fire-everyone extra CEO patience drain
+  if (G.allFiredPenalty) {
+    G.ceoPat = clamp(G.ceoPat - 3, 0, 100);
+  }
+
+  // Track consecutive months of zero marketing spend
+  const marketingSpend = alloc.brand + alloc.performance + alloc.pr + alloc.events;
+  if (marketingSpend === 0) {
+    G.consecutiveZeroSpend++;
+    if (G.consecutiveZeroSpend >= 3) {
+      G.gameOver = true;
+      G.gameOverReason = 'Three months of zero marketing spend. The CEO called an emergency board meeting. "What exactly is our VP of Marketing doing?" Nobody had a good answer. Your desk has been reassigned.';
+    }
+  } else {
+    G.consecutiveZeroSpend = 0;
   }
 
   // Revenue bonus: if great month, CEO gives bonus budget
@@ -585,26 +643,41 @@ function processMonth() {
   return { rev, totalSpend, beChange, bonus: 0 };
 }
 
-function processHoliday(strategyIdx) {
-  const strat = HOLIDAY_EVENT.strategies[strategyIdx];
-  G.budget -= strat.cost;
+function processHoliday(tacticIndices) {
+  const strats = tacticIndices.map(i => HOLIDAY_EVENT.strategies[i]);
+  let totalCost = 0;
+  let totalBrandMult = 0;
+  let totalPerfMult = 0;
+
+  strats.forEach(s => {
+    totalCost += s.cost;
+    totalBrandMult += s.brandMult;
+    totalPerfMult += s.perfMult;
+  });
+
+  G.budget -= totalCost;
 
   // Holiday multiplier based on brand equity
   const baseHolidayMult = 1.5;
   const brandBonus = (G.brandEquity / 100) * 2.5;
   const holidayMult = baseHolidayMult + brandBonus;
 
-  // Strategy affects how much of the multiplier you capture
-  const effectiveMult = holidayMult * (0.5 + strat.brandMult * 0.3 + strat.perfMult * 0.2);
+  // Combined strategies affect how much of the multiplier you capture
+  // Diminishing returns: each additional strategy adds less
+  const avgBrand = strats.length > 0 ? totalBrandMult / strats.length : 0;
+  const avgPerf = strats.length > 0 ? totalPerfMult / strats.length : 0;
+  const countBonus = 1 + (strats.length - 1) * 0.15; // 15% bonus per extra strategy
+  const effectiveMult = holidayMult * (0.5 + avgBrand * 0.3 + avgPerf * 0.2) * Math.min(countBonus, 1.6);
 
-  const baseRev = calcMonthlyRevenue(13);
+  const baseRev = calcMonthlyRevenue(12);
   const holidayRev = Math.round(baseRev * effectiveMult);
 
   G.monthlyRevenue.push(holidayRev);
   G.totalRevenue += holidayRev;
-  G.turn = 13;
+  G.turn = 12;
 
-  return { holidayRev, holidayMult: effectiveMult, strategy: strat };
+  const stratNames = strats.map(s => s.icon + ' ' + s.name);
+  return { holidayRev, holidayMult: effectiveMult, strategies: strats, stratNames, totalCost };
 }
 
 function applyConflictChoice(conflictIdx, choiceIdx) {
@@ -670,7 +743,7 @@ function applyConflictChoice(conflictIdx, choiceIdx) {
     G.gameOverReason = 'Your budget hit zero. The CFO personally escorted you to HR. "We appreciate your creativity," they said, not meaning it at all.';
   } else if (G.ceoPat <= 0) {
     G.gameOver = true;
-    G.gameOverReason = 'The CEO\'s patience ran out. "We\'re going in a different direction," they said, which is corporate for "you\'re going in the direction of the exit."';
+    G.gameOverReason = 'The CEO\'s vibes shifted. "We\'re going in a different direction," they said, which is corporate for "you\'re going in the direction of the exit."';
   } else if (G.consecutiveBad >= 4) {
     G.gameOver = true;
     G.gameOverReason = 'Four bad moves in a row. The board has lost confidence. Your "strategic leadership" is being "transitioned." You have 30 minutes to clean out your desk.';
@@ -708,20 +781,21 @@ function saveScore() {
 }
 
 function getShareText() {
-  const grade = G.totalRevenue >= 8000000 ? '🏆' : G.totalRevenue >= 5000000 ? '⭐' : G.totalRevenue >= 2500000 ? '✅' : '💀';
+  const grade = G.totalRevenue >= 25000000 ? '🏆' : G.totalRevenue >= 12000000 ? '⭐' : '💀';
   return `🎮 The Marketing Trail ${grade}
 📦 ${G.productName} (${PRODUCTS[G.product].name})
 💰 Revenue: ${fmt(G.totalRevenue)}
 🏗️ Brand Equity: ${Math.round(G.brandEquity)}/100
 👔 Final Title: ${G.title}
-🗓️ Survived: ${G.turn}/13 months
+🗓️ Survived: ${G.turn}/12 months
 
 Can you beat my score?`;
 }
 
 // ===== RENDERING =====
 function render() {
-  window.scrollTo(0, 0);
+  if (G.screen !== G._lastScreen) window.scrollTo(0, 0);
+  G._lastScreen = G.screen;
   const app = document.getElementById('app');
   switch (G.screen) {
     case 'title': app.innerHTML = renderTitle(); break;
@@ -750,20 +824,29 @@ function renderStatsBar() {
   // Run rate calculation
   const alloc = G.allocation;
   const monthlyBurn = alloc.brand + alloc.performance + alloc.pr + alloc.events + G.teamCostPerMonth;
-  const monthsLeft = Math.max(1, 13 - G.turn + 1);
+  const monthsLeft = Math.max(1, 12 - G.turn + 1);
   const runwayMonths = monthlyBurn > 0 ? Math.floor(G.budget / monthlyBurn) : 99;
   const runRateWarning = runwayMonths < monthsLeft;
+
+  // Revenue pacing color: annualize based on months played
+  let revColor = 'money';
+  if (G.turn >= 1 && G.monthlyRevenue.length > 0) {
+    const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
+    if (annualized >= 25000000) revColor = 'equity'; // green
+    else if (annualized >= 10000000) revColor = 'money'; // amber
+    else revColor = 'danger'; // red
+  }
 
   return `<div class="stats-bar">
     <div class="stat"><div class="label">Remaining Budget</div><div class="value money">${fmtFull(G.budget)}</div>
       ${G.turn >= 1 ? `<div style="font-size:.6rem;margin-top:3px;color:${runRateWarning ? 'var(--red)' : 'var(--muted)'}">~${runwayMonths}mo runway${runRateWarning ? ' ⚠️' : ''}</div>` : ''}</div>
-    <div class="stat"><div class="label">Total Revenue</div><div class="value money">${fmtFull(G.totalRevenue)}</div></div>
+    <div class="stat"><div class="label">Total Revenue</div><div class="value ${revColor}">${fmtFull(G.totalRevenue)}</div></div>
     <div class="stat"><div class="label">Brand Equity</div><div class="value equity">${Math.round(G.brandEquity)}/100</div>
       <div class="progress-bar"><div class="fill ${equityColor}" style="width:${G.brandEquity}%"></div></div></div>
-    <div class="stat"><div class="label">CEO Patience</div><div class="value ${ceoColor === 'red' ? 'danger' : ''}">${Math.round(G.ceoPat)}/100</div>
+    <div class="stat"><div class="label">CEO Vibes</div><div class="value ${ceoColor === 'red' ? 'danger' : ''}">${Math.round(G.ceoPat)}/100</div>
       <div class="progress-bar"><div class="fill ${ceoColor}" style="width:${G.ceoPat}%"></div></div></div>
   </div>
-  <div class="journey-bar">${Array.from({ length: 13 }, (_, i) => {
+  <div class="journey-bar">${Array.from({ length: 12 }, (_, i) => {
     const cls = i < G.turn ? 'done' : i === G.turn ? 'current' : 'future';
     return `<div class="journey-dot ${cls}" title="Month ${i + 1}"></div>`;
   }).join('')}</div>`;
@@ -819,14 +902,16 @@ function renderNaming() {
     </div>
     <div class="btn-group">
       <button class="btn primary" data-action="confirmName">Lock It In</button>
-      <button class="btn" data-action="productSelect">← Back</button>
+      <button class="btn" data-action="backToPositioning">← Back</button>
     </div>
   </div>`;
 }
 
 function renderPositioning() {
   const p = PRODUCTS[G.product];
-  const rows = Object.entries(POSITIONINGS).map(([id, pos]) => {
+  const isSoftware = G.product === 'software';
+  const positionings = getPositionings();
+  const rows = Object.entries(positionings).map(([id, pos]) => {
     const active = G.positioning === id;
     return `<div class="card clickable ${active ? 'active' : ''}" data-action="setPositioning" data-id="${id}">
       <div style="display:flex;justify-content:space-between;align-items:center">
@@ -836,12 +921,17 @@ function renderPositioning() {
     </div>`;
   }).join('');
 
+  const title = isSoftware ? 'Target Market' : 'Market Positioning';
+  const subtitle = isSoftware
+    ? 'Who are you selling to? Each customer type has a different burn rate and headache.'
+    : `How will your ${p.name.toLowerCase()} compete in the market?`;
+
   return `<div class="screen">
-    <div class="section-title">Market Positioning</div>
-    <div class="section-sub">How will ${G.productName} compete in the market?</div>
+    <div class="section-title">${title}</div>
+    <div class="section-sub">${subtitle}</div>
     ${rows}
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="teamBuilding" ${G.positioning ? '' : 'disabled'}>Confirm Positioning</button>
+      <button class="btn primary" data-action="goToNaming" ${G.positioning ? '' : 'disabled'}>Confirm ${isSoftware ? 'Target Market' : 'Positioning'}</button>
     </div>
   </div>`;
 }
@@ -896,9 +986,19 @@ function renderTeamBuilding() {
     bottomMessage = '<div style="text-align:center;color:var(--red);margin-bottom:15px">This definitely won\'t backfire...</div>';
   }
 
+  const budgetPct = Math.min(100, (totalSpend / 5000000) * 100);
+  const budgetColor = budgetPct > 60 ? 'red' : budgetPct > 35 ? 'amber' : 'green';
+
   return `<div class="screen">
     <div class="section-title">Build Your Team</div>
     <div class="section-sub">Hire in-house talent, outsource to an agency, or skip entirely. Monthly team burn: <strong class="text-amber">${fmt(totalCost)}/mo</strong> (${fmt(totalSpend)}/year)</div>
+    <div class="card" style="padding:12px;margin-bottom:15px">
+      <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px">
+        <span class="text-muted">Team commitment vs $5M budget</span>
+        <span class="text-${budgetColor}">${fmtFull(totalSpend)} / $5,000,000 (${budgetPct.toFixed(0)}%)</span>
+      </div>
+      <div class="progress-bar"><div class="fill ${budgetColor}" style="width:${budgetPct}%"></div></div>
+    </div>
     ${rows}
     ${bottomMessage}
     <div class="btn-group" style="margin-top:20px">
@@ -951,9 +1051,15 @@ function renderPreLaunch() {
 
   const canProceed = G.brandTier && G.siteTier && G.researchTier;
 
+  // Calculate total commitment: pre-launch + team burn for 12 months
+  const teamYearlyCost = G.teamCostPerMonth * 12;
+  const totalCommitment = total + teamYearlyCost;
+  const commitPct = Math.min(100, (totalCommitment / 5000000) * 100);
+  const commitColor = commitPct > 80 ? 'red' : commitPct > 50 ? 'amber' : 'green';
+
   return `<div class="screen">
     <div class="section-title">Pre-Launch Investments</div>
-    <div class="section-sub">This is the "buying supplies at the general store" part. Budget: <strong class="text-amber">${fmtFull(G.budget)}</strong> | Pre-launch total: <strong class="${total > G.budget * 0.5 ? 'text-red' : 'text-amber'}">${fmtFull(total)}</strong></div>
+    <div class="section-sub">Build your marketing engine before you hit the gas.</div>
 
     <h3 style="margin-top:20px;margin-bottom:8px">🎨 Brand Identity</h3>
     <div class="tier-group">${brandCards}</div>
@@ -965,11 +1071,22 @@ function renderPreLaunch() {
     <div class="tier-group">${researchCards}</div>
 
     <h3 style="margin-top:20px;margin-bottom:8px">🚀 Launch Tactics <span style="font-weight:400;font-size:.8rem;color:var(--muted)">(select any combination)</span></h3>
-    ${launchCards}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" class="launch-grid">${launchCards}</div>
+
+    <div class="card" style="margin-top:20px">
+      <h3>💰 Spend Commitment Summary</h3>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;font-size:.85rem">
+        <div><span class="text-muted">Pre-launch spend:</span></div><div class="text-amber" style="text-align:right">${fmtFull(total)}</div>
+        <div><span class="text-muted">Team burn:</span></div><div class="text-amber" style="text-align:right">${fmt(G.teamCostPerMonth)}/mo | ${fmt(teamYearlyCost)}/yr</div>
+        <div style="border-top:1px solid var(--border);padding-top:8px"><strong>Total commitment:</strong></div><div style="border-top:1px solid var(--border);padding-top:8px;text-align:right"><strong class="text-${commitColor}">${fmtFull(totalCommitment)}</strong> <span class="text-muted">/ $5,000,000</span></div>
+      </div>
+      <div class="progress-bar" style="margin-top:10px"><div class="fill ${commitColor}" style="width:${commitPct}%"></div></div>
+      <div style="margin-top:10px;font-size:.85rem;color:var(--muted);text-align:center">You'll have <strong class="text-amber">${fmt(5000000 - totalCommitment)}</strong> remaining to spend over the next 12 months.</div>
+    </div>
 
     <div class="btn-group" style="margin-top:25px">
       <button class="btn primary" data-action="confirmPreLaunch" ${canProceed ? '' : 'disabled'}>
-        Launch ${G.productName}! (Spend ${fmtFull(total)})
+        Launch ${G.productName}!
       </button>
     </div>
   </div>`;
@@ -990,14 +1107,14 @@ function renderPreLaunchSummary() {
   return `<div class="screen">
     <div class="narrative">
       <div class="event-title">🚀 ${G.productName} is Launching!</div>
-      <p>You, <strong>${G.playerName}</strong>, VP of Marketing, are about to launch <strong>${G.productName}</strong> — a ${POSITIONINGS[G.positioning].name.toLowerCase()} ${p.name.toLowerCase()} brand into a market that doesn't know it needs you yet.</p>
+      <p>You, <strong>${G.playerName}</strong>, VP of Marketing, are about to launch <strong>${G.productName}</strong> — a ${getPositioning().name.toLowerCase()} ${p.name.toLowerCase()} brand into a market that doesn't know it needs you yet.</p>
       <p style="margin-top:10px">You've assembled your team, invested in your brand, and chosen your launch strategy. The next 12 months will determine whether you're a marketing genius or a cautionary tale in a business school case study.</p>
     </div>
 
     <div class="card">
       <h3>📋 Launch Summary</h3>
       <p><strong>Product:</strong> ${p.icon} ${G.productName} (${p.name})<br>
-      <strong>Positioning:</strong> ${POSITIONINGS[G.positioning].icon} ${POSITIONINGS[G.positioning].name}<br>
+      <strong>Positioning:</strong> ${getPositioning().icon} ${getPositioning().name}<br>
       <strong>Brand Identity:</strong> ${brand.name} (${fmtFull(brand.cost)})<br>
       <strong>Website:</strong> ${site.name} (${fmtFull(site.cost)})<br>
       <strong>Research:</strong> ${research.name} (${fmtFull(research.cost)})<br>
@@ -1013,14 +1130,14 @@ function renderPreLaunchSummary() {
     ${renderStatsBar()}
 
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="beginJourney">🚀 Launch Product</button>
+      <button class="btn primary" data-action="beginJourney">🚀 Launch Campaign</button>
     </div>
     <script>setTimeout(() => runConfetti('launch'), 500);</script>
   </div>`;
 }
 
 function renderConflict() {
-  const conflictIdx = G.turn - 2; // turns 2-12 map to conflicts 0-10
+  const conflictIdx = G.turn - 2; // turns 2-11 map to conflicts 0-9
   const conflict = G.conflictOrder[conflictIdx];
 
   // Replace placeholders
@@ -1039,7 +1156,7 @@ function renderConflict() {
 
   return `<div class="screen">
     ${renderStatsBar()}
-    <div class="section-title">Month ${G.turn} of 13</div>
+    <div class="section-title">Month ${G.turn} of 12</div>
     <div class="narrative">
       <div class="event-title">${conflict.title}</div>
       <p>${text}</p>
@@ -1059,8 +1176,8 @@ function renderConflictResult() {
   if (r.effects.cost < 0) effectsText.push(`💰 Returned ${fmtFull(Math.abs(r.effects.cost))}`);
   if (r.effects.brandEquity > 0) effectsText.push(`📈 Brand Equity +${r.effects.brandEquity}`);
   if (r.effects.brandEquity < 0) effectsText.push(`📉 Brand Equity ${r.effects.brandEquity}`);
-  if (r.effects.ceoPat > 0) effectsText.push(`😊 CEO Patience +${r.effects.ceoPat}`);
-  if (r.effects.ceoPat < 0) effectsText.push(`😤 CEO Patience ${r.effects.ceoPat}`);
+  if (r.effects.ceoPat > 0) effectsText.push(`😊 CEO Vibes +${r.effects.ceoPat}`);
+  if (r.effects.ceoPat < 0) effectsText.push(`😤 CEO Vibes ${r.effects.ceoPat}`);
 
   return `<div class="screen">
     ${renderStatsBar()}
@@ -1082,7 +1199,7 @@ function renderAllocation() {
   const total = a.brand + a.performance + a.pr + a.events;
   const totalWithTeam = total + G.teamCostPerMonth;
   const remaining = G.budget;
-  const monthsLeft = 13 - G.turn + 1;
+  const monthsLeft = 12 - G.turn + 1;
   const suggested = Math.round(remaining / monthsLeft);
 
   const presetBtns = Object.entries(PRESETS).map(([key, p]) =>
@@ -1117,11 +1234,6 @@ function renderAllocation() {
 }
 
 function renderMidYearReview() {
-  const p = PRODUCTS[G.product];
-  const brand = BRAND_TIERS.find(t => t.id === G.brandTier);
-  const site = SITE_TIERS.find(t => t.id === G.siteTier);
-  const research = RESEARCH_TIERS.find(t => t.id === G.researchTier);
-
   const totalRevenue = G.monthlyRevenue.reduce((sum, r) => sum + r, 0);
   const avgMonthlyRev = totalRevenue / G.monthlyRevenue.length;
   const spent = G.startingBudget - G.budget;
@@ -1137,6 +1249,18 @@ function renderMidYearReview() {
   } else {
     ceoCommentary = 'The CEO is furious. "These numbers are unacceptable. We need a drastic change, or heads will roll!"';
   }
+
+  // Initialize adjustments from current state if not set
+  const adj = G._reviewAdjustments || {};
+  ROLES.forEach(r => {
+    if (adj[r.id] === undefined) adj[r.id] = G.team[r.id] === 'skip' ? 0 : 1.0;
+  });
+  G._reviewAdjustments = adj;
+
+  const stepLabels = ['Cut team', 'Reduce', 'Keep same', 'Increase', 'Double'];
+  const stepValues = [0, 0.5, 1.0, 1.5, 2.0];
+
+  const reviewCost = calcReviewTeamCost(adj);
 
   return `<div class="screen">
     ${renderStatsBar()}
@@ -1156,21 +1280,42 @@ function renderMidYearReview() {
     </div>
 
     <div style="margin:20px 0">
-      <h3>👥 Team Performance Review</h3>
-      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:10px">Adjust your team burn here. Firing or hiring will update your monthly costs.</p>
+      <h3>👥 Team Adjustments</h3>
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:10px">Use the sliders to scale each role's investment for the remainder of the year.</p>
       ${ROLES.map(r => {
     const sel = G.team[r.id];
-    return `<div class="card" style="padding:10px;margin-bottom:8px">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-            <div>${r.icon} ${r.name}: <strong>${sel === 'ft' ? 'In-House' : sel === 'agency' ? 'Agency' : 'Skipped'}</strong></div>
-            <div style="display:flex;gap:5px">
-              ${sel !== 'skip' ? `<button class="btn" style="font-size:.6rem;padding:4px 8px;background:var(--red)" data-action="fireRole" data-id="${r.id}">Fire</button>` : ''}
-              ${sel !== 'ft' ? `<button class="btn" style="font-size:.6rem;padding:4px 8px;background:var(--green)" data-action="hireRole" data-id="${r.id}" data-type="ft">Hire In-House</button>` : ''}
-              ${sel !== 'agency' ? `<button class="btn" style="font-size:.6rem;padding:4px 8px;background:var(--blue)" data-action="hireRole" data-id="${r.id}" data-type="agency">Hire Agency</button>` : ''}
+    const currentVal = adj[r.id] !== undefined ? adj[r.id] : (sel === 'skip' ? 0 : 1.0);
+    const sliderIdx = stepValues.indexOf(currentVal) >= 0 ? stepValues.indexOf(currentVal) : 2;
+    const labelText = stepLabels[sliderIdx];
+    const isSkipped = sel === 'skip';
+    const baseCost = sel === 'ft' ? r.ftCost : sel === 'agency' ? r.agCost : 0;
+    const adjCost = Math.round(baseCost * currentVal);
+    const pctLabel = Math.round(currentVal * 100);
+
+    return `<div class="card" style="padding:14px;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div>
+              <span style="font-weight:600">${r.icon} ${r.name}</span>
+              <span class="text-muted" style="font-size:.8rem;margin-left:8px">${sel === 'ft' ? 'In-House' : sel === 'agency' ? 'Agency' : 'Skipped'}</span>
+            </div>
+            <div>
+              <span id="review-label-${r.id}" style="font-size:.8rem;font-weight:600;color:${currentVal === 0 ? 'var(--red)' : currentVal < 1 ? 'var(--amber)' : currentVal === 1 ? 'var(--text)' : 'var(--green)'}">${labelText} (${pctLabel}%)</span>
+              <span id="review-cost-${r.id}" class="text-amber" style="font-size:.8rem;margin-left:8px">${fmt(adjCost)}/mo</span>
             </div>
           </div>
+          ${isSkipped ? '<div style="font-size:.75rem;color:var(--muted);font-style:italic">Role was skipped — no adjustment available</div>' : `
+          <input type="range" class="review-slider" min="0" max="4" step="1" value="${sliderIdx}" data-action="reviewSlider" data-role="${r.id}">
+          <div class="review-slider-labels">
+            <span>Cut team</span><span>Reduce</span><span>Keep same</span><span>Increase</span><span>Double</span>
+          </div>`}
         </div>`;
   }).join('')}
+    </div>
+
+    <div class="review-cost-summary" id="review-cost-summary">
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:5px">New Monthly Team Cost</div>
+      <div style="font-size:1.5rem;font-weight:700;color:var(--amber)">${fmtFull(reviewCost)}/mo</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-top:4px">Previously: ${fmtFull(G.teamCostPerMonth)}/mo</div>
     </div>
 
     <div class="btn-group" style="margin-top:20px">
@@ -1192,6 +1337,28 @@ function renderMonthResults() {
     return renderMidYearReview();
   }
 
+  // Show crisis narrative after firing everyone
+  if (G._allFiredCrisis) {
+    G._allFiredCrisis = false;
+    return `<div class="screen">
+      ${renderStatsBar()}
+      <div class="section-title">🔥 PR Crisis: Mass Layoffs</div>
+      <div class="narrative">
+        <div class="event-title">🚨 "CMO Fires Entire Marketing Team"</div>
+        <p>News of the mass layoffs has leaked. A former employee posted a thread that's going viral: "The CMO of ${G.productName} just gutted the entire marketing department mid-year. No plan, no transition, just cuts."</p>
+        <p style="margin-top:10px">The CEO is livid. Investors are calling. Your brand reputation has taken a serious hit. The remaining months will be significantly harder without any team support.</p>
+      </div>
+      <div class="outcome-box bad">
+        <div style="font-size:.9rem;font-weight:700;margin-bottom:6px">💥 Consequences:</div>
+        <p>📉 CEO Vibes: -15<br>📉 Brand Equity: -10<br>⚠️ Revenue penalty for remaining months (0.6x-0.85x)<br>⚠️ Extra CEO vibes drain (-3/month)</p>
+        <div class="lesson">💡 Marketing lesson: You can cut costs, but you can't cut your way to growth. A team IS the strategy.</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn primary" data-action="dismissCrisisNarrative">Continue →</button>
+      </div>
+    </div>`;
+  }
+
   let commentary = '';
   if (rev > 200000) commentary = pick(['🔥 The numbers are looking fire.', '📈 Wall Street is taking notice.', '💰 Revenue printer goes brrr.']);
   else if (rev > 100000) commentary = pick(['Not bad. The CEO stopped sending passive-aggressive Slacks.', 'Solid month. Your LinkedIn recruiter messages have decreased. Good sign.', 'Your brand is finding its groove.']);
@@ -1202,7 +1369,7 @@ function renderMonthResults() {
     bonusText = `<div class="outcome-box good"><strong>🎉 Bonus!</strong> The CEO was impressed with your performance. "+${fmtFull(r.bonus)} added to your budget."(They phrased it as "investing in what's working." Don't get used to it.)</div>`;
   }
 
-  const isLastMonth = G.turn >= 12;
+  const isLastMonth = G.turn >= 11;
 
   return `<div class="screen">
     ${renderStatsBar()}
@@ -1240,13 +1407,23 @@ function renderMonthResults() {
 function renderHoliday() {
   const brandMult = (1.5 + (G.brandEquity / 100) * 2.5).toFixed(1);
 
-  const choices = HOLIDAY_EVENT.strategies.map((s, i) =>
-    `<div class="choice-btn" data-action="chooseHoliday" data-value="${i}">
-      <div class="choice-title">${s.icon} ${s.name}</div>
-      <div class="choice-desc">${s.desc}</div>
-      <div class="choice-cost">Cost: ${fmtFull(s.cost)}</div>
-    </div>`
-  ).join('');
+  let holidayTotal = 0;
+  G.holidayTactics.forEach(i => { holidayTotal += HOLIDAY_EVENT.strategies[i].cost; });
+  const canAfford = (idx) => G.holidayTactics.includes(idx) || (G.budget - holidayTotal) >= HOLIDAY_EVENT.strategies[idx].cost;
+
+  const choices = HOLIDAY_EVENT.strategies.map((s, i) => {
+    const selected = G.holidayTactics.includes(i);
+    const affordable = canAfford(i);
+    return `<div class="launch-option ${selected ? 'checked' : ''} ${!affordable && !selected ? 'disabled' : ''}" data-action="toggleHoliday" data-value="${i}" ${!affordable && !selected ? 'style="opacity:.4;pointer-events:none"' : ''}>
+      <div class="checkbox">${selected ? '✓' : ''}</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:.9rem">${s.icon} ${s.name} <span class="text-amber">${fmtFull(s.cost)}</span></div>
+        <div style="font-size:.75rem;color:var(--muted)">${s.desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const budgetAfter = G.budget - holidayTotal;
 
   return `<div class="screen">
     ${renderStatsBar()}
@@ -1255,8 +1432,14 @@ function renderHoliday() {
       <p>${HOLIDAY_EVENT.text}</p>
       <p style="margin-top:10px">Your brand equity of <strong class="text-green">${Math.round(G.brandEquity)}</strong> gives you a holiday multiplier of <strong class="text-amber">${brandMult}x</strong>. ${G.brandEquity >= 60 ? 'All those brand investments are about to pay off BIG.' : G.brandEquity >= 30 ? 'A decent multiplier. Those brand investments helped.' : 'Ouch. Low brand equity means a weak holiday showing. Should\'ve invested in brand earlier.'}</p>
     </div>
-    <div class="section-sub">Choose your holiday strategy:</div>
-    <div class="choice-grid">${choices}</div>
+    <div class="section-sub">Select your holiday tactics <span style="color:var(--muted)">(pick any combination you can afford)</span>:</div>
+    ${choices}
+    <div class="card" style="margin-top:15px;text-align:center">
+      <div style="font-size:.85rem;color:var(--muted)">Holiday spend: <strong class="text-amber">${fmtFull(holidayTotal)}</strong> | Budget after: <strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(budgetAfter)}</strong></div>
+    </div>
+    <div class="btn-group" style="margin-top:20px">
+      <button class="btn primary" data-action="confirmHoliday" ${G.holidayTactics.length === 0 ? 'disabled' : ''}>🎄 Launch Holiday Push</button>
+    </div>
   </div>`;
 }
 
@@ -1269,7 +1452,8 @@ function renderHolidayResults() {
       <div style="font-size:.85rem;color:var(--muted)">Holiday Revenue</div>
       <div style="font-size:2.5rem;font-weight:700;color:var(--amber)">${fmtFull(r.holidayRev)}</div>
       <div style="font-size:1rem;margin-top:5px">Holiday Multiplier: <strong class="text-green">${r.holidayMult.toFixed(1)}x</strong></div>
-      <div style="font-size:.85rem;color:var(--muted);margin-top:5px">Strategy: ${r.strategy.icon} ${r.strategy.name}</div>
+      <div style="font-size:.85rem;color:var(--muted);margin-top:5px">Tactics: ${r.stratNames.join(' + ')}</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-top:3px">Spent: ${fmtFull(r.totalCost)}</div>
     </div>
     <div class="narrative" style="text-align:center">
       ${r.holidayRev > 500000 ? '🎉 MASSIVE holiday season! Your brand equity paid off in spades. The CFO is buying YOU a gift this year.' :
@@ -1291,26 +1475,21 @@ function renderFinalResults() {
 
   // Determine title/result
   let result, resultEmoji, resultText;
-  if (totalRev >= 30000000) {
-    G.title = 'Global CMO';
-    result = 'PROMOTED TO GLOBAL CMO';
+  if (totalRev >= 25000000) {
+    G.title = 'CMO';
+    result = 'PROMOTED TO CMO';
     resultEmoji = '👑';
-    resultText = 'The board is stunned. You\'ve turned ${G.productName} into a global phenomenon. The corner office is yours.';
-  } else if (totalRev >= 15000000) {
+    resultText = 'The board is stunned. You\'ve turned ' + G.productName + ' into a phenomenon. The corner office is yours.';
+  } else if (totalRev >= 12000000) {
     G.title = 'VP of Marketing';
-    result = 'PROMOTED';
+    result = 'VP OF MARKETING';
     resultEmoji = '⭐';
-    resultText = 'Excellent year. You\'ve hit your growth targets and earned a seat at the leadership table.';
-  } else if (totalRev >= 7500000) {
-    G.title = 'Senior Marketing Director';
-    result = 'SURVIVED';
-    resultEmoji = '✅';
-    resultText = 'You kept the lights on and the brand alive. Adequate performance in a tough market.';
+    resultText = 'Solid year. You\'ve hit your growth targets and kept your seat at the leadership table.';
   } else {
-    G.title = 'Former Marketing Director';
-    result = 'REPLACED';
+    G.title = 'Former VP of Marketing';
+    result = 'FIRED';
     resultEmoji = '💀';
-    resultText = 'The growth wasn\'t there. HR has the box ready for your desk. Time to update the resume.';
+    resultText = 'The growth wasn\'t there. The board lost confidence. HR has the box ready for your desk.';
   }
 
   const entry = saveScore();
@@ -1318,7 +1497,7 @@ function renderFinalResults() {
   return `<div class="screen">
     <div class="final-score">
       <div style="font-size:4rem">${resultEmoji}</div>
-      <div class="pixel" style="color:${result === 'FIRED' ? 'var(--red)' : result === 'SURVIVED' ? 'var(--amber)' : 'var(--green)'};font-size:1.2rem;margin:10px 0">${result}</div>
+      <div class="pixel" style="color:${result === 'FIRED' ? 'var(--red)' : result === 'VP OF MARKETING' ? 'var(--amber)' : 'var(--green)'};font-size:1.2rem;margin:10px 0">${result}</div>
       <div style="color:var(--muted);margin-bottom:20px">${resultText}</div>
       <div class="big-number">${fmtFull(totalRev)}</div>
       <div style="color:var(--muted)">Total Revenue in 12 Months</div>
@@ -1426,7 +1605,7 @@ function renderLeaderboard() {
       </table>
     </div>
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="playAgain">🔄 Play ${G.gameOver || G.turn >= 13 ? 'Again' : ''}</button>
+      <button class="btn primary" data-action="playAgain">🔄 Play ${G.gameOver || G.turn >= 12 ? 'Again' : ''}</button>
       ${G.turn === 0 ? '<button class="btn" data-action="backToTitle">← Back</button>' : ''}
     </div>
   </div>`;
@@ -1449,22 +1628,26 @@ document.getElementById('app').addEventListener('click', function (e) {
     }
     case 'selectProduct':
       G.product = value;
-      G.screen = 'naming';
+      G.positioning = null; // reset positioning when changing product
+      G.screen = 'positioning';
       break;
     case 'confirmName': {
       const name = document.getElementById('productName')?.value.trim();
       if (!name) { document.getElementById('productName').style.borderColor = 'var(--red)'; return; }
       G.productName = name;
-      G.screen = 'positioning';
+      G.screen = 'teamBuilding';
       break;
     }
     case 'setPositioning':
       G.positioning = el.dataset.id;
       G.screen = 'positioning';
       break;
-    case 'teamBuilding':
+    case 'goToNaming':
       if (!G.positioning) return;
-      G.screen = 'teamBuilding';
+      G.screen = 'naming';
+      break;
+    case 'backToPositioning':
+      G.screen = 'positioning';
       break;
     case 'productSelect':
       G.screen = 'productSelect';
@@ -1492,10 +1675,36 @@ document.getElementById('app').addEventListener('click', function (e) {
       calcTeamCost();
       render();
       break;
-    case 'continueAfterMidYearReview':
+    case 'continueAfterMidYearReview': {
       G.midYearReviewDone = true;
+      // Apply review adjustments
+      if (G._reviewAdjustments) {
+        G.midYearAdjustments = { ...G._reviewAdjustments };
+        delete G._reviewAdjustments;
+      }
+      calcTeamCost();
+
+      // Check if all roles are cut or were skipped (fire-everyone penalty)
+      const allCutOrSkipped = ROLES.every(r => {
+        if (G.team[r.id] === 'skip') return true;
+        return (G.midYearAdjustments[r.id] || 0) === 0;
+      });
+
+      if (allCutOrSkipped) {
+        G.allFiredPenalty = true;
+        G.ceoPat = clamp(G.ceoPat - 15, 0, 100);
+        G.brandEquity = clamp(G.brandEquity - 10, 0, 100);
+        // Show crisis narrative
+        G._allFiredCrisis = true;
+      }
+
       render();
       break;
+    }
+    case 'dismissCrisisNarrative':
+      // Just re-render the normal month results
+      render();
+      return;
     case 'setBrand':
       G.brandTier = value;
       G.screen = 'preLaunch';
@@ -1588,7 +1797,14 @@ document.getElementById('app').addEventListener('click', function (e) {
         G.screen = 'gameOver';
       } else if (G.ceoPat <= 0) {
         G.gameOver = true;
-        G.gameOverReason = 'The CEO lost all patience. "I\'ve seen better ROI from a lemonade stand," were their last words to you before HR stepped in.';
+        G.gameOverReason = 'The CEO\'s vibes hit zero. "I\'ve seen better ROI from a lemonade stand," were their last words to you before HR stepped in.';
+        G.screen = 'gameOver';
+      } else if (G.gameOver) {
+        // Caught by processMonth (e.g. zero spend streak)
+        G.screen = 'gameOver';
+      } else if (G.turn === 6 && G.totalRevenue < 5000000) {
+        G.gameOver = true;
+        G.gameOverReason = 'Mid-year board review. Total revenue: ' + fmtFull(G.totalRevenue) + '. The target was $5M by month 6. The board called an emergency session. "We need someone who can hit numbers, not just spend budget." You\'ve been let go.';
         G.screen = 'gameOver';
       } else {
         G.screen = 'monthResults';
@@ -1600,11 +1816,21 @@ document.getElementById('app').addEventListener('click', function (e) {
       G.screen = 'conflict';
       break;
     case 'goToHoliday':
-      G.turn = 13;
+      G.turn = 12;
+      G.holidayTactics = [];
       G.screen = 'holiday';
       break;
-    case 'chooseHoliday': {
-      const result = processHoliday(parseInt(value));
+    case 'toggleHoliday': {
+      const idx = parseInt(value);
+      const pos = G.holidayTactics.indexOf(idx);
+      if (pos >= 0) G.holidayTactics.splice(pos, 1);
+      else G.holidayTactics.push(idx);
+      G.screen = 'holiday';
+      break;
+    }
+    case 'confirmHoliday': {
+      if (G.holidayTactics.length === 0) return;
+      const result = processHoliday(G.holidayTactics);
       G._holidayResult = result;
       G.screen = 'holidayResults';
       break;
@@ -1654,6 +1880,43 @@ document.getElementById('app').addEventListener('input', function (e) {
     G.allocation[cat] = val;
     const display = document.getElementById('alloc-' + cat);
     if (display) display.textContent = fmt(val);
+  }
+
+  if (e.target.dataset.action === 'reviewSlider') {
+    const role = e.target.dataset.role;
+    const stepValues = [0, 0.5, 1.0, 1.5, 2.0];
+    const stepLabels = ['Cut team', 'Reduce', 'Keep same', 'Increase', 'Double'];
+    const idx = parseInt(e.target.value);
+    const scale = stepValues[idx];
+
+    if (!G._reviewAdjustments) G._reviewAdjustments = {};
+    G._reviewAdjustments[role] = scale;
+
+    // Update label
+    const labelEl = document.getElementById('review-label-' + role);
+    if (labelEl) {
+      const pct = Math.round(scale * 100);
+      labelEl.textContent = stepLabels[idx] + ' (' + pct + '%)';
+      labelEl.style.color = scale === 0 ? 'var(--red)' : scale < 1 ? 'var(--amber)' : scale === 1 ? 'var(--text)' : 'var(--green)';
+    }
+
+    // Update per-role cost
+    const r = ROLES.find(r => r.id === role);
+    if (r) {
+      const baseCost = G.team[r.id] === 'ft' ? r.ftCost : G.team[r.id] === 'agency' ? r.agCost : 0;
+      const adjCost = Math.round(baseCost * scale);
+      const costEl = document.getElementById('review-cost-' + role);
+      if (costEl) costEl.textContent = fmt(adjCost) + '/mo';
+    }
+
+    // Update total cost summary
+    const totalCost = calcReviewTeamCost(G._reviewAdjustments);
+    const summaryEl = document.getElementById('review-cost-summary');
+    if (summaryEl) {
+      summaryEl.innerHTML = `<div style="font-size:.85rem;color:var(--muted);margin-bottom:5px">New Monthly Team Cost</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--amber)">${fmtFull(totalCost)}/mo</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:4px">Previously: ${fmtFull(G.teamCostPerMonth)}/mo</div>`;
+    }
   }
 });
 
