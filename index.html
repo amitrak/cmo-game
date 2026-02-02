@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&family=Roboto+Mono:wght@400;700&display=swap');
 
     html {
       scroll-behavior: smooth
@@ -34,7 +34,7 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Roboto Mono', monospace;
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
@@ -373,6 +373,14 @@
       border-color: var(--green)
     }
 
+    .radio-btn.agency:hover {
+      border-color: var(--blue)
+    }
+
+    .radio-btn.skip:hover {
+      border-color: var(--red)
+    }
+
     .radio-btn:active {
       transform: scale(0.95)
     }
@@ -647,11 +655,31 @@
       padding: 20px 0
     }
 
+    .final-score .result-text {
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-size: .9rem;
+      line-height: 1.6
+    }
+
+    .final-score .revenue-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 15px 0
+    }
+
     .final-score .big-number {
       font-size: 3rem;
       font-weight: 700;
       color: var(--amber);
-      margin: 10px 0
+      margin: 0
+    }
+
+    .final-score .revenue-label {
+      color: var(--muted);
+      font-size: .85rem
     }
 
     .final-score .grade {
@@ -798,9 +826,11 @@
       padding: 12px;
       margin: 10px 0;
       text-align: center;
+      font-family: 'Press Start 2P', monospace;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: .75rem;
       color: var(--green);
+      line-height: 1.8;
       animation: milestoneIn .5s ease
     }
 
@@ -1030,7 +1060,7 @@
       }
 
       .final-score .big-number {
-        font-size: 2.2rem
+        font-size: 1.8rem
       }
 
       .choice-btn {
