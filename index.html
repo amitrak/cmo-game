@@ -792,15 +792,15 @@
     }
 
     .milestone-flash {
-      background: linear-gradient(90deg, rgba(255,215,0,.15), rgba(0,255,65,.15));
-      border: 1px solid var(--amber);
+      background: rgba(0,255,65,.1);
+      border: 1px solid var(--green);
       border-radius: 8px;
       padding: 12px;
       margin: 10px 0;
       text-align: center;
       font-weight: 700;
       font-size: 1.1rem;
-      color: var(--amber);
+      color: var(--green);
       animation: milestoneIn .5s ease
     }
 
@@ -816,6 +816,11 @@
       margin-bottom: 20px;
       border: 1px solid var(--border)
     }
+
+    .product-icon { display:block; margin:0 auto; border-radius:12px; object-fit:contain }
+    .product-icon-sm { width:60px; height:60px }
+    .product-icon-md { width:100px; height:100px }
+    .product-icon-lg { width:150px; height:150px }
 
     .end-screen-img {
       max-width: 350px;
@@ -833,6 +838,78 @@
       color: var(--muted);
       border: 1px dashed var(--border);
       border-radius: 8px
+    }
+
+    .help-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--amber);
+      background: transparent;
+      color: var(--amber);
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all .2s;
+      font-family: inherit
+    }
+
+    .help-btn:hover {
+      background: rgba(255, 215, 0, .15)
+    }
+
+    .help-btn.active {
+      background: rgba(255, 215, 0, .15);
+      border-color: var(--green);
+      color: var(--green)
+    }
+
+    .help-overlay {
+      background: linear-gradient(135deg, #1a1f2e, var(--card));
+      border: 1px solid var(--amber);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 10px 0 15px;
+      font-size: .85rem;
+      line-height: 1.6;
+      animation: fadeIn .2s ease
+    }
+
+    .help-overlay h4 {
+      color: var(--amber);
+      margin: 12px 0 6px;
+      font-size: .9rem
+    }
+
+    .help-overlay h4:first-child {
+      margin-top: 0
+    }
+
+    .help-overlay .help-role {
+      margin: 8px 0;
+      padding: 8px 12px;
+      background: rgba(0,0,0,.2);
+      border-radius: 8px
+    }
+
+    .help-overlay .help-tip {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: rgba(0, 255, 65, .08);
+      border: 1px solid rgba(0, 255, 65, .2);
+      border-radius: 8px;
+      color: var(--green)
+    }
+
+    .conflict-callback {
+      margin-top: 10px;
+      padding: 8px 12px;
+      font-size: .8rem;
+      font-style: italic;
+      color: var(--amber);
+      border-left: 3px solid var(--amber);
+      background: rgba(255, 215, 0, .06)
     }
 
     .hidden {
