@@ -426,7 +426,8 @@ function initState() {
     allFiredPenalty: false,
     holidayTactics: [],
     consecutiveZeroSpend: 0,
-    _helpOpen: null
+    _helpOpen: null,
+    _submittedToLeaderboard: false
   };
 
   // Check for save
@@ -1193,14 +1194,60 @@ function applyConflictChoice(conflictIdx, choiceIdx) {
 }
 
 // ===== LEADERBOARD =====
+let _cachedLeaderboard = [];
+let _leaderboardLoaded = false;
+
+function loadLeaderboard(callback) {
+  if (typeof leaderboardRef === 'undefined') {
+    callback([]);
+    return;
+  }
+  leaderboardRef.orderByChild('revenue').limitToLast(50).once('value', snapshot => {
+    const entries = [];
+    snapshot.forEach(child => {
+      entries.push(child.val());
+    });
+    entries.sort((a, b) => b.revenue - a.revenue);
+    _cachedLeaderboard = entries;
+    _leaderboardLoaded = true;
+    if (callback) callback(entries);
+  });
+}
+
 function getLeaderboard() {
-  try {
-    return JSON.parse(localStorage.getItem('marketingTrailLeaderboard') || '[]');
-  } catch { return []; }
+  return _cachedLeaderboard;
+}
+
+function submitToLeaderboard(callback) {
+  if (typeof leaderboardRef === 'undefined') {
+    if (callback) callback(false);
+    return;
+  }
+  const entry = {
+    name: G.playerName,
+    product: G.productName,
+    category: PRODUCTS[G.product].name,
+    revenue: G.totalRevenue,
+    brandEquity: Math.round(G.brandEquity),
+    title: G.title,
+    date: new Date().toISOString(),
+    turns: G.turn
+  };
+  leaderboardRef.push(entry, (error) => {
+    if (!error) {
+      G._submittedToLeaderboard = true;
+      loadLeaderboard(() => {
+        if (callback) callback(true);
+      });
+    } else {
+      if (callback) callback(false);
+    }
+  });
 }
 
 function saveScore() {
-  const entry = {
+  // Local save only (for resume functionality)
+  return {
     name: G.playerName,
     product: G.productName,
     category: PRODUCTS[G.product].name,
@@ -1210,11 +1257,6 @@ function saveScore() {
     date: new Date().toLocaleDateString(),
     turns: G.turn
   };
-  const lb = getLeaderboard();
-  lb.push(entry);
-  lb.sort((a, b) => b.revenue - a.revenue);
-  localStorage.setItem('marketingTrailLeaderboard', JSON.stringify(lb.slice(0, 20)));
-  return entry;
 }
 
 function getShareText() {
@@ -2040,7 +2082,10 @@ function renderMonthResults() {
     milestoneText = '<div class="milestone-flash">🎯 MILESTONE: $10M Total Revenue!</div>';
   }
 
-  G._pendingConfetti = growth > 20 ? 'recordSmash' : rev > lastRev ? 'goodMonth' : (rev < lastRev * 0.85 && !isLaunchMonth) ? 'badMonth' : null;
+  // Don't set badMonth effect if this is a quarter-end (promotion screen will follow)
+  const isQuarterEndMonth = [3, 6, 9].includes(G.turn);
+  const shouldShowBadMonth = rev < lastRev * 0.85 && !isLaunchMonth && !isQuarterEndMonth;
+  G._pendingConfetti = growth > 20 ? 'recordSmash' : rev > lastRev ? 'goodMonth' : shouldShowBadMonth ? 'badMonth' : null;
 
   return `<div class="screen">
     ${renderStatsBar()}
@@ -2094,6 +2139,8 @@ function renderPromotionReview() {
   let nextAction = 'continueAfterPromotion';
   let nextLabel = 'Continue →';
 
+  // Clear any previous negative effect and set promotion if earned
+  _lastEffect = null; // Reset so promotion always shows
   G._pendingConfetti = isPromoted ? 'promotion' : null;
 
   return `<div class="screen">
@@ -2441,9 +2488,17 @@ function renderFinalResults() {
       <span style="color:var(--green);font-weight:600">#CMOGame</span>
     </div>
 
+    ${!G._submittedToLeaderboard ? `<div class="card" style="text-align:center;margin:15px 0">
+      <p style="margin-bottom:10px">Submit your score to the global leaderboard?</p>
+      <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Your name and score will be publicly visible.</p>
+      <button class="btn gold" data-action="submitLeaderboard" id="submitBtn">🏆 Submit to Hall of Fame</button>
+    </div>` : `<div class="card" style="text-align:center;margin:15px 0;border-color:var(--green)">
+      <p style="color:var(--green)">✓ Score submitted to leaderboard!</p>
+    </div>`}
+
     <div class="btn-group">
       <button class="btn primary" data-action="copyShare">📋 Copy Score</button>
-      <button class="btn gold" data-action="showLeaderboard">🏆 Leaderboard</button>
+      <button class="btn" data-action="showLeaderboard">🏆 Leaderboard</button>
       <button class="btn" data-action="playAgain">🔄 Play Again</button>
     </div>
   </div>`;
@@ -2471,9 +2526,16 @@ function renderGameOver() {
       📸 Screenshot your results and share on social media!<br>
       <span style="color:var(--green);font-weight:600">#CMOGame</span>
     </div>
+    ${!G._submittedToLeaderboard ? `<div class="card" style="text-align:center;max-width:500px;margin:15px auto">
+      <p style="margin-bottom:10px">Submit your score to the global leaderboard?</p>
+      <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Your name and score will be publicly visible.</p>
+      <button class="btn gold" data-action="submitLeaderboard" id="submitBtn">🏆 Submit to Hall of Fame</button>
+    </div>` : `<div class="card" style="text-align:center;max-width:500px;margin:15px auto;border-color:var(--green)">
+      <p style="color:var(--green)">✓ Score submitted to leaderboard!</p>
+    </div>`}
     <div class="btn-group">
       <button class="btn primary" data-action="copyShare">📋 Copy Score</button>
-      <button class="btn gold" data-action="showLeaderboard">🏆 Leaderboard</button>
+      <button class="btn" data-action="showLeaderboard">🏆 Leaderboard</button>
       <button class="btn" data-action="playAgain">🔄 Try Again</button>
     </div>
   </div>`;
@@ -2481,20 +2543,21 @@ function renderGameOver() {
 
 function renderLeaderboard() {
   const lb = getLeaderboard();
-  const rows = lb.length > 0 ? lb.map((e, i) =>
-    `<tr>
+  const rows = lb.length > 0 ? lb.map((e, i) => {
+    const dateStr = e.date ? new Date(e.date).toLocaleDateString() : '';
+    return `<tr>
       <td>${i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</td>
       <td>${e.name}</td>
-      <td>${e.product} (${e.category})</td>
+      <td>${e.product}</td>
       <td class="text-amber">${fmtFull(e.revenue)}</td>
       <td>${e.brandEquity}/100</td>
       <td>${e.title}</td>
-    </tr>`
-  ).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No scores yet. Be the first to blaze the trail!</td></tr>';
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No scores yet. Be the first!</td></tr>';
 
   return `<div class="screen">
-    <div class="section-title">🏆 Leaderboard</div>
-    <div class="section-sub">The marketing legends who dared to spend a million dollars.</div>
+    <div class="section-title">🏆 Hall of Fame</div>
+    <div class="section-sub">Global leaderboard of marketing legends.</div>
     <div class="leaderboard-scroll">
       <table class="leaderboard-table">
         <thead><tr><th>#</th><th>Name</th><th>Product</th><th>Revenue</th><th>Brand</th><th>Title</th></tr></thead>
@@ -2832,8 +2895,29 @@ document.getElementById('app').addEventListener('click', function (e) {
       G.screen = 'finalResults';
       break;
     case 'showLeaderboard':
-      G.screen = 'leaderboard';
-      break;
+      loadLeaderboard(() => {
+        G.screen = 'leaderboard';
+        render();
+      });
+      return;
+    case 'submitLeaderboard': {
+      const btn = document.getElementById('submitBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+      }
+      submitToLeaderboard((success) => {
+        if (success) {
+          render();
+        } else {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = '❌ Error - Try Again';
+          }
+        }
+      });
+      return;
+    }
     case 'backToTitle':
       G.screen = 'title';
       break;
