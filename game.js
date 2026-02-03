@@ -1160,7 +1160,7 @@ function getShareText() {
 
 Think you can do better? Play free at cmogame.com
 
-#CMOGame #MarketingSimulator`;
+#CMOGame`;
 }
 
 // ===== HELP OVERLAY CONTENT =====
@@ -2000,10 +2000,20 @@ function renderMonthResults() {
   </div>`;
 }
 
+function getPromoImage(rank) {
+  const images = {
+    2: 'Media/Promo Senior Director.png',
+    3: 'Media/Promo VP.png',
+    4: 'Media/Promo EVP.png'
+  };
+  return images[rank] || null;
+}
+
 function renderPromotionReview() {
   const result = G._promotionResult;
   const rankInfo = getRankTitle(G.rank);
   const isPromoted = result.promoted;
+  const promoImg = isPromoted ? getPromoImage(G.rank) : null;
 
   let nextAction = 'continueAfterPromotion';
   let nextLabel = 'Continue →';
@@ -2014,7 +2024,7 @@ function renderPromotionReview() {
     ${renderStatsBar()}
     <div class="section-title">📋 Quarterly Performance Review — Q${result.quarter}</div>
     ${isPromoted ? `<div class="promotion-card">
-      <div class="rank-badge">${rankInfo.icon}</div>
+      ${promoImg ? `<img src="${promoImg}" alt="Promoted to ${rankInfo.title}" style="max-width:400px;margin:0 auto 15px;display:block;border-radius:12px">` : `<div class="rank-badge">${rankInfo.icon}</div>`}
       <div class="pixel" style="font-size:.85rem;color:var(--green);margin-bottom:10px">PROMOTED</div>
       <div style="font-size:1.1rem;font-weight:600">${rankInfo.title}</div>
       <p style="margin-top:12px;color:var(--muted)">${result.message}</p>
