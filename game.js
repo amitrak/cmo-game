@@ -1,6 +1,26 @@
 // ===== THE CMO GAME =====
 // A strategy game about brand, budget, and corporate survival
 
+// ===== PROFANITY FILTER =====
+const BLOCKED_WORDS = ['fuck','shit','ass','damn','bitch','cunt','dick','cock','pussy','fag','faggot','nigger','nigga','retard','slut','whore','bastard','asshole','bullshit','piss','crap','kike','jew','chink','gook','spic','wetback','beaner','towelhead','raghead','tranny','dyke','homo','queer','penis','vagina','boob','boobs','boobies','tits','titties','anus','dildo','jizz','cum','semen','porn','hentai','nazi','hitler','rape','molest','pedo','pedophile'];
+const PROFANITY_RESPONSES = [
+  'Keep it professional.',
+  'I\'m calling HR.',
+  'Legal wants a word.',
+  'Not on company time.',
+  'This goes in your file.',
+  'That\'s a write-up.',
+  'PR would like a word.',
+  'Think of the shareholders.'
+];
+function containsProfanity(text) {
+  const lower = text.toLowerCase().replace(/[^a-z]/g, '');
+  return BLOCKED_WORDS.some(w => lower.includes(w));
+}
+function getProfanityResponse() {
+  return PROFANITY_RESPONSES[Math.floor(Math.random() * PROFANITY_RESPONSES.length)];
+}
+
 // ===== CONSTANTS =====
 const PRODUCTS = {
   soda: {
@@ -446,52 +466,101 @@ function clearSave() {
   } catch (e) { }
 }
 
+let _lastEffect = null;
+
+function createFallingEmoji(emoji, count, duration) {
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.textContent = emoji;
+      el.style.cssText = `position:fixed;top:-50px;left:${Math.random()*100}vw;font-size:${24+Math.random()*24}px;z-index:9999;pointer-events:none;animation:emojiFall ${2+Math.random()*2}s linear forwards`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, Math.random() * duration);
+  }
+}
+
+function createRisingEmoji(emoji, count, duration) {
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.textContent = emoji;
+      el.style.cssText = `position:fixed;bottom:-50px;left:${Math.random()*100}vw;font-size:${24+Math.random()*24}px;z-index:9999;pointer-events:none;animation:emojiRise ${2+Math.random()*2}s linear forwards`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, Math.random() * duration);
+  }
+}
+
+function createFloatingImage(src, count, duration) {
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('img');
+      el.src = src;
+      el.style.cssText = `position:fixed;bottom:-80px;left:${Math.random()*90}vw;width:${50+Math.random()*30}px;height:auto;z-index:9999;pointer-events:none;animation:emojiRise ${2.5+Math.random()*2}s linear forwards;border-radius:8px`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 5000);
+    }, Math.random() * duration);
+  }
+}
+
 function runConfetti(type) {
   if (typeof confetti === 'undefined') return;
 
+  // Avoid repeating the same effect twice in a row
+  if (type === _lastEffect && type !== 'win') return;
+  _lastEffect = type;
+
+  const productImg = (G.product && G.positioning) ? getProductImage() : null;
+
   if (type === 'launch') {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+    // Launch: confetti only, no emojis
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  } else if (type === 'productSelect') {
+    // Product selection: floating product images only
+    if (productImg) createFloatingImage(productImg, 5, 1500);
   } else if (type === 'goodMonth') {
-    confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.7 },
-      colors: ['#00ff41', '#ffd700']
-    });
+    // 30% chance to trigger, emojis only (no confetti)
+    if (Math.random() > 0.7) {
+      const goodEmojis = ['💰', '📈', '🚀', '💵'];
+      const pick = goodEmojis[Math.floor(Math.random() * goodEmojis.length)];
+      createRisingEmoji(pick, 5, 1000);
+    }
   } else if (type === 'win') {
+    // CMO win: both confetti AND emojis
     var duration = 3000;
     var animationEnd = Date.now() + duration;
     var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
     var interval = setInterval(function () {
       var timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
-
+      if (timeLeft <= 0) return clearInterval(interval);
       var particleCount = 50 * (timeLeft / duration);
       confetti(Object.assign({}, defaults, { particleCount, origin: { x: rand(0.1, 0.3), y: Math.random() - 0.2 } }));
       confetti(Object.assign({}, defaults, { particleCount, origin: { x: rand(0.7, 0.9), y: Math.random() - 0.2 } }));
     }, 250);
+    createRisingEmoji('🏆', 6, 2000);
+    createRisingEmoji('👑', 5, 2000);
+    createRisingEmoji('💰', 8, 2500);
+    if (productImg) createFloatingImage(productImg, 4, 2500);
   } else if (type === 'promotion') {
-    confetti({
-      particleCount: 150,
-      spread: 90,
-      origin: { y: 0.5 },
-      colors: ['#ffd700', '#ff6b35', '#00ff41']
-    });
+    // Promotion: emojis only (no confetti)
+    createRisingEmoji('⬆️', 5, 1200);
+    createRisingEmoji('🎉', 4, 1200);
   } else if (type === 'recordSmash') {
-    confetti({
-      particleCount: 200,
-      spread: 100,
-      origin: { y: 0.6 },
-      colors: ['#ff0000', '#ffd700', '#00ff41', '#ff6b35']
-    });
+    // Record smash: confetti only
+    confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#ff0000', '#ffd700', '#00ff41', '#ff6b35'] });
+  } else if (type === 'badMonth') {
+    // 40% chance to trigger
+    if (Math.random() > 0.6) {
+      createFallingEmoji('📉', 6, 1500);
+      createFallingEmoji('😬', 4, 1500);
+    }
+  } else if (type === 'publicBacklash') {
+    // 50% chance to trigger
+    if (Math.random() > 0.5) {
+      createFallingEmoji('😠', 6, 1500);
+      createFallingEmoji('👎', 6, 1500);
+    }
   }
 }
 
@@ -1702,6 +1771,13 @@ function renderConflictResult() {
   const cls = r.isLucky ? 'good' : isGood ? 'good' : r.effects.brandEquity < -8 ? 'bad' : 'neutral';
   const callbackLine = getConflictCallback(r.conflict.id, isGood || r.isLucky);
 
+  // Trigger effects for conflict outcomes
+  if (r.effects.brandEquity <= -8) {
+    G._pendingConfetti = 'publicBacklash';
+  } else if (r.isLucky || (r.effects.brandEquity >= 5 && r.effects.revMult >= 1.1)) {
+    G._pendingConfetti = 'goodMonth';
+  }
+
   let effectsText = [];
   if (r.effects.cost > 0) effectsText.push(`💸 Spent ${fmtFull(r.effects.cost)}`);
   if (r.effects.cost < 0) effectsText.push(`💰 Returned ${fmtFull(Math.abs(r.effects.cost))}`);
@@ -1964,7 +2040,7 @@ function renderMonthResults() {
     milestoneText = '<div class="milestone-flash">🎯 MILESTONE: $10M Total Revenue!</div>';
   }
 
-  G._pendingConfetti = growth > 20 ? 'recordSmash' : rev > lastRev ? 'goodMonth' : null;
+  G._pendingConfetti = growth > 20 ? 'recordSmash' : rev > lastRev ? 'goodMonth' : (rev < lastRev * 0.85 && !isLaunchMonth) ? 'badMonth' : null;
 
   return `<div class="screen">
     ${renderStatsBar()}
@@ -2443,6 +2519,7 @@ document.getElementById('app').addEventListener('click', function (e) {
     case 'startGame': {
       const name = document.getElementById('playerName')?.value.trim();
       if (!name) { document.getElementById('playerName').style.borderColor = 'var(--red)'; return; }
+      if (containsProfanity(name)) { document.getElementById('playerName').value = ''; document.getElementById('playerName').placeholder = getProfanityResponse(); document.getElementById('playerName').style.borderColor = 'var(--red)'; return; }
       G.playerName = name;
       G.screen = 'productSelect';
       break;
@@ -2455,6 +2532,7 @@ document.getElementById('app').addEventListener('click', function (e) {
     case 'confirmName': {
       const name = document.getElementById('productName')?.value.trim();
       if (!name) { document.getElementById('productName').style.borderColor = 'var(--red)'; return; }
+      if (containsProfanity(name)) { document.getElementById('productName').value = ''; document.getElementById('productName').placeholder = getProfanityResponse(); document.getElementById('productName').style.borderColor = 'var(--red)'; return; }
       G.productName = name;
       G.screen = 'teamBuilding';
       break;
@@ -2465,6 +2543,7 @@ document.getElementById('app').addEventListener('click', function (e) {
       break;
     case 'goToNaming':
       if (!G.positioning) return;
+      G._pendingConfetti = 'productSelect';
       G.screen = 'naming';
       break;
     case 'backToPositioning':
