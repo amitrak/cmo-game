@@ -324,7 +324,7 @@ const CONFLICTS = [
     text: 'Revenue just popped 1,500% overnight. The CEO is popping champagne and asking what lever you pulled. But your attribution dashboard is empty and you have no idea what\'s driving the spike in sales. Do you take the credit or check the receipts?',
     choices: [
       { text: '"I optimized the funnel. It\'s paying off." (Claim Credit)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -50, gameOver: 0.3, luck: [0.25, { ceoPat: 100, override: 'It was real! A mega-influencer tweeted about {product} and sales exploded organically. You\'re a genius — or at least everyone thinks you are. The CEO gives you a standing ovation at the all-hands. Marketing lesson: Sometimes it\'s better to be lucky than good.' }], outcome: 'Finance walks in with a grim face. "Those orders? Credit card testing fraud from a bot farm in Eastern Europe." The refunds destroy your Q3 net revenue. The CEO stares at you. "You said this was YOUR strategy." Marketing lesson: Never claim credit for numbers you can\'t explain.' },
-      { text: '"Let me verify the data source first." (Investigate)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, weakAnalyticsPenalty: true, luck: [0.8, { ceoPat: 20, cost: -50000, override: 'You find 10,000 fraudulent orders and block them before shipping. You just saved the company $50k in shipping costs. The CEO respects the diligence. "This is why we have you." Marketing lesson: The unglamorous work of checking the data is the most valuable thing a marketer can do.' }], outcome: 'It was real sales. An organic forum thread drove genuine traffic. And you just told the CEO you "needed to verify" your own numbers. "Do you... not know what\'s happening in your own department?" Marketing lesson: Sometimes the data is real and hesitation costs you credibility.' },
+      { text: '"Let me verify the data source first." (Investigate)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, weakAnalyticsPenalty: true, luck: [0.8, { ceoPat: 20, cost: -50000, override: 'You find 10,000 fraudulent orders and block them before shipping. You just saved the company $50k in shipping costs. The CEO respects the diligence. "This is why we have you." Marketing lesson: It pays to do the unglamorous data work.' }], outcome: 'It was real sales. An organic forum thread drove genuine traffic. And you just told the CEO you "needed to verify" your own numbers. "Do you... not know what\'s happening in your own department?" Marketing lesson: Sometimes the data is real and hesitation costs you credibility.' },
       { text: '"Our AI-driven omnichannel synergy is kicking in." (Buzzword Bluff)', cost: 0, brandEquity: -5, revMult: 1.0, ceoPat: -40, luck: [0.5, { ceoPat: 10, brandEquity: 0, cost: 20000, override: 'The CEO nods blankly. "Good. Keep... synergizing." You survive the meeting. But Finance discovers the fraud next month — costing you $20k in chargebacks. Marketing lesson: Buzzwords buy time, not results.' }], outcome: 'The CEO perks up. "Excellent! Present the full attribution model to the Board tomorrow." You spend all night faking a slide deck. The Board asks three follow-up questions you can\'t answer. Your credibility craters. Marketing lesson: If you can\'t explain it simply, you don\'t understand it — and neither does your slide deck.' },
       { text: '"Gen Z found us. We must be trending on social media." (Hype Gamble)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -60, luck: [0.1, { ceoPat: 150, override: 'You check social media and... you actually ARE trending. A creator with 5M followers made a meme about {product}. The CEO promotes you to "Chief Hype Officer" on the spot. Marketing lesson: Even a blind squirrel finds a nut sometimes.' }], outcome: 'You check social media. You have 4 views — three of which are you. The sales are bots. The CEO asks if you actually know what "Skibidi" means. You do not. An uncomfortable silence fills the room. Marketing lesson: "We\'re viral" is not a strategy. It\'s a prayer.' }
     ]
@@ -355,7 +355,7 @@ const CONFLICTS = [
     choices: [
       { text: '"Delete it. Refund our money. Now." (The Clawback)', cost: 0, brandEquity: -5, revMult: 0.95, ceoPat: 0, luck: [0.4, { brandEquity: 0, revMult: 1.0, ceoPat: 5, cost: -50000, override: 'They\'re scared of your legal team. You get the money back and they block you. Petty? Sure. But $50k is $50k. Marketing lesson: Contracts exist for a reason.' }], outcome: 'They post screenshots of your angry emails. The caption: "Imagine being this pressed over a product launch." You are now a "Cringe Brand." Marketing lesson: The internet always sides with the creator, not the corporation.' },
       { text: '"Reshoot it. Here\'s $10k rush fee." (The Edit)', cost: 10000, brandEquity: -2, revMult: 0.95, ceoPat: 0, luck: [0.3, { brandEquity: 5, revMult: 1.05, ceoPat: 5, override: 'The reshoot nails it. Raw, authentic, and the influencer actually seems to love {product} this time. Comments flip positive. Marketing lesson: Great influencer content requires great creative briefs.' }], outcome: 'The new video is polished, safe, and boring. It gets 4,000 views. Fans notice the re-upload. Comments flood in: "What are they hiding??" Conspiracy theories start spreading. Marketing lesson: You can\'t reshoot trust.' },
-      { text: '"We love the competitor too, but we taste better" (The Comment)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: 0, luck: [0.5, { brandEquity: 8, revMult: 1.05, ceoPat: 10, override: 'Your comment gets more likes than the video. Marketing press writes about your "Savvy Social Strategy." You just won the internet for a day. Marketing lesson: Self-awareness is the most disarming brand voice.' }], outcome: 'You used a slang term incorrectly. The replies are brutal: "Silence, Brand." Your Social Media Manager cries in the bathroom. Marketing lesson: One clever comment can\'t fix a bad campaign.' }
+      { text: '"We love the competitor too, but ours is better" (The Comment)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: 0, luck: [0.5, { brandEquity: 8, revMult: 1.05, ceoPat: 10, override: 'Your comment gets more likes than the video. Marketing press writes about your "Savvy Social Strategy." You just won the internet for a day. Marketing lesson: Self-awareness is the most disarming brand voice.' }], outcome: 'You used a slang term incorrectly. The replies are brutal: "Silence, Brand." Your Social Media Manager cries in the bathroom. Marketing lesson: One clever comment can\'t fix a bad campaign.' }
     ]
   },
   {
@@ -377,7 +377,8 @@ const HOLIDAY_EVENT = {
     { name: 'Brand-Led Holiday Campaign', cost: 40000, brandMult: 1.0, perfMult: 0.3, desc: 'Emotional storytelling. "The holidays are about..." You know the type. Coca-Cola polar bears energy.', icon: '🎅' },
     { name: 'Black Friday Blitz', cost: 30000, brandMult: 0.2, perfMult: 1.0, desc: '50% OFF EVERYTHING. DOORBUSTER DEALS. LOWEST PRICES OF THE YEAR. Your brand equity weeps quietly.', icon: '🏷️' },
     { name: 'Balanced Holiday Mix', cost: 35000, brandMult: 0.6, perfMult: 0.6, desc: 'Taste the holiday spirit with a blend of brand-building and promotional tactics.', icon: '⚖️' },
-    { name: 'Influencer Gift Guide Push', cost: 50000, brandMult: 0.8, perfMult: 0.7, desc: 'Get into every "Gift Guide" and "Holiday Haul" video. Expensive but effective.', icon: '🎁' }
+    { name: 'Influencer Gift Guide Push', cost: 50000, brandMult: 0.8, perfMult: 0.7, desc: 'Get into every "Gift Guide" and "Holiday Haul" video. Expensive but effective.', icon: '🎁' },
+    { name: 'Go Dark', cost: 0, brandMult: 0.0, perfMult: 0.0, desc: 'No holiday marketing. Let the product sell itself. Bold strategy, Cotton.', icon: '🌑' }
   ]
 };
 
@@ -498,7 +499,7 @@ function createFloatingImage(src, count, duration) {
     setTimeout(() => {
       const el = document.createElement('img');
       el.src = src;
-      el.style.cssText = `position:fixed;bottom:-80px;left:${Math.random()*90}vw;width:${50+Math.random()*30}px;height:auto;z-index:9999;pointer-events:none;animation:emojiRise ${2.5+Math.random()*2}s linear forwards;border-radius:8px`;
+      el.style.cssText = `position:fixed;top:-80px;left:${Math.random()*90}vw;width:${50+Math.random()*30}px;height:auto;z-index:9999;pointer-events:none;animation:emojiFall ${2.5+Math.random()*2}s linear forwards;border-radius:8px`;
       document.body.appendChild(el);
       setTimeout(() => el.remove(), 5000);
     }, Math.random() * duration);
@@ -518,8 +519,7 @@ function runConfetti(type) {
     // Launch: confetti only, no emojis
     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   } else if (type === 'productSelect') {
-    // Product selection: floating product images only
-    if (productImg) createFloatingImage(productImg, 5, 1500);
+    // No animations for product select
   } else if (type === 'goodMonth') {
     // 30% chance to trigger, emojis only (no confetti)
     if (Math.random() > 0.7) {
@@ -544,9 +544,7 @@ function runConfetti(type) {
     createRisingEmoji('💰', 8, 2500);
     if (productImg) createFloatingImage(productImg, 4, 2500);
   } else if (type === 'promotion') {
-    // Promotion: emojis only (no confetti)
-    createRisingEmoji('⬆️', 5, 1200);
-    createRisingEmoji('🎉', 4, 1200);
+    // No animations for promotion screen
   } else if (type === 'recordSmash') {
     // Record smash: confetti only
     confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#ff0000', '#ffd700', '#00ff41', '#ff6b35'] });
@@ -604,7 +602,7 @@ function getCompetitorImage() {
   return rivalPos ? imgs[rivalPos] : imgs.main;
 }
 
-const PLAYER_PRODUCT_CONFLICTS = ['celebrity', 'tiktok_viral', 'press_feature', 'community_love', 'supply_chain', 'premium_typo', 'influencer_contract', 'review_bomb', 'rebrand_tempt', 'viral_fail'];
+const PLAYER_PRODUCT_CONFLICTS = ['celebrity', 'tiktok_viral', 'press_feature', 'community_love', 'supply_chain', 'premium_typo', 'review_bomb', 'rebrand_tempt', 'viral_fail'];
 const COMPETITOR_CONFLICTS = ['copycat'];
 
 function getConflictImage(conflictId) {
@@ -1032,30 +1030,18 @@ function checkPromotion(quarter) {
       message = 'Q1 was below expectations. The board is watching. You need to pick it up.';
     }
   } else if (quarter === 2) { // Month 6 — Growth check
-    if (rev >= 10000000 && G.rank < 3) {
-      // Catch-up: skip a rank
-      G.rank = Math.min(G.rank + 2, 4);
-      promoted = true;
-      skipped = true;
-      message = 'Exceptional H1 numbers. The board couldn\'t ignore it. You skipped a rank.';
-    } else if (rev >= 8000000 && G.rank < 4) {
+    if (rev >= 8000000 && G.rank < 4) {
       G.rank++;
       promoted = true;
-      message = 'H1 numbers are strong. The board is impressed. "You\'re on the right track."';
+      message = rev >= 10000000 ? 'Exceptional H1 numbers. The board is deeply impressed.' : 'H1 numbers are strong. The board is impressed. "You\'re on the right track."';
     } else {
       message = 'Growth is lagging behind targets. The board exchanged glances. Not a good sign.';
     }
   } else if (quarter === 3) { // Month 9 — Scale check
-    if (rev >= 25000000 && G.rank < 4) {
-      // Catch-up: skip a rank
-      G.rank = Math.min(G.rank + 2, 4);
-      promoted = true;
-      skipped = true;
-      message = 'Phenomenal trajectory. The board couldn\'t promote you fast enough.';
-    } else if (rev >= 18000000 && G.rank < 4) {
+    if (rev >= 18000000 && G.rank < 4) {
       G.rank++;
       promoted = true;
-      message = 'On track for a massive year. The CEO is telling the board about you.';
+      message = rev >= 25000000 ? 'Phenomenal trajectory. The CEO is telling the board about you.' : 'On track for a massive year. Keep pushing.';
     } else {
       message = 'You\'re behind pace. Q4 needs to be extraordinary to turn this around.';
     }
@@ -1139,6 +1125,9 @@ function applyConflictChoice(conflictIdx, choiceIdx) {
   }
 
   // Positioning-specific overrides
+  if (conflict.id === 'premium_typo' && choiceIdx === 0 && G.positioning === 'lifestyle' && !isLucky) {
+    outcome = 'Your lifestyle audience appreciates quirky... up to a point. "Koala Tea" becomes a meme, but not the flattering kind. Returns spike 15% as people can\'t tell if it\'s ironic or incompetent. "Wait, do you sell {product} or tea?" Marketing lesson: Lifestyle brands walk a fine line between playful and sloppy.';
+  }
   if (conflict.id === 'copycat' && choiceIdx === 1 && G.positioning === 'value') {
     effects.brandEquity = 5;
     effects.revMult = 1.05;
@@ -1219,30 +1208,36 @@ function getLeaderboard() {
 }
 
 function submitToLeaderboard(callback) {
-  if (typeof leaderboardRef === 'undefined') {
-    if (callback) callback(false);
-    return;
-  }
-  const entry = {
-    name: G.playerName,
-    product: G.productName,
-    category: PRODUCTS[G.product].name,
-    revenue: G.totalRevenue,
-    brandEquity: Math.round(G.brandEquity),
-    title: G.title,
-    date: new Date().toISOString(),
-    turns: G.turn
-  };
-  leaderboardRef.push(entry, (error) => {
-    if (!error) {
-      G._submittedToLeaderboard = true;
-      loadLeaderboard(() => {
-        if (callback) callback(true);
-      });
-    } else {
+  try {
+    if (typeof leaderboardRef === 'undefined' || !leaderboardRef) {
       if (callback) callback(false);
+      return;
     }
-  });
+    const entry = {
+      name: G.playerName || 'Anonymous',
+      product: G.productName || 'Unknown',
+      category: (PRODUCTS[G.product] && PRODUCTS[G.product].name) || 'Unknown',
+      revenue: G.totalRevenue || 0,
+      brandEquity: Math.round(G.brandEquity) || 0,
+      title: G.title || 'Director of Marketing',
+      date: new Date().toISOString(),
+      turns: G.turn || 0
+    };
+    leaderboardRef.push(entry, (error) => {
+      if (!error) {
+        G._submittedToLeaderboard = true;
+        loadLeaderboard(() => {
+          if (callback) callback(true);
+        });
+      } else {
+        console.error('Leaderboard submit error:', error);
+        if (callback) callback(false);
+      }
+    });
+  } catch (e) {
+    console.error('Leaderboard submit exception:', e);
+    if (callback) callback(false);
+  }
 }
 
 function saveScore() {
@@ -1515,6 +1510,7 @@ function renderNaming() {
     <div class="section-title">Name your ${p.namingLabel}</div>
     <div class="section-sub">Make your brand memorable and SEO-optimized. Don't use a pun. (Okay, you can use a pun.)</div>
     <div class="card" style="max-width:500px;margin:20px auto">
+      <img src="${getProductImage()}" alt="${p.name}" class="product-icon product-icon-md" style="margin:0 auto 15px">
       <input type="text" id="productName" placeholder="Brand Name" maxlength="25" autofocus>
       <div style="margin-top:10px;font-size:.75rem;color:var(--muted)">Examples: ${examples}</div>
     </div>
@@ -1718,6 +1714,7 @@ function renderPreLaunch() {
       </div>
       <div class="progress-bar" style="margin-top:10px"><div class="fill ${commitColor}" style="width:${commitPct}%"></div></div>
       <div style="margin-top:10px;font-size:.85rem;color:var(--muted);text-align:center">You'll have <strong class="text-amber">${fmt(5000000 - totalCommitment)}</strong> remaining to spend over the next 12 months.</div>
+      ${totalCommitment > 5000000 ? '<div style="margin-top:10px;font-size:.85rem;color:var(--red);text-align:center;font-weight:600">⚠️ You are projected to go over budget this year.</div>' : ''}
     </div>
 
     <div class="btn-group" style="margin-top:25px">
@@ -1835,10 +1832,10 @@ function renderConflictResult() {
     <div class="outcome-box ${cls}">
       ${r.isLucky ? '<div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">🍀 Lucky Break!</div>' : ''}
       ${conflictResultImg ? `<img src="${conflictResultImg}" alt="" class="product-icon product-icon-sm" style="float:right;margin:0 0 8px 12px">` : ''}
-      <p>${r.outcome}</p>
+      <p>${r.outcome.replace(/\{product\}/g, G.productName).replace(/\{name\}/g, G.productName).replace(/\{industry\}/g, PRODUCTS[G.product].flavor).replace(/\{month\}/g, G.turn)}</p>
       ${callbackLine ? `<div class="conflict-callback">${callbackLine}</div>` : ''}
       <div style="margin-top:12px;font-size:.85rem">${effectsText.join(' &nbsp;|&nbsp; ')}</div>
-      <div class="lesson">💡 ${r.outcome.split('Marketing lesson: ')[1] || ''}</div>
+      <div class="lesson">💡 ${(r.outcome.replace(/\{product\}/g, G.productName).split('Marketing lesson: ')[1]) || ''}</div>
     </div>
     <div class="btn-group">
       <button class="btn primary" data-action="goToAllocation">Set Monthly Budget →</button>
@@ -2097,17 +2094,17 @@ function renderMonthResults() {
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;text-align:center">
         <div>
           <div style="font-size:.75rem;color:var(--muted)">Monthly Revenue</div>
-          <div style="font-size:1.8rem;font-weight:700;color:var(--amber)">${fmtFull(rev)}</div>
+          <div class="rev-big" style="font-weight:700;color:var(--amber)">${fmtFull(rev)}</div>
           ${isLaunchMonth ? '<div class="text-amber" style="font-size:.85rem">🚀 Launch Month</div>' : `<div class="${growthColor}" style="font-size:.85rem">${rev >= lastRev ? '▲' : '▼'} ${growth}% vs last month</div>`}
         </div>
         <div>
           <div style="font-size:.75rem;color:var(--muted)">Total Revenue</div>
-          <div style="font-size:1.8rem;font-weight:700;color:var(--amber)">${fmtFull(G.totalRevenue)}</div>
+          <div class="rev-big" style="font-weight:700;color:var(--amber)">${fmtFull(G.totalRevenue)}</div>
           <div style="font-size:.85rem;color:var(--muted)">across ${G.monthlyRevenue.length} months</div>
         </div>
       </div>
       <div style="margin-top:15px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;text-align:center;font-size:.85rem">
-        <div><span class="text-muted">Spent:</span> <span class="text-red">${fmtFull(r.totalSpend)}</span></div>
+        <div><span class="text-muted">Month Spend:</span> <span class="text-red">${fmtFull(r.totalSpend)}</span></div>
         <div><span class="text-muted">Brand Δ:</span> <span class="${r.beChange >= 0 ? 'text-green' : 'text-red'}">${r.beChange >= 0 ? '+' : ''}${r.beChange.toFixed(1)}</span></div>
         <div><span class="text-muted">Budget left:</span> <span class="text-amber">${fmtFull(G.budget)}</span></div>
       </div>
