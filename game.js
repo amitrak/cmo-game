@@ -1199,7 +1199,15 @@ function loadLeaderboard(callback) {
     snapshot.forEach(child => {
       entries.push(child.val());
     });
-    entries.sort((a, b) => b.revenue - a.revenue);
+    const titleRank = t => {
+      if (t === 'CMO') return 5;
+      if (t === 'EVP of Marketing') return 4;
+      if (t === 'VP of Marketing') return 3;
+      if (t === 'Senior Director of Marketing') return 2;
+      if (t === 'Director of Marketing') return 1;
+      return 0; // #OpenToWork
+    };
+    entries.sort((a, b) => titleRank(b.title) - titleRank(a.title) || b.revenue - a.revenue);
     _cachedLeaderboard = entries;
     _leaderboardLoaded = true;
     if (callback) callback(entries);
@@ -2121,14 +2129,14 @@ function renderMonthResults() {
   // Don't set badMonth effect if this is a quarter-end (promotion screen will follow)
   const isQuarterEndMonth = [3, 6, 9].includes(G.turn);
   const shouldShowBadMonth = rev < lastRev * 0.85 && !isLaunchMonth && !isQuarterEndMonth;
-  G._pendingConfetti = growth > 20 ? 'recordSmash' : rev > lastRev ? 'goodMonth' : shouldShowBadMonth ? 'badMonth' : null;
+  G._pendingConfetti = growth > 50 ? 'recordSmash' : rev > lastRev ? 'goodMonth' : shouldShowBadMonth ? 'badMonth' : null;
 
   return `<div class="screen">
     ${renderStatsBar()}
     <div class="section-title">${isLaunchMonth ? '🚀 Launch Results — Month 1' : `📊 Month ${G.turn} Results`}</div>
     ${congruencySection}
     ${milestoneText}
-    ${!isLaunchMonth && growth > 20 ? '<div class="milestone-flash">💥 RECORD SMASHED!</div>' : ''}
+    ${!isLaunchMonth && growth > 50 ? '<div class="milestone-flash">💥 RECORD SMASHED!</div>' : ''}
     <div class="card">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;text-align:center">
         <div>
@@ -2301,7 +2309,7 @@ function renderHolidayAllocation() {
 
     <h3 style="margin-top:20px;margin-bottom:8px">📊 Monthly Budget Allocation</h3>
     <div class="section-sub" style="margin-top:0">
-      Team cost: ${fmt(G.teamCostPerMonth)}/mo (fixed) | Marketing spend: <strong class="text-amber">${fmt(allocTotal)}</strong>
+      Team cost: ${fmt(G.teamCostPerMonth)}/mo (fixed) | Marketing spend: <strong id="holiday-marketing-spend" class="text-amber">${fmt(allocTotal)}</strong>
     </div>
     <div class="btn-group" style="justify-content:flex-start;margin:10px 0">${presetBtns}</div>
     ${allocRows}
@@ -2312,12 +2320,12 @@ function renderHolidayAllocation() {
     <div class="card" style="margin-top:20px;text-align:center">
       <h3>💰 Total Month 12 Spend</h3>
       <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;font-size:.85rem;text-align:left">
-        <div><span class="text-muted">Marketing allocation:</span></div><div class="text-amber" style="text-align:right">${fmtFull(allocTotal)}</div>
+        <div><span class="text-muted">Marketing allocation:</span></div><div id="holiday-alloc-total" class="text-amber" style="text-align:right">${fmtFull(allocTotal)}</div>
         <div><span class="text-muted">Team cost:</span></div><div class="text-amber" style="text-align:right">${fmtFull(G.teamCostPerMonth)}</div>
-        <div><span class="text-muted">Holiday tactics:</span></div><div class="text-amber" style="text-align:right">${fmtFull(holidayTotal)}</div>
-        <div style="border-top:1px solid var(--border);padding-top:8px"><strong>Total:</strong></div><div style="border-top:1px solid var(--border);padding-top:8px;text-align:right"><strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(totalWithTeamAndHoliday)}</strong></div>
+        <div><span class="text-muted">Holiday tactics:</span></div><div id="holiday-tactic-total" class="text-amber" style="text-align:right">${fmtFull(holidayTotal)}</div>
+        <div style="border-top:1px solid var(--border);padding-top:8px"><strong>Total:</strong></div><div id="holiday-grand-total" style="border-top:1px solid var(--border);padding-top:8px;text-align:right"><strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(totalWithTeamAndHoliday)}</strong></div>
       </div>
-      <div style="margin-top:10px;font-size:.85rem;color:var(--muted)">Budget after: <strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(budgetAfter)}</strong></div>
+      <div id="holiday-budget-after" style="margin-top:10px;font-size:.85rem;color:var(--muted)">Budget after: <strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(budgetAfter)}</strong></div>
     </div>
 
     <div class="btn-group" style="margin-top:20px">
@@ -3007,6 +3015,26 @@ document.getElementById('app').addEventListener('input', function (e) {
     G.allocation[cat] = val;
     const display = document.getElementById('alloc-' + cat);
     if (display) display.textContent = fmt(val);
+
+    // Update holiday allocation summary if on that screen
+    const allocTotalEl = document.getElementById('holiday-alloc-total');
+    if (allocTotalEl) {
+      const a = G.allocation;
+      const allocTotal = a.brand + a.performance + a.pr + a.events;
+      let holidayTotal = 0;
+      G.holidayTactics.forEach(i => { holidayTotal += HOLIDAY_EVENT.strategies[i].cost; });
+      const totalSpend = allocTotal + G.teamCostPerMonth + holidayTotal;
+      const budgetAfter = G.budget - totalSpend;
+      const color = budgetAfter < 0 ? 'text-red' : 'text-amber';
+
+      allocTotalEl.textContent = fmtFull(allocTotal);
+      const spendEl = document.getElementById('holiday-marketing-spend');
+      if (spendEl) spendEl.textContent = fmt(allocTotal);
+      const grandEl = document.getElementById('holiday-grand-total');
+      if (grandEl) grandEl.innerHTML = `<strong class="${color}">${fmtFull(totalSpend)}</strong>`;
+      const afterEl = document.getElementById('holiday-budget-after');
+      if (afterEl) afterEl.innerHTML = `Budget after: <strong class="${color}">${fmtFull(budgetAfter)}</strong>`;
+    }
   }
 
   if (e.target.dataset.action === 'reviewSlider') {
