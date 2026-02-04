@@ -577,6 +577,20 @@ const PRODUCT_IMAGES = {
   software: { main: 'Media/Software Main.png', enterprise: 'Media/Software Enterprise.png', government: 'Media/Software Government.png', consumer: 'Media/Software Consumer Smartphone.png', smb: 'Media/Software Startup Unicorn.png' }
 };
 
+// Preload all game images so they're cached before needed
+function preloadImages() {
+  const imgs = [
+    'Media/Promo Senior Director.png', 'Media/Promo VP.png', 'Media/Promo EVP.png',
+    'Media/Congratulations Youre CMO.png', 'Media/RIP Your Job.png', 'Media/Tombstone.png'
+  ];
+  // Add all product images
+  Object.values(PRODUCT_IMAGES).forEach(p => {
+    Object.values(p).forEach(src => { if (src && !imgs.includes(src)) imgs.push(src); });
+  });
+  imgs.forEach(src => { const i = new Image(); i.src = src; });
+}
+preloadImages();
+
 function getProductImage() {
   const imgs = PRODUCT_IMAGES[G.product];
   return imgs && G.positioning ? (imgs[G.positioning] || imgs.main) : (imgs ? imgs.main : '');
