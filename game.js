@@ -58,7 +58,7 @@ const POSITIONINGS = {
 
 const SOFTWARE_POSITIONINGS = {
   enterprise: { name: 'Enterprise', icon: '🏢', brandBonus: 1.5, revMult: 1.2, desc: 'Whale hunting. Prepare for 12-month sales cycles, security audits, and procurement hell. But one signed contract makes your year.' },
-  smb: { name: 'Startup', icon: '🦄', brandBonus: 1.0, revMult: 0.9, desc: 'The SMB hustle. They want enterprise features on a shoestring budget. Expect high volume, high churn, and support tickets written in ALL CAPS.' },
+  smb: { name: 'Startup', icon: '🦄', brandBonus: 1.0, revMult: 0.9, desc: 'They want enterprise features on a shoestring budget. Expect high volume, high churn, and support tickets written in ALL CAPS.' },
   consumer: { name: 'Consumer', icon: '📱', brandBonus: 2.5, revMult: 1.0, desc: 'The B2C lottery. You\'re at the mercy of the App Store gods and Gen Z\'s attention span. You\'re either viral or you\'re invisible.' },
   government: { name: 'Government', icon: '🏛️', brandBonus: 2.0, revMult: 1.1, desc: 'The long game. Navigate red tape and 100-page RFPs. It takes two years to close a deal, but once you\'re in, the taxpayer funds you forever.' }
 };
@@ -1187,8 +1187,8 @@ let _cachedLeaderboard = [];
 let _leaderboardLoaded = false;
 
 function loadLeaderboard(callback) {
-  if (typeof leaderboardRef === 'undefined') {
-    callback([]);
+  if (!leaderboardRef) {
+    if (callback) callback([]);
     return;
   }
   leaderboardRef.orderByChild('revenue').limitToLast(50).once('value', snapshot => {
@@ -1200,6 +1200,9 @@ function loadLeaderboard(callback) {
     _cachedLeaderboard = entries;
     _leaderboardLoaded = true;
     if (callback) callback(entries);
+  }, error => {
+    console.error('Leaderboard load error:', error);
+    if (callback) callback([]);
   });
 }
 
@@ -1209,7 +1212,7 @@ function getLeaderboard() {
 
 function submitToLeaderboard(callback) {
   try {
-    if (typeof leaderboardRef === 'undefined' || !leaderboardRef) {
+    if (!leaderboardRef) {
       if (callback) callback(false);
       return;
     }

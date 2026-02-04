@@ -1158,16 +1158,21 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <script>
-    firebase.initializeApp({
-      apiKey: "AIzaSyBseolyucfrqqNNNhxxx9P6gWv7RkHds-o",
-      authDomain: "cmo-game-leaderboard.firebaseapp.com",
-      databaseURL: "https://cmo-game-leaderboard-default-rtdb.firebaseio.com",
-      projectId: "cmo-game-leaderboard",
-      storageBucket: "cmo-game-leaderboard.firebasestorage.app",
-      messagingSenderId: "1093509229880",
-      appId: "1:1093509229880:web:266d3cbfc7c0b8c5f325cd"
-    });
-    const leaderboardRef = firebase.database().ref('leaderboard');
+    var leaderboardRef = null;
+    try {
+      firebase.initializeApp({
+        apiKey: "AIzaSyBseolyucfrqqNNNhxxx9P6gWv7RkHds-o",
+        authDomain: "cmo-game-leaderboard.firebaseapp.com",
+        databaseURL: "https://cmo-game-leaderboard-default-rtdb.firebaseio.com",
+        projectId: "cmo-game-leaderboard",
+        storageBucket: "cmo-game-leaderboard.firebasestorage.app",
+        messagingSenderId: "1093509229880",
+        appId: "1:1093509229880:web:266d3cbfc7c0b8c5f325cd"
+      });
+      leaderboardRef = firebase.database().ref('leaderboard');
+    } catch(e) {
+      console.error('Firebase init failed:', e);
+    }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
