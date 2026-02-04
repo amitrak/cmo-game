@@ -1071,8 +1071,8 @@ function processHoliday(tacticIndices) {
   G.budget -= totalCost;
 
   // Holiday multiplier based on brand equity
-  const baseHolidayMult = 1.5;
-  const brandBonus = (G.brandEquity / 100) * 2.5;
+  const baseHolidayMult = 1.3;
+  const brandBonus = (G.brandEquity / 100) * 1.5;
   const holidayMult = baseHolidayMult + brandBonus;
 
   // Combined strategies affect how much of the multiplier you capture
@@ -2170,7 +2170,7 @@ function renderPromotionReview() {
 }
 
 function renderHoliday() {
-  const brandMult = (1.5 + (G.brandEquity / 100) * 2.5).toFixed(1);
+  const brandMult = (1.3 + (G.brandEquity / 100) * 1.5).toFixed(1);
 
   let holidayTotal = 0;
   G.holidayTactics.forEach(i => { holidayTotal += HOLIDAY_EVENT.strategies[i].cost; });
@@ -2232,7 +2232,7 @@ function renderHolidayAllocation() {
   }).join('');
 
   // Holiday multiplier display
-  const brandMult = (1.5 + (G.brandEquity / 100) * 2.5).toFixed(1);
+  const brandMult = (1.3 + (G.brandEquity / 100) * 1.5).toFixed(1);
 
   // Holiday tactics
   let holidayTotal = 0;
@@ -2335,8 +2335,8 @@ function processMonth12Combined(tacticIndices) {
   }
 
   // 7. Apply holiday multiplier
-  const baseHolidayMult = 1.5;
-  const brandBonus = (G.brandEquity / 100) * 2.5;
+  const baseHolidayMult = 1.3;
+  const brandBonus = (G.brandEquity / 100) * 1.5;
   const holidayMult = baseHolidayMult + brandBonus;
 
   const avgBrand = strats.length > 0 ? totalBrandMult / strats.length : 0;
@@ -2407,15 +2407,15 @@ function renderFinalResults() {
   // Q4 Final Determination — 5-tier rank-based endings
   let result, resultEmoji, resultText;
 
-  if (totalRev >= 60000000) {
+  if (totalRev >= 65000000) {
     // Moonshot: any rank → CMO with god-tier revenue
     G.rank = 5;
     G.title = 'CMO';
     result = 'MOONSHOT TO CMO';
     resultEmoji = '🚀';
     resultText = 'The CEO had no choice but to elevate you to the C-Suite. ' + G.productName + ' is a juggernaut.';
-  } else if (G.rank >= 4 && totalRev >= 50000000 && brandEq >= 50) {
-    // Safe Climb: EVP + $50M + strong brand = CMO
+  } else if (G.rank >= 4 && totalRev >= 55000000 && brandEq >= 55) {
+    // Safe Climb: EVP + $55M + strong brand = CMO
     G.rank = 5;
     G.title = 'CMO';
     result = 'PROMOTED TO CMO';
@@ -2426,7 +2426,7 @@ function renderFinalResults() {
     G.title = getRankTitle(G.rank).title;
     result = 'EVP OF MARKETING';
     resultEmoji = '🏆';
-    resultText = 'So close to the top. You\'re a powerhouse executive and ' + G.productName + ' had a strong year. But the CMO chair needs $50M and a world-class brand to unlock.';
+    resultText = 'So close to the top. You\'re a powerhouse executive and ' + G.productName + ' had a strong year. But the CMO chair needs $55M and a world-class brand to unlock.';
   } else if (G.rank >= 3) {
     G.title = getRankTitle(G.rank).title;
     result = 'VP OF MARKETING';
