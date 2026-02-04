@@ -165,7 +165,7 @@ const CONFLICTS = [
     choices: [
       { text: 'Cut ties immediately + public statement', cost: 15000, brandEquity: 5, revMult: 0.9, ceoPat: 5, outcome: 'Swift and decisive. You eat the cancellation fee, but the narrative becomes "brand with integrity." Crisis PR textbook stuff. Marketing lesson: The cost of ending a bad partnership is always less than the cost of keeping one.' },
       { text: 'Wait 48 hours - the internet has the memory of a goldfish', cost: 0, brandEquity: -5, revMult: 0.95, ceoPat: 0, luck: [0.5, { brandEquity: 0, revMult: 1.0, ceoPat: 5, override: 'You waited it out and... it actually blew over. A politician did something dumber the next day. Sometimes doing nothing IS the strategy.' }], outcome: 'Day 1: "They\'ll forget." Day 2: "Why haven\'t they dropped this influencer?!" Day 3: You\'re now part of the story. Marketing lesson: "Wait and see" is a strategy. Just not always a good one.' },
-      { text: 'Find a bigger influencer to change the narrative ($40k)', cost: 40000, brandEquity: 3, revMult: 1.0, ceoPat: 5, outcome: 'You sign a wholesome mega-influencer who "just happens" to post about your product. The news cycle shifts. Expensive, but effective. Marketing lesson: In attention economics, you can always buy a new narrative.' },
+      { text: 'Find a bigger influencer to change the narrative ($40k)', cost: 40000, brandEquity: 3, revMult: 1.0, ceoPat: 5, outcome: 'You sign a wholesome mega-influencer who "just happens" to post about your product. The news cycle shifts. Expensive, but effective. Marketing lesson: In the attention economy, you can always buy a new narrative.' },
       { text: 'Lean in: "We don\'t control our community, we celebrate them"', cost: 0, brandEquity: -8, revMult: 1.05, ceoPat: -10, luck: [0.25, { brandEquity: 6, revMult: 1.15, ceoPat: 5, override: 'Your radical authenticity somehow resonates. "Finally, a brand that doesn\'t pretend to be perfect!" becomes the take. Gen Z approves.' }], outcome: 'The "celebrate them" angle backfires spectacularly. You are now the brand that endorses bad behavior. Parents are emailing. Marketing lesson: Authenticity has limits. Know where yours are.' }
     ]
   },
@@ -205,7 +205,7 @@ const CONFLICTS = [
     choices: [
       { text: 'Collab on a follow-up video + offer them a micro-influencer deal ($5k)', cost: 5000, brandEquity: 7, revMult: 1.25, ceoPat: 15, outcome: 'They\'re thrilled! Your brand collab gets another 3 million views. Authentic, scrappy, and exactly what social media rewards. Marketing lesson: Micro-influencer authenticity beats macro-influencer reach.' },
       { text: 'Launch a viral challenge campaign ($20k)', cost: 20000, brandEquity: 8, revMult: 1.1, ceoPat: 10, luck: [0.6, { brandEquity: 12, revMult: 1.4, ceoPat: 20, override: 'The challenge EXPLODES. 50 million views across all participants. You\'re the #1 trending brand on social media. Your intern cries tears of joy. This is the moment.' }], outcome: 'The challenge gets moderate participation. It\'s fine, but it feels like a brand trying too hard to be cool. "How do you do, fellow kids?" energy. Marketing lesson: You can\'t manufacture virality.' },
-      { text: 'Send free product + personal note, hope for more content', cost: 2000, brandEquity: 6, revMult: 1.1, ceoPat: 5, outcome: 'They post an unboxing! "OMG {product} actually sent me free stuff!" Another 2 million views. The gift that keeps on giving. Marketing lesson: Generosity is the cheapest form of marketing.' },
+      { text: 'Send free product + personal note, hope for more content', cost: 2000, brandEquity: 6, revMult: 1.1, ceoPat: 5, outcome: 'They post an unboxing! "OMG {product} actually sent me free stuff!" Another 2 million views. The gift that keeps on giving. Marketing lesson: Generosity can be a surprisingly effective form of marketing.' },
       { text: 'Boost the original video with paid media ($10k)', cost: 10000, brandEquity: 4, revMult: 1.2, ceoPat: 10, outcome: 'Smart move. You amplify authentic content rather than creating fake authenticity. The boosted video drives real conversions. Marketing lesson: Amplify what works. Don\'t reinvent it.' }
     ]
   },
@@ -316,7 +316,7 @@ const CONFLICTS = [
       { text: 'Pause marketing completely until supply stabilizes', cost: 0, brandEquity: -3, revMult: 0.5, ceoPat: -10, outcome: 'Revenue craters but at least you\'re not advertising something people can\'t buy. The dark period feels like an eternity. Your team starts "exploring other opportunities." Marketing lesson: Going dark is rarely the right answer - you\'re ceding ground to competitors.' },
       { text: 'Pivot to waitlist / pre-order strategy ($10k)', cost: 10000, brandEquity: 8, revMult: 0.7, ceoPat: 5, outcome: 'Scarcity becomes a feature, not a bug. "Join the waitlist" creates FOMO. When products ship, the unboxing content is GRATEFUL, not entitled. Marketing lesson: Scarcity + transparency = desire.' },
       { text: 'Keep marketing but shift to brand storytelling', cost: 5000, brandEquity: 6, revMult: 0.6, ceoPat: 0, outcome: 'You use the downtime to invest in content: founder story, behind-the-scenes, production quality features. People fall in love with the brand even before they can buy. Marketing lesson: When you can\'t sell, tell stories.' },
-      { text: 'Source from a backup manufacturer at 2x cost ($30k premium)', cost: 30000, brandEquity: 0, revMult: 0.9, ceoPat: 10, outcome: 'Product keeps flowing, but margins are razor-thin. The backup quality is slightly lower. Three 1-star reviews mention it. Marketing lesson: Quality consistency IS marketing.' }
+      { text: 'Source from a backup manufacturer at 2x cost ($30k premium)', cost: 30000, brandEquity: -5, revMult: 0.9, ceoPat: 0, outcome: 'Product keeps flowing, but margins are razor-thin. The backup quality is slightly lower. Three 1-star reviews mention it. Marketing lesson: Quality consistency IS marketing.' }
     ]
   },
   {
@@ -378,7 +378,7 @@ const HOLIDAY_EVENT = {
     { name: 'Black Friday Blitz', cost: 30000, brandMult: 0.2, perfMult: 1.0, desc: '50% OFF EVERYTHING. DOORBUSTER DEALS. LOWEST PRICES OF THE YEAR. Your brand equity weeps quietly.', icon: '🏷️' },
     { name: 'Balanced Holiday Mix', cost: 35000, brandMult: 0.6, perfMult: 0.6, desc: 'Taste the holiday spirit with a blend of brand-building and promotional tactics.', icon: '⚖️' },
     { name: 'Influencer Gift Guide Push', cost: 50000, brandMult: 0.8, perfMult: 0.7, desc: 'Get into every "Gift Guide" and "Holiday Haul" video. Expensive but effective.', icon: '🎁' },
-    { name: 'Go Dark', cost: 0, brandMult: 0.0, perfMult: 0.0, desc: 'No holiday marketing. Let the product sell itself. Bold strategy, Cotton.', icon: '🌑' }
+    { name: 'Charity Tie-In', cost: 5000, brandMult: 0.3, perfMult: 0.1, desc: 'Donate a portion of holiday sales to a cause. Low cost, good vibes, and a feel-good press angle.', icon: '❤️' }
   ]
 };
 
@@ -723,10 +723,13 @@ function calcTeamCost() {
 
 function calcReviewTeamCost(adjustments) {
   let cost = 0;
+  const hires = G._reviewHires || {};
   ROLES.forEach(r => {
     const scale = adjustments[r.id] !== undefined ? adjustments[r.id] : 1.0;
     if (G.team[r.id] === 'ft') cost += r.ftCost * scale;
     else if (G.team[r.id] === 'agency') cost += r.agCost * scale;
+    else if (G.team[r.id] === 'skip' && hires[r.id] === 'ft') cost += r.ftCost;
+    else if (G.team[r.id] === 'skip' && hires[r.id] === 'agency') cost += r.agCost;
   });
   return Math.round(cost);
 }
@@ -1342,8 +1345,11 @@ function getConflictCallback(conflictId, isGood) {
   }
 
   // Positioning-specific callbacks (overlaid on any conflict)
-  if (['premium', 'lifestyle'].includes(G.positioning) && G.brandEquity < 30) {
+  if (G.positioning === 'premium' && G.brandEquity < 30) {
     lines.push("As a premium brand, underinvesting in brand equity leaves you especially exposed.");
+  }
+  if (G.positioning === 'lifestyle' && G.brandEquity < 30) {
+    lines.push("As a lifestyle brand, underinvesting in brand equity leaves you especially exposed.");
   }
   if (G.positioning === 'value' && G.allocation.events > 0) {
     lines.push("Your value positioning means events spending has little impact — performance marketing would serve you better.");
@@ -1838,7 +1844,7 @@ function renderConflictResult() {
       <p>${r.outcome.replace(/\{product\}/g, G.productName).replace(/\{name\}/g, G.productName).replace(/\{industry\}/g, PRODUCTS[G.product].flavor).replace(/\{month\}/g, G.turn)}</p>
       ${callbackLine ? `<div class="conflict-callback">${callbackLine}</div>` : ''}
       <div style="margin-top:12px;font-size:.85rem">${effectsText.join(' &nbsp;|&nbsp; ')}</div>
-      <div class="lesson">💡 ${(r.outcome.replace(/\{product\}/g, G.productName).split('Marketing lesson: ')[1]) || ''}</div>
+      ${r.outcome.includes('Marketing lesson: ') ? `<div class="lesson">💡 ${r.outcome.replace(/\{product\}/g, G.productName).split('Marketing lesson: ')[1]}</div>` : ''}
     </div>
     <div class="btn-group">
       <button class="btn primary" data-action="goToAllocation">Set Monthly Budget →</button>
@@ -1909,6 +1915,15 @@ function renderMidYearReview() {
   });
   G._reviewAdjustments = adj;
 
+  // Initialize hire options for skipped roles
+  if (!G._reviewHires) {
+    G._reviewHires = {};
+    ROLES.forEach(r => {
+      if (G.team[r.id] === 'skip') G._reviewHires[r.id] = 'skip';
+    });
+  }
+  const hires = G._reviewHires;
+
   const stepLabels = ['Cut team', 'Reduce', 'Keep same', 'Increase', 'Double'];
   const stepValues = [0, 0.5, 1.0, 1.5, 2.0];
 
@@ -1936,26 +1951,46 @@ function renderMidYearReview() {
       <p style="font-size:0.85rem;color:var(--muted);margin-bottom:10px">Use the sliders to scale each role's investment for the remainder of the year.</p>
       ${ROLES.map(r => {
     const sel = G.team[r.id];
-    const currentVal = adj[r.id] !== undefined ? adj[r.id] : (sel === 'skip' ? 0 : 1.0);
-    const sliderIdx = stepValues.indexOf(currentVal) >= 0 ? stepValues.indexOf(currentVal) : 2;
-    const labelText = stepLabels[sliderIdx];
     const isSkipped = sel === 'skip';
-    const baseCost = sel === 'ft' ? r.ftCost : sel === 'agency' ? r.agCost : 0;
-    const adjCost = Math.round(baseCost * currentVal);
-    const pctLabel = Math.round(currentVal * 100);
+    const hireChoice = isSkipped ? (hires[r.id] || 'skip') : null;
+
+    let baseCost, adjCost, currentVal, sliderIdx, labelText, pctLabel, statusLabel;
+
+    if (isSkipped) {
+      if (hireChoice === 'ft') {
+        baseCost = r.ftCost; adjCost = r.ftCost; statusLabel = '→ In-House';
+      } else if (hireChoice === 'agency') {
+        baseCost = r.agCost; adjCost = r.agCost; statusLabel = '→ Agency';
+      } else {
+        baseCost = 0; adjCost = 0; statusLabel = 'Skipped';
+      }
+    } else {
+      currentVal = adj[r.id] !== undefined ? adj[r.id] : 1.0;
+      sliderIdx = stepValues.indexOf(currentVal) >= 0 ? stepValues.indexOf(currentVal) : 2;
+      labelText = stepLabels[sliderIdx];
+      baseCost = sel === 'ft' ? r.ftCost : r.agCost;
+      adjCost = Math.round(baseCost * currentVal);
+      pctLabel = Math.round(currentVal * 100);
+      statusLabel = sel === 'ft' ? 'In-House' : 'Agency';
+    }
 
     return `<div class="card" style="padding:14px;margin-bottom:8px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
             <div>
               <span style="font-weight:600">${r.icon} ${r.name}</span>
-              <span class="text-muted" style="font-size:.8rem;margin-left:8px">${sel === 'ft' ? 'In-House' : sel === 'agency' ? 'Agency' : 'Skipped'}</span>
+              <span class="text-muted" style="font-size:.8rem;margin-left:8px">${statusLabel}</span>
             </div>
             <div>
-              <span id="review-label-${r.id}" style="font-size:.8rem;font-weight:600;color:${currentVal === 0 ? 'var(--red)' : currentVal < 1 ? 'var(--amber)' : currentVal === 1 ? 'var(--text)' : 'var(--green)'}">${labelText} (${pctLabel}%)</span>
+              ${isSkipped && hireChoice === 'skip' ? '' : isSkipped ? `<span style="font-size:.8rem;font-weight:600;color:var(--green)">New hire</span>` : `<span id="review-label-${r.id}" style="font-size:.8rem;font-weight:600;color:${currentVal === 0 ? 'var(--red)' : currentVal < 1 ? 'var(--amber)' : currentVal === 1 ? 'var(--text)' : 'var(--green)'}">${labelText} (${pctLabel}%)</span>`}
               <span id="review-cost-${r.id}" class="text-amber" style="font-size:.8rem;margin-left:8px">${fmt(adjCost)}/mo</span>
             </div>
           </div>
-          ${isSkipped ? '<div style="font-size:.75rem;color:var(--muted);font-style:italic">Role was skipped — no adjustment available</div>' : `
+          ${isSkipped ? `
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="radio-btn skip ${hireChoice === 'skip' ? 'active' : ''}" data-action="reviewHire" data-role="${r.id}" data-type="skip" style="font-size:.75rem;padding:6px 12px">Keep Skipped</button>
+            <button class="radio-btn agency ${hireChoice === 'agency' ? 'active' : ''}" data-action="reviewHire" data-role="${r.id}" data-type="agency" style="font-size:.75rem;padding:6px 12px">Hire Agency ${fmt(r.agCost)}/mo</button>
+            <button class="radio-btn ${hireChoice === 'ft' ? 'active' : ''}" data-action="reviewHire" data-role="${r.id}" data-type="ft" style="font-size:.75rem;padding:6px 12px">Hire In-House ${fmt(r.ftCost)}/mo</button>
+          </div>` : `
           <input type="range" class="review-slider" min="0" max="4" step="1" value="${sliderIdx}" data-action="reviewSlider" data-role="${r.id}">
           <div class="review-slider-labels">
             <span>Cut team</span><span>Reduce</span><span>Keep same</span><span>Increase</span><span>Double</span>
@@ -2031,7 +2066,7 @@ function renderMonthResults() {
     else if (rev > 500000) commentary = 'A respectable debut. The real test starts now.';
     else if (rev > 200000) commentary = 'A quiet launch. The marketing machine needs time to warm up.';
     else commentary = 'Rough start. But hey, it\'s only month one.';
-  } else if (rev > 3000000) commentary = pick(['🔥 The numbers are on fire. The CEO is practically glowing.', '📈 Wall Street is taking notice. Analysts are using words like "breakout."', '💰 Revenue printer goes brrr. The CFO just smiled — a rare sighting.']);
+  } else if (rev > 3000000) commentary = pick(['🔥 The numbers are on fire. The CEO is practically glowing.', '📈 The CEO just forwarded your dashboard to the board. They want to "replicate this across all divisions."', '💰 Revenue printer goes brrr. The CFO just smiled — a rare sighting.']);
   else if (rev > 1000000) commentary = pick(['Not bad. The CEO stopped sending passive-aggressive DMs.', 'Solid month. Recruiter messages have decreased. Good sign.', 'Your brand is finding its groove. The momentum is building.']);
   else if (rev > 500000) commentary = pick(['Decent numbers. Not headline-worthy, but not embarrassing either.', 'The trajectory is okay. The board wants more, but when don\'t they?', 'Growth is there. Just not at the pace the CEO\'s investor deck promised.']);
   else commentary = pick(['Rough month. Rome wasn\'t built in a day. But they also had more than $5M.', 'The CEO sent you an article titled "10 Signs Your Marketing Is Failing."', 'Your mom says she\'s proud of you, which is nice but not a KPI.']);
@@ -2198,13 +2233,13 @@ function renderHoliday() {
       <p>${HOLIDAY_EVENT.text}</p>
       <p style="margin-top:10px">Your brand equity of <strong class="text-green">${Math.round(G.brandEquity)}</strong> gives you a holiday multiplier of <strong class="text-amber">${brandMult}x</strong>. ${G.brandEquity >= 60 ? 'All those brand investments are about to pay off BIG.' : G.brandEquity >= 30 ? 'A decent multiplier. Those brand investments helped.' : 'Ouch. Low brand equity means a weak holiday showing. Should\'ve invested in brand earlier.'}</p>
     </div>
-    <div class="section-sub">Select your holiday tactics <span style="color:var(--muted)">(pick any combination you can afford)</span>:</div>
+    <div class="section-sub">Select your holiday tactics <span style="color:var(--muted)">(select multiple, or skip them all)</span>:</div>
     ${choices}
     <div class="card" style="margin-top:15px;text-align:center">
       <div style="font-size:.85rem;color:var(--muted)">Holiday spend: <strong class="text-amber">${fmtFull(holidayTotal)}</strong> | Budget after: <strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(budgetAfter)}</strong></div>
     </div>
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="confirmHoliday" ${G.holidayTactics.length === 0 ? 'disabled' : ''}>🎄 Launch Holiday Push</button>
+      <button class="btn primary" data-action="confirmHoliday">🎄 Launch Holiday Push</button>
     </div>
   </div>`;
 }
@@ -2270,7 +2305,7 @@ function renderHolidayAllocation() {
     <div class="btn-group" style="justify-content:flex-start;margin:10px 0">${presetBtns}</div>
     ${allocRows}
 
-    <h3 style="margin-top:25px;margin-bottom:8px">🎄 Holiday Tactics <span style="font-weight:400;font-size:.8rem;color:var(--muted)">(select at least one)</span></h3>
+    <h3 style="margin-top:25px;margin-bottom:8px">🎄 Holiday Tactics <span style="font-weight:400;font-size:.8rem;color:var(--muted)">(select multiple, or skip them all)</span></h3>
     ${choices}
 
     <div class="card" style="margin-top:20px;text-align:center">
@@ -2285,7 +2320,7 @@ function renderHolidayAllocation() {
     </div>
 
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="confirmHolidayAllocation" ${G.holidayTactics.length === 0 ? 'disabled' : ''}>🎄 Lock In & Launch Holiday Push</button>
+      <button class="btn primary" data-action="confirmHolidayAllocation">🎄 Lock In & Launch Holiday Push</button>
     </div>
   </div>`;
 }
@@ -2383,7 +2418,7 @@ function renderHolidayResults() {
       <div style="font-size:.85rem;color:var(--muted)">Holiday Revenue</div>
       <div style="font-size:2.5rem;font-weight:700;color:var(--amber)">${fmtFull(r.holidayRev)}</div>
       <div style="font-size:1rem;margin-top:5px">Holiday Multiplier: <strong class="text-green">${r.holidayMult.toFixed(1)}x</strong></div>
-      <div style="font-size:.85rem;color:var(--muted);margin-top:5px">Tactics: ${r.stratNames.join(' + ')}</div>
+      <div style="font-size:.85rem;color:var(--muted);margin-top:5px">Tactics: ${r.stratNames.length > 0 ? r.stratNames.join(' + ') : 'None'}</div>
       <div style="font-size:.8rem;color:var(--muted);margin-top:3px">Spent: ${fmtFull(r.totalCost)}</div>
     </div>
     <div class="narrative" style="text-align:center">
@@ -2663,12 +2698,28 @@ document.getElementById('app').addEventListener('click', function (e) {
       calcTeamCost();
       render();
       break;
+    case 'reviewHire': {
+      if (!G._reviewHires) G._reviewHires = {};
+      G._reviewHires[el.dataset.role] = el.dataset.type;
+      render();
+      return;
+    }
     case 'continueAfterMidYearReview': {
       G.midYearReviewDone = true;
       // Apply review adjustments
       if (G._reviewAdjustments) {
         G.midYearAdjustments = { ...G._reviewAdjustments };
         delete G._reviewAdjustments;
+      }
+      // Apply new hires for previously skipped roles
+      if (G._reviewHires) {
+        ROLES.forEach(r => {
+          if (G._reviewHires[r.id] && G._reviewHires[r.id] !== 'skip') {
+            G.team[r.id] = G._reviewHires[r.id];
+            if (G.midYearAdjustments) G.midYearAdjustments[r.id] = 1.0;
+          }
+        });
+        delete G._reviewHires;
       }
       calcTeamCost();
 
@@ -2874,14 +2925,12 @@ document.getElementById('app').addEventListener('click', function (e) {
       break;
     }
     case 'confirmHoliday': {
-      if (G.holidayTactics.length === 0) return;
       const result = processHoliday(G.holidayTactics);
       G._holidayResult = result;
       G.screen = 'holidayResults';
       break;
     }
     case 'confirmHolidayAllocation': {
-      if (G.holidayTactics.length === 0) return;
       const result = processMonth12Combined(G.holidayTactics);
       G._holidayResult = result;
       if (G.gameOver) {
