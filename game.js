@@ -296,7 +296,7 @@ const CONFLICTS = [
       { text: 'Nurture it: dedicate resources to community management ($12k)', cost: 12000, brandEquity: 9, revMult: 1.15, ceoPat: 10, outcome: 'You hire a community manager who actually Gets It. They engage authentically, share insider content, and the community grows 3x in a month. These are your most loyal customers. Marketing lesson: Community is the most undervalued marketing channel.' },
       { text: 'Monetize it: launch an ambassador/referral program ($8k)', cost: 8000, brandEquity: 5, revMult: 1.2, ceoPat: 15, outcome: 'The referral program converts community love into revenue. Some purists grumble about "selling out," but most people appreciate the discount codes. Marketing lesson: There\'s a thin line between empowering a community and exploiting it.' },
       { text: 'Join it as the brand - post directly in the community', cost: 0, brandEquity: 8, revMult: 1.05, ceoPat: 5, luck: [0.5, { brandEquity: 7, revMult: 1.15, ceoPat: 10, override: 'Your brand\'s presence in the community is welcomed with open arms! They love that you\'re "one of them." Direct feedback improves your product AND your marketing.' }], outcome: 'The community has mixed feelings about the brand showing up in "their" space. Some welcome it, others feel like the cool indie thing just got corporate. Tread carefully. Marketing lesson: Brands entering organic communities should listen 10x more than they speak.' },
-      { text: 'Leave it alone - organic is organic, don\'t ruin it', cost: 0, brandEquity: 5, revMult: 1.05, ceoPat: -5, outcome: 'The community continues to grow naturally. No intervention, no interference. It\'s authentic and pure. But also, you\'re leaving money and brand equity on the table. Marketing lesson: Sometimes the best marketing decision is not marketing.' }
+      { text: 'Leave it alone - organic is organic, don\'t ruin it', cost: 0, brandEquity: 5, revMult: 1.05, ceoPat: -5, outcome: 'The community continues to grow naturally. No intervention, no interference. It\'s authentic and pure. The CEO wanted you to monetize it, but some things are better left untouched. Marketing lesson: Sometimes doing nothing is the right decision.' }
     ]
   },
   {
@@ -428,7 +428,9 @@ function initState() {
     holidayTactics: [],
     consecutiveZeroSpend: 0,
     _helpOpen: null,
-    _submittedToLeaderboard: false
+    _submittedToLeaderboard: false,
+    _cheapVibesWorked: false,
+    _valueThriftWorked: false
   };
 
   // Check for save
@@ -644,13 +646,16 @@ function getEventEfficacy() {
 
 function getAssetQualityMod() {
   const pos = G.positioning;
-  const isPremiumLike = ['premium', 'lifestyle', 'enterprise', 'government'].includes(pos);
+  const isCheap = G.brandTier === 'diy' || G.siteTier === 'template';
   const isValue = pos === 'value';
   let mod = 1.0;
-  if (isPremiumLike) {
-    if (G.brandTier === 'diy' || G.siteTier === 'template') mod *= 0.6;
+  if (['premium', 'enterprise', 'government'].includes(pos)) {
+    if (isCheap) mod *= 0.6;
+  } else if ((pos === 'lifestyle' || pos === 'disruptor') && isCheap) {
+    mod *= G._cheapVibesWorked ? 1.05 : 0.6;
   } else if (isValue) {
     if (G.brandTier === 'worldClass') mod *= 0.95;
+    if (G.brandTier === 'diy' && G._valueThriftWorked) mod *= 1.05;
     if (G.researchTier === 'basic') mod *= 1.05;
   }
   return mod;
@@ -825,8 +830,11 @@ function calcBrandEquityChange(alloc) {
   if (change > 0) change *= compoundScale;
 
   // Premium + cheap assets: halve positive brand equity gains ("scam modifier")
-  const isPremiumLike = ['premium', 'lifestyle', 'enterprise', 'government'].includes(G.positioning);
-  if (isPremiumLike && (G.brandTier === 'diy' || G.siteTier === 'template')) {
+  // Lifestyle/disruptor can dodge this if cheap vibes landed
+  const isCheap = G.brandTier === 'diy' || G.siteTier === 'template';
+  if (isCheap && ['premium', 'enterprise', 'government'].includes(G.positioning)) {
+    if (change > 0) change *= 0.5;
+  } else if (isCheap && (G.positioning === 'lifestyle' || G.positioning === 'disruptor') && !G._cheapVibesWorked) {
     if (change > 0) change *= 0.5;
   }
 
@@ -948,14 +956,51 @@ function evaluateMonth1Congruency() {
     });
   }
 
-  // BAD: DIY brand + premium or disruptor positioning
-  if (G.brandTier === 'diy' && (pos === 'premium' || pos === 'disruptor')) {
+  // BAD: DIY brand + premium positioning (always bad)
+  if (G.brandTier === 'diy' && pos === 'premium') {
     findings.push({
       type: 'bad',
       title: 'Brand Identity Crisis',
       text: `A ${getPositioning().name.toLowerCase()} product with a DIY logo? Early customers think it's a scam. First reviews mention "sketchy branding" and "looks like a knockoff."`,
       revMult: 0.7, ceoPat: -8, brandEquity: -3
     });
+  }
+
+  // Lifestyle/disruptor + cheap assets: chance the scrappy vibe works
+  if ((pos === 'lifestyle' || pos === 'disruptor') && (G.brandTier === 'diy' || G.siteTier === 'template')) {
+    if (Math.random() < 0.3) {
+      G._cheapVibesWorked = true;
+      findings.push({
+        type: 'good',
+        title: pos === 'lifestyle' ? 'Ironic Aesthetic' : 'Scrappy Underdog Energy',
+        text: pos === 'lifestyle'
+          ? `The DIY look? Customers think it's intentional. "It's giving indie brand authenticity." Your lo-fi aesthetic becomes the aesthetic. Influencers are calling ${G.productName} "anti-corporate" and they mean it as a compliment.`
+          : `Your rough-around-the-edges brand screams "we spent the money on the product, not the logo." Early adopters love the scrappy energy. ${G.productName} looks like a startup that ships fast and breaks things — exactly what disruptor customers want.`,
+        revMult: 1.1, ceoPat: 5, brandEquity: 3
+      });
+    } else {
+      findings.push({
+        type: 'bad',
+        title: 'Brand Identity Crisis',
+        text: pos === 'lifestyle'
+          ? `A ${getPositioning().name.toLowerCase()} product with ${G.brandTier === 'diy' ? 'a DIY logo' : 'a template website'}? Customers expected curated aesthetics and got clip art energy. First impressions are everything in lifestyle — and this one flopped.`
+          : `A ${getPositioning().name.toLowerCase()} product with ${G.brandTier === 'diy' ? 'a DIY logo' : 'a template website'}? Early customers think it's a scam. First reviews mention "sketchy branding" and "looks like a knockoff."`,
+        revMult: 0.7, ceoPat: -8, brandEquity: -3
+      });
+    }
+  }
+
+  // Value + DIY brand: chance the thrift signals product investment
+  if (pos === 'value' && G.brandTier === 'diy') {
+    if (Math.random() < 0.4) {
+      G._valueThriftWorked = true;
+      findings.push({
+        type: 'good',
+        title: 'Thrift Signals Quality',
+        text: `Customers see the no-frills branding and think "they spent the money on the product, not some fancy agency." For a value brand, that's exactly the right message. Early reviews praise ${G.productName} for "substance over style."`,
+        revMult: 1.08, ceoPat: 3, brandEquity: 2
+      });
+    }
   }
 
   // BAD: Template website + heavy tactic spending (lots of traffic expected)
@@ -2128,11 +2173,15 @@ function renderMonthResults() {
     continueLabel = 'Continue to Month ' + (G.turn + 1) + ' →';
   }
 
-  // Scam modifier warning for premium + cheap assets
+  // Scam modifier warning for premium + cheap assets (skip if lifestyle/disruptor vibes worked)
   let scamWarning = '';
-  const isPremiumLike = ['premium', 'lifestyle', 'enterprise', 'government'].includes(G.positioning);
-  if (isPremiumLike && (G.brandTier === 'diy' || G.siteTier === 'template')) {
-    scamWarning = `<div class="outcome-box bad" style="margin:10px 0">⚠️ Your premium ${G.productName} is being sold with ${G.siteTier === 'template' ? 'a template website' : 'a DIY brand identity'}. Customers think it's a scam. Revenue and brand growth are taking a massive hit. <em style="color:var(--muted)">Max out Brand Building spend to fix this.</em></div>`;
+  const isCheapAssets = G.brandTier === 'diy' || G.siteTier === 'template';
+  const scamPenaltyActive = isCheapAssets && (
+    ['premium', 'enterprise', 'government'].includes(G.positioning) ||
+    ((G.positioning === 'lifestyle' || G.positioning === 'disruptor') && !G._cheapVibesWorked)
+  );
+  if (scamPenaltyActive) {
+    scamWarning = `<div class="outcome-box bad" style="margin:10px 0">⚠️ Your ${getPositioning().name.toLowerCase()} ${G.productName} is being sold with ${G.siteTier === 'template' ? 'a template website' : 'a DIY brand identity'}. Customers think it's a scam. Revenue and brand growth are taking a massive hit. <em style="color:var(--muted)">Max out Brand Building spend to fix this.</em></div>`;
   }
   // Value + events waste warning
   let eventsWarning = '';
@@ -2593,6 +2642,7 @@ function renderFinalResults() {
 
 function renderGameOver() {
   G.title = '#OpenToWork';
+  logEvent('game_over', { month: G.turn, revenue: G.totalRevenue, product: G.product });
   saveScore();
   return `<div class="screen game-over">
     <img class="end-screen-img" src="Media/RIP Your Job.png" alt="RIP Your Job">
@@ -2853,6 +2903,7 @@ document.getElementById('app').addEventListener('click', function (e) {
       break;
     }
     case 'beginJourney': {
+      logEvent('game_start', { product: G.product, positioning: G.positioning });
       G.turn = 1;
       // Launch tactics ARE month 1 allocations — skip the allocation screen
       G.allocation = { brand: 0, performance: 0, pr: 0, events: 0 };
@@ -2993,6 +3044,7 @@ document.getElementById('app').addEventListener('click', function (e) {
       break;
     }
     case 'showFinalResults':
+      logEvent('game_complete', { title: G.title, rank: G.rank, revenue: G.totalRevenue, product: G.product });
       G.screen = 'finalResults';
       break;
     case 'showLeaderboard':

@@ -1211,6 +1211,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <script>
     var leaderboardRef = null;
+    var eventsRef = null;
     try {
       firebase.initializeApp({
         apiKey: "AIzaSyBseolyucfrqqNNNhxxx9P6gWv7RkHds-o",
@@ -1222,8 +1223,12 @@
         appId: "1:1093509229880:web:266d3cbfc7c0b8c5f325cd"
       });
       leaderboardRef = firebase.database().ref('leaderboard');
+      eventsRef = firebase.database().ref('events');
     } catch(e) {
       console.error('Firebase init failed:', e);
+    }
+    function logEvent(name, params) {
+      try { if (eventsRef) eventsRef.push({ event: name, ts: Date.now(), ...params }); } catch(e) {}
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
