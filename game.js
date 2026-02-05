@@ -243,7 +243,7 @@ const CONFLICTS = [
     id: 'copycat', type: 'market', title: '🐱 The Copycat Competitor',
     text: 'A VC-backed competitor just launched a nearly identical {product} at 20% less. They\'re running side-by-side comparison ads. Their tagline? "Like {name}, but better." They have $5M in funding. You have anxiety.',
     choices: [
-      { text: 'Differentiate: double down on brand story ($30k)', cost: 30000, brandEquity: 7, revMult: 0.95, ceoPat: 5, outcome: 'You can\'t outspend them, so you outbrand them. Your "why" story resonates deeper than their "what" features. Customers who love your brand are immune to price competition. Marketing lesson: Brand is the only sustainable competitive moat.' },
+      { text: 'Differentiate: double down on brand story ($30k)', cost: 30000, brandEquity: 7, revMult: 0.95, ceoPat: 5, outcome: 'You can\'t outspend them, so you outbrand them. Your "why" story resonates deeper than their "what" features. Customers who love your brand are immune to price competition. Marketing lesson: Brand storytelling is one of the strongest competitive moats you can build.' },
       { text: 'Match their price', cost: 0, brandEquity: -12, revMult: 0.85, ceoPat: 0, outcome: 'You can match their price but not their funding. They can keep bleeding; can you? Revenue drops as margins shrink. This is a war of attrition you can\'t win. Marketing lesson: Never compete on price unless you\'re the low-cost leader.' },
       { text: 'Sue for trademark/trade dress infringement ($50k)', cost: 50000, brandEquity: 0, revMult: 0.9, ceoPat: -5, luck: [0.3, { brandEquity: 6, revMult: 1.1, ceoPat: 15, override: 'You win the injunction! Competitor forced to rebrand. The press coverage frames you as the original innovator. Sometimes lawyers ARE the best marketing channel.', cost: -20000 }], outcome: 'Legal drags on for months. Meanwhile, they keep selling. The judge says it\'s not similar enough to warrant an injunction. You\'re out $50k with nothing to show for it. Marketing lesson: Litigation is not a marketing strategy.' },
       { text: 'Ignore them and focus on your core audience', cost: 0, brandEquity: 3, revMult: 0.9, ceoPat: -5, luck: [0.4, { brandEquity: 5, revMult: 1.05, ceoPat: 5, override: 'Your confidence pays off. They run out of funding in 6 months and pivot to crypto. Your audience respects that you didn\'t flinch.' }], outcome: 'Staying the course while a competitor eats your lunch requires nerves of steel. And a board that believes in you. Yours is getting nervous. Marketing lesson: Ignore the competition at your own risk — confidence without awareness is just hubris.' }
@@ -877,11 +877,22 @@ function processMonth() {
     else if (rev < prev * 0.85) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
   }
 
-  // Extra CEO vibes drain when pacing behind targets (scaled to new $50M ceiling)
+  // CEO vibes drain + soft cap based on revenue pacing (scaled to $50M ceiling)
   if (G.monthlyRevenue.length >= 2) {
     const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
-    if (annualized < 20000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+
+    // Drain: stronger penalties the further behind target
+    if (annualized < 15000000) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
+    else if (annualized < 25000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
     else if (annualized < 40000000) G.ceoPat = clamp(G.ceoPat - 2, 0, 100);
+
+    // Soft cap: revenue performance limits max CEO happiness
+    // Good event choices alone can't keep the CEO happy if revenue isn't there
+    let ceoMax = 100;
+    if (annualized < 15000000) ceoMax = 50;
+    else if (annualized < 25000000) ceoMax = 70;
+    else if (annualized < 40000000) ceoMax = 85;
+    G.ceoPat = Math.min(G.ceoPat, ceoMax);
   }
 
   // Fire-everyone extra CEO patience drain
@@ -2364,11 +2375,18 @@ function processMonth12Combined(tacticIndices) {
   const beChange = calcBrandEquityChange(alloc);
   G.brandEquity = clamp(G.brandEquity + beChange, 0, 100);
 
-  // 4. CEO patience updates
+  // 4. CEO patience updates (drain + soft cap based on revenue pacing)
   if (G.monthlyRevenue.length >= 1) {
     const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
-    if (annualized < 20000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+    if (annualized < 15000000) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
+    else if (annualized < 25000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
     else if (annualized < 40000000) G.ceoPat = clamp(G.ceoPat - 2, 0, 100);
+
+    let ceoMax = 100;
+    if (annualized < 15000000) ceoMax = 50;
+    else if (annualized < 25000000) ceoMax = 70;
+    else if (annualized < 40000000) ceoMax = 85;
+    G.ceoPat = Math.min(G.ceoPat, ceoMax);
   }
   if (G.allFiredPenalty) {
     G.ceoPat = clamp(G.ceoPat - 3, 0, 100);
@@ -2495,11 +2513,22 @@ function renderFinalResults() {
     result = 'SENIOR DIRECTOR';
     resultEmoji = '📊';
     resultText = 'You showed promise but couldn\'t break through. Middle management purgatory awaits. ' + G.productName + ' needed a stronger strategy.';
+  } else if (totalRev >= 25000000) {
+    G.rank = 2;
+    G.title = getRankTitle(G.rank).title;
+    result = 'SENIOR DIRECTOR';
+    resultEmoji = '📊';
+    resultText = '$' + (totalRev / 1000000).toFixed(0) + 'M in revenue spoke just loudly enough. The board promoted you to Senior Director — but don\'t pop the champagne. You\'re in middle management purgatory now. Close enough to see the C-Suite, far enough to never reach it. ' + G.productName + ' needed a stronger year to break through.';
+  } else if (totalRev >= 20000000) {
+    G.title = getRankTitle(1).title;
+    result = 'SURVIVED';
+    resultEmoji = '😐';
+    resultText = 'You survived, but you didn\'t thrive. ' + G.productName + ' hit $' + (totalRev / 1000000).toFixed(0) + 'M — enough to keep your job, not enough to impress anyone. No promotion, no fanfare. Just another year in the same chair. The board isn\'t angry. They\'re just... not excited.';
   } else {
     G.title = '#OpenToWork';
     result = '#OPENTOWORK';
     resultEmoji = '💀';
-    resultText = 'No promotions in 12 months. The board lost confidence. ' + G.productName + ' underperformed and so did you. HR has the box ready for your desk.';
+    resultText = 'Under $20M in revenue and no promotions. The board lost confidence. ' + G.productName + ' underperformed and so did you. HR has the box ready for your desk.';
   }
 
   const entry = saveScore();
@@ -2513,9 +2542,9 @@ function renderFinalResults() {
   return `<div class="screen">
     <div class="final-score">
       ${G.rank >= 5 ? '<img class="end-screen-img" src="Media/Congratulations Youre CMO.png" alt="Congratulations, You\'re CMO!">' : ''}
-      ${G.rank < 2 ? '<img class="end-screen-img" src="Media/RIP Your Job.png" alt="RIP Your Job">' : ''}
+      ${result === '#OPENTOWORK' ? '<img class="end-screen-img" src="Media/RIP Your Job.png" alt="RIP Your Job">' : ''}
       <div style="font-size:4rem">${resultEmoji}</div>
-      <div class="pixel" style="color:${G.rank >= 5 ? 'var(--green)' : G.rank >= 3 ? 'var(--amber)' : 'var(--red)'};font-size:1.2rem;margin:10px 0">${result}</div>
+      <div class="pixel" style="color:${G.rank >= 5 ? 'var(--green)' : G.rank >= 3 ? 'var(--amber)' : result === '#OPENTOWORK' ? 'var(--red)' : 'var(--amber)'};font-size:1.2rem;margin:10px 0">${result}</div>
       <div class="result-text">${resultText}</div>
       <div class="revenue-row">
         <img src="${getProductImage()}" alt="${G.productName}" class="product-icon product-icon-md" style="margin:0">
@@ -3048,6 +3077,23 @@ document.getElementById('app').addEventListener('input', function (e) {
       if (grandEl) grandEl.innerHTML = `<strong class="${color}">${fmtFull(totalSpend)}</strong>`;
       const afterEl = document.getElementById('holiday-budget-after');
       if (afterEl) afterEl.innerHTML = `Budget after: <strong class="${color}">${fmtFull(budgetAfter)}</strong>`;
+
+      // Re-evaluate holiday tactic affordability after slider change
+      const tacticEls = document.querySelectorAll('[data-action="toggleHoliday"]');
+      tacticEls.forEach(el => {
+        const idx = parseInt(el.dataset.value);
+        const selected = G.holidayTactics.includes(idx);
+        const affordable = selected || (G.budget - allocTotal - G.teamCostPerMonth - holidayTotal) >= HOLIDAY_EVENT.strategies[idx].cost;
+        if (!affordable && !selected) {
+          el.classList.add('disabled');
+          el.style.opacity = '.4';
+          el.style.pointerEvents = 'none';
+        } else {
+          el.classList.remove('disabled');
+          el.style.opacity = '';
+          el.style.pointerEvents = '';
+        }
+      });
     }
   }
 
