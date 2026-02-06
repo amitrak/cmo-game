@@ -2823,26 +2823,40 @@ function renderFinalResults() {
   // Q4 Final Determination — 5-tier rank-based endings
   let result, resultEmoji, resultText;
 
-  if (totalRev >= 65000000) {
+  if (totalRev >= 60000000) {
     // Moonshot: any rank → CMO with god-tier revenue
     G.rank = 5;
     G.title = 'CMO';
     result = 'MOONSHOT TO CMO';
     resultEmoji = '🚀';
     resultText = 'The CEO had no choice but to elevate you to the C-Suite. ' + G.productName + ' is a juggernaut.';
-  } else if (G.rank >= 4 && totalRev >= 55000000 && brandEq >= 55) {
-    // Safe Climb: EVP + $55M + strong brand = CMO
+  } else if (G.rank >= 4 && totalRev >= 50000000 && brandEq >= 55) {
+    // Safe Climb: EVP + $50M + strong brand = CMO
     G.rank = 5;
     G.title = 'CMO';
     result = 'PROMOTED TO CMO';
     resultEmoji = '👑';
     resultText = 'You climbed the ladder, built the brand, and delivered the numbers. The corner office is yours. ' + G.productName + ' is a case study in marketing excellence.';
+  } else if (G.rank >= 3 && totalRev >= 45000000) {
+    // VP by Q3 + $45M → jump to EVP
+    G.rank = 4;
+    G.title = getRankTitle(4).title;
+    result = 'EVP OF MARKETING';
+    resultEmoji = '🏆';
+    resultText = 'Your Q4 numbers were undeniable. The board elevated you to EVP. ' + G.productName + ' had a monster year. But the CMO chair needed $50M and a world-class brand to unlock.';
   } else if (G.rank >= 4) {
-    // EVP but didn't hit CMO threshold
+    // Already EVP but didn't hit CMO threshold
     G.title = getRankTitle(G.rank).title;
     result = 'EVP OF MARKETING';
     resultEmoji = '🏆';
-    resultText = 'So close to the top. You\'re a powerhouse executive and ' + G.productName + ' had a strong year. But the CMO chair needs $55M and a world-class brand to unlock.';
+    resultText = 'So close to the top. You\'re a powerhouse executive and ' + G.productName + ' had a strong year. But the CMO chair needs $50M and a world-class brand to unlock.';
+  } else if (totalRev >= 35000000) {
+    // $35M+ → VP (can jump from Director or Sr. Director)
+    G.rank = 3;
+    G.title = getRankTitle(3).title;
+    result = 'VP OF MARKETING';
+    resultEmoji = '⭐';
+    resultText = '$' + (totalRev / 1000000).toFixed(0) + 'M in revenue earned you the VP title. ' + G.productName + ' showed real growth. The C-Suite can see you now — but you\'re not there yet.';
   } else if (G.rank >= 3) {
     G.title = getRankTitle(G.rank).title;
     result = 'VP OF MARKETING';
