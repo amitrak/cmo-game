@@ -1006,6 +1006,197 @@
       background: rgba(255, 215, 0, .06)
     }
 
+    /* Preset cards for allocation */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 12px 0
+    }
+
+    .preset-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: center;
+      touch-action: manipulation
+    }
+
+    .preset-card.same-as-last {
+      background: transparent;
+      border-style: dashed;
+      padding: 10px 20px
+    }
+
+    .preset-card:hover {
+      border-color: var(--green);
+      transform: translateY(-2px)
+    }
+
+    .preset-card:active {
+      transform: scale(0.97)
+    }
+
+    .preset-card.active {
+      border-color: var(--green);
+      background: rgba(0, 255, 65, .08)
+    }
+
+    .preset-name {
+      font-weight: 700;
+      font-size: .9rem;
+      margin-bottom: 4px
+    }
+
+    .preset-spend {
+      font-size: .75rem;
+      color: var(--amber)
+    }
+
+    .preset-forecast {
+      font-size: .7rem;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.4
+    }
+
+    .advanced-alloc {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 15px;
+      background: var(--card)
+    }
+
+    /* CEO DM message */
+    .ceo-dm {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: .85rem;
+      animation: fadeIn .3s ease
+    }
+
+    .ceo-dm-avatar {
+      font-size: 1.2rem;
+      flex-shrink: 0
+    }
+
+    .ceo-dm-header {
+      font-size: .7rem;
+      color: var(--muted);
+      margin-bottom: 3px
+    }
+
+    .ceo-dm-text {
+      color: var(--text);
+      line-height: 1.4
+    }
+
+    /* Revenue engine breakdown */
+    .engine-breakdown {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 4px 10px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: .8rem;
+      align-items: center
+    }
+
+    .engine-breakdown .engine-label {
+      color: var(--muted)
+    }
+
+    .engine-breakdown .engine-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border)
+    }
+
+    .engine-breakdown .engine-bar-fill {
+      height: 100%;
+      border-radius: 3px
+    }
+
+    /* Stats sparkline */
+    .sparkline {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 20px;
+      margin-top: 4px;
+      justify-content: center
+    }
+
+    .sparkline-bar {
+      width: 4px;
+      border-radius: 1px;
+      background: var(--green);
+      min-height: 2px;
+      transition: height .3s ease
+    }
+
+    /* Achievement badges */
+    .achievement-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 12px 0
+    }
+
+    .achievement {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: .75rem;
+      text-align: center;
+      opacity: .4
+    }
+
+    .achievement.earned {
+      opacity: 1;
+      border-color: var(--amber);
+      background: rgba(255, 215, 0, .08)
+    }
+
+    .achievement-icon {
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 2px
+    }
+
+    /* Your Story narrative */
+    .your-story {
+      background: linear-gradient(135deg, #1a1f2e, var(--card));
+      border: 1px solid var(--amber);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      font-size: .9rem;
+      line-height: 1.7;
+      font-style: italic;
+      color: var(--text)
+    }
+
+    .your-story-title {
+      font-style: normal;
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 8px;
+      font-size: .95rem
+    }
+
     .hidden {
       display: none
     }
@@ -1108,11 +1299,42 @@
       }
 
       .alloc-slider {
-        width: 100%
+        width: 100%;
+        height: 12px;
+        border-radius: 6px
+      }
+
+      .alloc-slider::-webkit-slider-thumb {
+        width: 32px;
+        height: 32px
+      }
+
+      .alloc-slider::-moz-range-thumb {
+        width: 32px;
+        height: 32px
       }
 
       .alloc-value {
-        text-align: left
+        text-align: left;
+        font-size: 1rem
+      }
+
+      .preset-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .review-slider {
+        height: 12px
+      }
+
+      .review-slider::-webkit-slider-thumb {
+        width: 32px;
+        height: 32px
+      }
+
+      .review-slider::-moz-range-thumb {
+        width: 32px;
+        height: 32px
       }
 
       .narrative {
@@ -1205,6 +1427,14 @@
         font-size: .65rem;
         padding: 6px 10px
       }
+
+      .preset-grid {
+        grid-template-columns: 1fr
+      }
+
+      .preset-name {
+        font-size: .8rem
+      }
     }
   </style>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -1233,6 +1463,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 
 <body>
