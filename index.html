@@ -917,8 +917,8 @@
     .product-icon-lg { width:150px; height:150px }
 
     .end-screen-img {
-      max-width: 350px;
-      width: 80%;
+      max-width: 430px;
+      width: 90%;
       border-radius: 12px;
       margin: 0 auto 20px;
       display: block
@@ -1177,6 +1177,42 @@
     }
 
     /* Your Story narrative */
+    .insights-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 8px 0 12px;
+      font-size: .8rem;
+      line-height: 1.6;
+      color: var(--muted)
+    }
+
+    .insights-panel.detailed {
+      border-color: rgba(0, 255, 65, .3);
+      background: linear-gradient(135deg, #0f1a12, var(--card))
+    }
+
+    .insights-panel.sparse {
+      border-style: dashed;
+      opacity: .7
+    }
+
+    .insights-header {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      font-size: .85rem
+    }
+
+    .insight-line {
+      margin-bottom: 6px
+    }
+
+    .insight-line strong {
+      color: var(--amber)
+    }
+
     .your-story {
       background: linear-gradient(135deg, #1a1f2e, var(--card));
       border: 1px solid var(--amber);
@@ -1371,7 +1407,7 @@
       }
 
       .end-screen-img {
-        max-width: 280px
+        max-width: 340px
       }
 
       .rev-big {
@@ -1381,7 +1417,7 @@
 
       .promotion-card img {
         max-width: 100% !important;
-        width: 280px;
+        width: 340px;
         margin: 0 auto 15px !important;
         display: block !important
       }
