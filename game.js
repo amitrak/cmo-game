@@ -274,7 +274,7 @@ const CONFLICTS = [
     id: 'recession', type: 'market', title: '📉 Recession Vibes',
     text: 'The economy is shaking. Consumer confidence is down. Your category is seeing 15% declines across the board. The board wants to know: do you cut marketing or lean in while competitors retreat?',
     choices: [
-      { text: 'Cut marketing spend 30% to preserve runway', cost: -30000, brandEquity: -8, revMult: 0.8, ceoPat: 10, outcome: 'You survive but shrink. Every marketing textbook says this is the wrong move, but the CFO\'s relief is palpable. You\'ll spend months rebuilding what you cut. Marketing lesson: Brands that cut during recessions lose market share they never recover.' },
+      { text: 'Cut marketing spend 30% to preserve runway', cost: -30000, brandEquity: -8, revMult: 0.8, ceoPat: 3, outcome: 'You survive but shrink. Every marketing textbook says this is the wrong move, but the CFO\'s relief is palpable. You\'ll spend months rebuilding what you cut. Marketing lesson: Brands that cut during recessions lose market share they never recover.' },
       { text: 'Maintain spending - grab market share while competitors hide', cost: 0, brandEquity: 8, revMult: 0.9, ceoPat: -10, outcome: 'Revenue dips and the CFO is furious — you spent budget while the top line shrank. Your share of voice is up, but share of voice doesn\'t pay the bills today. If the recovery comes soon, this looks like genius. If it doesn\'t, it looks like recklessness. Marketing lesson: Spending through a downturn is a bet on the long term — short-term pain for potential long-term gain, but not everyone survives to see it.' },
       { text: 'Shift to value messaging and practical positioning ($10k)', cost: 10000, brandEquity: 3, revMult: 0.95, ceoPat: 5, outcome: 'Smart pivot. "Why {product} is worth it, even now" resonates with anxious consumers. You don\'t look out of touch, and you don\'t look desperate. Marketing lesson: Match your messaging to the moment.' },
       { text: 'Go AGGRESSIVE: "Buy when there\'s blood in the streets" ($50k extra)', cost: 50000, brandEquity: 5, revMult: 0.85, ceoPat: -15, luck: [0.4, { brandEquity: 9, revMult: 1.3, ceoPat: 15, override: 'LEGENDARY MOVE. You gobbled up cheap ad inventory, hired two people your competitor laid off, and when the market rebounds, you EXPLODE. Marketing case studies will be written about this.' }], outcome: 'You burn through cash during a downturn. The board is apoplectic. Revenue doesn\'t spike because consumer spending is DOWN regardless of your ad spend. Marketing lesson: You can\'t advertise your way out of a recession.' }
@@ -940,6 +940,7 @@ function processMonth() {
   if (rev > avgRev * 1.3 && Math.random() > 0.5) {
     const bonus = Math.round(rand(30000, 80000));
     G.budget += bonus;
+    G.budget = Math.min(G.budget, 5000000);
     G.bonusesReceived += bonus;
     // Auto-save
     saveGame();
@@ -1022,6 +1023,28 @@ function evaluateMonth1Congruency() {
         revMult: 1.08, ceoPat: 3, brandEquity: 2
       });
     }
+  }
+
+  // BAD: Bare-bones launch — skipped almost everything
+  const totalPrelaunchCost = (BRAND_TIERS.find(t => t.id === G.brandTier)?.cost || 0)
+    + (SITE_TIERS.find(t => t.id === G.siteTier)?.cost || 0)
+    + (RESEARCH_TIERS.find(t => t.id === G.researchTier)?.cost || 0)
+    + totalTacticCost;
+  const teamSkipCount = ROLES.filter(r => team[r.id] === 'skip').length;
+  if (totalPrelaunchCost === 0 && totalTacticCost === 0 && !G._valueThriftWorked) {
+    findings.push({
+      type: 'bad',
+      title: 'Ghost Launch',
+      text: `${G.productName} launched with no brand identity, no website investment, no research, and no launch tactics. The market didn't reject you — they never knew you existed. Revenue is a rounding error.`,
+      revMult: 0.5, ceoPat: -12, brandEquity: -5
+    });
+  } else if (totalPrelaunchCost < 50000 && teamSkipCount >= 4 && !G._valueThriftWorked && !G._cheapVibesWorked) {
+    findings.push({
+      type: 'bad',
+      title: 'Invisible Launch',
+      text: `With almost no pre-launch investment and a skeleton crew, ${G.productName} entered the market like a whisper in a hurricane. A few people found you by accident. Most didn't.`,
+      revMult: 0.65, ceoPat: -8, brandEquity: -3
+    });
   }
 
   // BAD: Template website + heavy tactic spending (lots of traffic expected)
@@ -1251,6 +1274,7 @@ function applyConflictChoice(conflictIdx, choiceIdx) {
 
   // Apply effects
   G.budget -= effects.cost;
+  G.budget = Math.min(G.budget, 5000000);
   G.brandEquity = clamp(G.brandEquity + effects.brandEquity, 0, 100);
   G.ceoPat = clamp(G.ceoPat + effects.ceoPat, 0, 100);
 
@@ -1984,7 +2008,7 @@ function renderTeamBuilding() {
   if (isAllInHouse) {
     bottomMessage = '<div style="text-align:center;color:var(--amber);margin-bottom:15px">Big spender, huh? Watch your budget.</div>';
   } else if (allSet && totalSpend <= 1200000) {
-    bottomMessage = '<div style="text-align:center;color:var(--amber);margin-bottom:15px">💡 Remember: this budget is use-it-or-lose-it. Unspent money doesn\'t go back in your pocket — it just means you left growth on the table.</div>';
+    bottomMessage = '<div style="text-align:center;color:var(--amber);margin-bottom:15px">💡 This budget is use-it-or-lose-it. You weren\'t hired to save money. You were hired to drive results.</div>';
   }
 
   const budgetPct = Math.min(100, (totalSpend / 5000000) * 100);
@@ -2563,7 +2587,8 @@ function renderMonthResults() {
   const shouldShowBadMonth = rev < lastRev * 0.85 && !isLaunchMonth && !isQuarterEndMonth;
   const hasMilestone = milestoneText !== '';
   // If a milestone is showing, don't show conflicting negative emojis
-  G._pendingConfetti = hasMilestone ? 'goodMonth' : growth > 50 ? 'recordSmash' : rev > lastRev ? 'goodMonth' : shouldShowBadMonth ? 'badMonth' : null;
+  const meaningfulGrowth = !isLaunchMonth && lastRev > 0 && rev > lastRev * 1.05;
+  G._pendingConfetti = hasMilestone ? 'goodMonth' : growth > 50 ? 'recordSmash' : meaningfulGrowth ? 'goodMonth' : shouldShowBadMonth ? 'badMonth' : null;
 
   return `<div class="screen">
     ${renderStatsBar()}
