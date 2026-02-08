@@ -929,7 +929,7 @@ function processMonth() {
     G.consecutiveZeroSpend++;
     if (G.consecutiveZeroSpend >= 3) {
       G.gameOver = true;
-      G.gameOverReason = 'Three months of zero marketing spend. When the CEO asked what the marketing department actually does, nobody had an answer. Including you. The intern who managed the social media account was promoted to your role. They\'re doing fine.';
+      G.gameOverReason = 'Three months of zero marketing spend with ' + fmtFull(G.budget) + ' still in the bank. The CEO asked, "Why did we hire a head of marketing who doesn\'t believe in marketing?" Nobody had an answer. Including you. The intern who managed the social media account was promoted to your role. They\'re doing fine.';
     }
   } else {
     G.consecutiveZeroSpend = 0;
@@ -1499,7 +1499,17 @@ function getCEOMessage() {
   const brandMilestone = be >= 50 && (G._lastBECheck || 0) < 50;
   G._lastBECheck = be;
 
+  // Check if player is underspending (spending far below even pace)
+  const monthsLeft = Math.max(1, 12 - turn + 1);
+  const evenPace = G.budget / monthsLeft;
+  const lastAlloc = G._lastAllocation || G.allocation;
+  const lastMarketingSpend = lastAlloc.brand + lastAlloc.performance + lastAlloc.pr + lastAlloc.events;
+
   // Conditional messages (check these first for specificity)
+  if (G.consecutiveZeroSpend >= 2) return "Quick question: why does the head of marketing have a marketing budget if they're not going to spend it? This isn't a savings account.";
+  if (turn > 2 && lastMarketingSpend > 0 && lastMarketingSpend < evenPace * 0.3 && G.budget > 1500000) {
+    return pick(["The CFO pinged me. Apparently the marketing budget is barely being touched. Are you saving it for something I don't know about?", "I looked at the spend reports. You're sitting on a lot of unspent budget. That money is here to grow the business, not collect dust.", "The board gave you $5M to build a brand, not to return it. Spend it or lose it — the CFO won't let you roll it over."]);
+  }
   if (brandMilestone) return "The brand is getting noticed. Whatever you're doing, keep doing it.";
   if (revDipped) return "The board asked about the numbers. I covered for you. Don't make me do it again.";
   if (turn === 2) return "First month in the books. Don't get comfortable.";
@@ -1797,7 +1807,9 @@ function renderStatsBar() {
   const monthlyBurn = alloc.brand + alloc.performance + alloc.pr + alloc.events + G.teamCostPerMonth;
   const monthsLeft = Math.max(1, 12 - G.turn + 1);
   const runwayMonths = monthlyBurn > 0 ? Math.floor(G.budget / monthlyBurn) : 99;
-  const runRateWarning = runwayMonths < monthsLeft;
+  // First half: only warn if runway is 2+ months short. Second half: warn if any shortfall.
+  const inFirstHalf = G.turn <= 6;
+  const runRateWarning = inFirstHalf ? (runwayMonths < monthsLeft - 1) : (runwayMonths < monthsLeft);
 
   // Revenue pacing color: annualize based on months played (scaled to $50M target)
   let revColor = 'money';
@@ -1813,7 +1825,7 @@ function renderStatsBar() {
   return `<div class="stats-bar">
     <div class="stat"><div class="label">Title</div><div class="value">${rankInfo.icon} ${rankInfo.short}</div></div>
     <div class="stat"><div class="label">Budget</div><div class="value money">${fmtFull(G.budget)}</div>
-      ${G.turn >= 1 ? `<div style="font-size:.6rem;margin-top:3px;color:${runRateWarning ? 'var(--red)' : 'var(--muted)'}">~${runwayMonths}mo runway${runRateWarning ? ' ⚠️' : ''}</div>` : ''}</div>
+      ${G.turn >= 1 ? `<div style="font-size:.6rem;margin-top:3px;color:${runRateWarning ? 'var(--red)' : 'var(--muted)'}">~${runwayMonths}mo at this pace${runRateWarning ? ' ⚠️' : ''}</div>` : ''}</div>
     <div class="stat"><div class="label">Revenue</div><div class="value ${revColor}">${fmtFull(G.totalRevenue)}</div>${G.monthlyRevenue.length > 1 ? `<div class="sparkline">${G.monthlyRevenue.map(r => {
       const maxRev = Math.max(...G.monthlyRevenue);
       const h = maxRev > 0 ? Math.round((r / maxRev) * 18) + 2 : 2;
@@ -1971,8 +1983,8 @@ function renderTeamBuilding() {
   let bottomMessage = '';
   if (isAllInHouse) {
     bottomMessage = '<div style="text-align:center;color:var(--amber);margin-bottom:15px">Big spender, huh? Watch your budget.</div>';
-  } else if (allSet && totalCost < 75000) {
-    bottomMessage = '<div style="text-align:center;color:var(--red);margin-bottom:15px">This definitely won\'t backfire...</div>';
+  } else if (allSet && totalSpend <= 1200000) {
+    bottomMessage = '<div style="text-align:center;color:var(--amber);margin-bottom:15px">💡 Remember: this budget is use-it-or-lose-it. Unspent money doesn\'t go back in your pocket — it just means you left growth on the table.</div>';
   }
 
   const budgetPct = Math.min(100, (totalSpend / 5000000) * 100);
@@ -2091,6 +2103,7 @@ function renderPreLaunch() {
       <div class="progress-bar" style="margin-top:10px"><div class="fill ${commitColor}" style="width:${commitPct}%"></div></div>
       <div style="margin-top:10px;font-size:.85rem;color:var(--muted);text-align:center">You'll have <strong class="text-amber">${fmt(5000000 - totalCommitment)}</strong> remaining to spend over the next 12 months.</div>
       ${totalCommitment > 5000000 ? '<div style="margin-top:10px;font-size:.85rem;color:var(--red);text-align:center;font-weight:600">⚠️ You are projected to go over budget this year.</div>' : ''}
+      ${totalCommitment < 2000000 && canProceed ? '<div style="margin-top:10px;font-size:.85rem;color:var(--amber);text-align:center">💡 Your launch is looking a little light. That\'s okay if it\'s intentional — but remember, unspent budget doesn\'t go back in your pocket. It just means you left growth on the table.</div>' : ''}
     </div>
 
     <div class="btn-group" style="margin-top:25px">
@@ -2782,6 +2795,7 @@ function renderHolidayAllocation() {
         <div style="border-top:1px solid var(--border);padding-top:8px"><strong>Total:</strong></div><div id="holiday-grand-total" style="border-top:1px solid var(--border);padding-top:8px;text-align:right"><strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(totalWithTeamAndHoliday)}</strong></div>
       </div>
       <div id="holiday-budget-after" style="margin-top:10px;font-size:.85rem;color:var(--muted)">Budget after: <strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(budgetAfter)}</strong></div>
+      ${budgetAfter > 50000 ? '<div style="margin-top:10px;font-size:.85rem;color:var(--amber)">💡 This is the last month. There\'s no advantage to ending with money in the bank — unspent budget is wasted budget. Go big.</div>' : ''}
     </div>
 
     <div class="btn-group" style="margin-top:20px">
@@ -3026,12 +3040,12 @@ function renderFinalResults() {
     G.title = getRankTitle(1).title;
     result = 'SURVIVED';
     resultEmoji = '😐';
-    resultText = 'You survived, but you didn\'t thrive. ' + G.productName + ' hit $' + (totalRev / 1000000).toFixed(0) + 'M — enough to keep your job, not enough to impress anyone. No promotion, no fanfare. Just another year in the same chair. The board isn\'t angry. They\'re just... not excited.';
+    resultText = 'You survived, but you didn\'t thrive. ' + G.productName + ' hit $' + (totalRev / 1000000).toFixed(0) + 'M — enough to keep your job, not enough to impress anyone.' + (budgetLeft > 1000000 ? ' And you left ' + fmtFull(budgetLeft) + ' unspent — money that could have fueled growth.' : '') + ' No promotion, no fanfare. Just another year in the same chair.';
   } else {
     G.title = '#OpenToWork';
     result = '#OPENTOWORK';
     resultEmoji = '💀';
-    resultText = 'Under $20M in revenue and no promotions. The board lost confidence. ' + G.productName + ' underperformed and so did you. HR has the box ready for your desk.';
+    resultText = 'Under $20M in revenue and no promotions. The board lost confidence. ' + G.productName + ' underperformed and so did you.' + (budgetLeft > 1000000 ? ' The CFO pointed out that you left ' + fmtFull(budgetLeft) + ' unspent. "We gave you a budget to grow the business, not to sit on it." ' : ' ') + 'HR has the box ready for your desk.';
   }
 
   const entry = saveScore();
@@ -3116,7 +3130,7 @@ function renderGameOver() {
     <div style="font-size:1.5rem;margin:15px 0">Your marketing career has hit a speed bump.</div>
     <div class="card" style="text-align:left;max-width:500px;margin:20px auto">
       <p>${G.gameOverReason}</p>
-      <p style="margin-top:10px;font-style:italic;color:var(--muted)">Here lies ${G.productName}, a ${getPositioning().name.toLowerCase()} ${PRODUCTS[G.product].name.toLowerCase()} with a $5M budget and dreams of the C-Suite. They lasted ${G.turn} months. The brand equity was ${Math.round(G.brandEquity)}. The vibes were ${G.ceoPat > 0 ? 'fading' : 'gone'}.</p>
+      <p style="margin-top:10px;font-style:italic;color:var(--muted)">Here lies ${G.productName}, a ${getPositioning().name.toLowerCase()} ${PRODUCTS[G.product].name.toLowerCase()} with a $5M budget and dreams of the C-Suite. They lasted ${G.turn} months. The brand equity was ${Math.round(G.brandEquity)}. The vibes were ${G.ceoPat > 0 ? 'fading' : 'gone'}.${G.budget > 1000000 ? ' They left ' + fmtFull(G.budget) + ' unspent.' : ''}</p>
     </div>
     <div class="stats-bar" style="max-width:500px;margin:15px auto">
       <div class="stat"><div class="label">Revenue Earned</div><div class="value money">${fmtFull(G.totalRevenue)}</div></div>
