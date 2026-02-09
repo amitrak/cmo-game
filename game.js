@@ -94,7 +94,7 @@ const RESEARCH_TIERS = [
 const LAUNCH_TACTICS = [
   { id: 'organic', name: 'Organic / Word of Mouth', cost: 0, revBoost: 0.02, brandBoost: 1, desc: 'Free but slow as molasses.' },
   { id: 'press', name: 'Press Release', cost: 5000, revBoost: 0.05, brandBoost: 2, desc: 'Spray and pray to the media gods.' },
-  { id: 'influencer', name: 'Influencer Seeding', cost: 150000, revBoost: 0.15, brandBoost: 3, desc: 'Send free product to people with ring lights.' },
+  { id: 'influencer', name: 'Influencer Seeding', cost: 150000, revBoost: 0.15, brandBoost: 3, desc: 'Send samples to influencers and let them do the talking.' },
   { id: 'event', name: 'Launch Event', cost: 275000, revBoost: 0.12, brandBoost: 5, desc: 'Open bar = open wallets. Usually.' },
   { id: 'tv', name: 'TV Commercial', cost: 750000, revBoost: 0.25, brandBoost: 6, desc: 'Super Bowl dreams on a mid-market budget.' },
   { id: 'social', name: 'Social Media Blitz', cost: 125000, revBoost: 0.13, brandBoost: 3, desc: 'Every platform, all at once. Everywhere.' }
@@ -134,19 +134,19 @@ const CONFLICTS = [
     id: 'cancel_culture', type: 'crisis', title: '🔥 Cancel Culture Comes Calling',
     text: 'A pre-launch beta tester screenshots an internal chat message where someone on your team called customers "walking wallets." It\'s trending. #Boycott{product} has 50k posts and counting.',
     choices: [
-      { text: 'Issue a sincere public apology + donate $30k to consumer advocacy', cost: 30000, brandEquity: 2, revMult: 0.9, ceoPat: -5, outcome: 'Your apology is well-received. The news cycle moves on. Your brand actually gains some respect for owning it. Marketing lesson: Crisis response speed matters more than perfection.' },
-      { text: 'Delete everything. Deny, deny, deny.', cost: 0, brandEquity: -15, revMult: 0.8, ceoPat: -15, luck: [0.4, { brandEquity: 2, revMult: 1.0, ceoPat: 0, override: 'Somehow, miraculously, the internet got distracted by a celebrity scandal. You got lucky. Very lucky.' }], outcome: 'The Streisand Effect kicks in. Screenshots of the deletion go viral. Now you look guilty AND incompetent. Marketing lesson: The internet never forgets. The cover-up is always worse than the crime.' },
-      { text: 'Lean into it with self-deprecating humor campaign', cost: 10000, brandEquity: 0, revMult: 0.95, ceoPat: -5, luck: [0.35, { brandEquity: 9, revMult: 1.1, ceoPat: 10, override: 'Your meme game is STRONG. The self-roast goes viral in a good way. People love a brand that can laugh at itself. You just pulled off the rarest move in crisis PR.' }], outcome: 'Humor during a genuine controversy comes across as tone-deaf. People think you\'re not taking it seriously. Marketing lesson: Read the room before going for laughs.' },
-      { text: '"We\'ve terminated the employee responsible" (throw someone under the bus)', cost: 0, brandEquity: -8, revMult: 0.95, ceoPat: 5, outcome: 'The public execution satisfies the mob temporarily, but your team\'s trust in you plummets. Morale craters. Your best content creator starts updating their resume. Marketing lesson: Sacrificing team members for PR is a short-term fix with long-term consequences.' }
+      { text: 'Issue a sincere public apology + donate $30k to consumer advocacy', cost: 30000, brandEquity: 2, revMult: 0.9, ceoPat: -5, outcome: 'The apology lands. News cycle moves on, and your brand gains respect for owning it. Marketing lesson: Crisis response speed matters more than perfection.' },
+      { text: 'Delete everything. Deny, deny, deny.', cost: 0, brandEquity: -15, revMult: 0.8, ceoPat: -15, luck: [0.4, { brandEquity: 2, revMult: 1.0, ceoPat: 0, override: 'The internet got distracted by a celebrity scandal. You got very lucky.' }], outcome: 'Streisand Effect. Screenshots of the deletion go viral. Now you look guilty AND incompetent. Marketing lesson: The cover-up is always worse than the crime.' },
+      { text: 'Lean into it with self-deprecating humor campaign', cost: 10000, brandEquity: 0, revMult: 0.95, ceoPat: -5, luck: [0.35, { brandEquity: 9, revMult: 1.1, ceoPat: 10, override: 'The self-roast goes viral. People love a brand that can laugh at itself. Rarest move in crisis PR.' }], outcome: 'Humor during a genuine controversy comes across as tone-deaf. People think you\'re not taking it seriously. Marketing lesson: Read the room before going for laughs.' },
+      { text: '"We\'ve terminated the employee responsible" (throw someone under the bus)', cost: 0, brandEquity: -8, revMult: 0.95, ceoPat: 5, outcome: 'The mob is satisfied, but your team\'s trust craters. Your best content creator starts updating their resume. Marketing lesson: Sacrificing team members for PR is a short-term fix with long-term consequences.' }
     ]
   },
   {
     id: 'ceo_nephew', type: 'pressure', title: '👔 The CEO\'s Nephew Has "Ideas"',
     text: 'The CEO\'s nephew - fresh MBA, zero marketing experience - has been "assigned" to your team. His first proposal: pivot your entire social strategy to the metaverse. He\'s already bought a $40k virtual billboard in a virtual world where 12 people visit daily.',
     choices: [
-      { text: 'Give him a harmless side project ("Head of Innovation")', cost: 10000, brandEquity: 0, revMult: 1.0, ceoPat: 10, luck: [0.5, { brandEquity: -3, ceoPat: -5, override: 'Your creative director walks into your office and closes the door. "You gave the CEO\'s nephew a title and a budget? I\'ve been pitching an innovation lab for two years." She starts updating her LinkedIn that afternoon. The team notices. Morale drops. Marketing lesson: Creative containment works until your best people feel passed over.' }], outcome: 'He spends 3 months building a "Web3 loyalty program" that nobody uses, but he\'s out of your hair. The CEO is happy his nephew is "learning." Marketing lesson: A well-placed side project can protect your core strategy without burning political capital.' },
-      { text: 'Actually try his metaverse idea', cost: 50000, brandEquity: -3, revMult: 0.95, ceoPat: 15, luck: [0.15, { brandEquity: 7, revMult: 1.15, ceoPat: 20, override: 'Against all odds, a gaming streamer discovers your metaverse presence and features it. 2 million views. The nephew is now insufferable, but hey, it worked.' }], outcome: 'You just spent $50k on a metaverse presence that got 47 visitors. The nephew calls it a "soft launch." Your team calls it something else. Marketing lesson: Don\'t let politics override strategy.' },
-      { text: 'Go to HR: "This is a conflict of interest"', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -20, luck: [0.5, { ceoPat: 10, brandEquity: 3, override: 'The CEO is quiet for a week. Then he calls you in. "You were right. He wasn\'t ready." He reassigns the nephew to Operations. Your team\'s respect for you goes through the roof. Marketing lesson: Standing firm on quality earns trust — even from the people you stand up to.' }], outcome: 'HR agrees with you technically, but the CEO is FURIOUS. "I was just trying to give the kid experience!" Your next budget review is going to be... interesting. Marketing lesson: Being right and being politically smart are different skills.' },
+      { text: 'Give him a harmless side project ("Head of Innovation")', cost: 10000, brandEquity: 0, revMult: 1.0, ceoPat: 10, luck: [0.5, { brandEquity: -3, ceoPat: -5, override: 'Your creative director closes the door. "You gave the CEO\'s nephew a title and a budget? I\'ve been pitching an innovation lab for two years." She updates her LinkedIn that afternoon. Morale drops. Marketing lesson: Creative containment works until your best people feel passed over.' }], outcome: 'He spends 3 months building a "Web3 loyalty program" nobody uses, but he\'s out of your hair. The CEO is happy his nephew is "learning." Marketing lesson: A side project can protect your core strategy without burning political capital.' },
+      { text: 'Actually try his metaverse idea', cost: 50000, brandEquity: -3, revMult: 0.95, ceoPat: 15, luck: [0.15, { brandEquity: 7, revMult: 1.15, ceoPat: 20, override: 'A gaming streamer discovers your metaverse presence. 2 million views. The nephew is insufferable, but it worked.' }], outcome: 'You just spent $50k on a metaverse presence that got 47 visitors. The nephew calls it a "soft launch." Your team calls it something else. Marketing lesson: Don\'t let politics override strategy.' },
+      { text: 'Go to HR: "This is a conflict of interest"', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -20, luck: [0.5, { ceoPat: 10, brandEquity: 3, override: 'The CEO is quiet for a week, then calls you in. "You were right. He wasn\'t ready." The nephew is reassigned to Operations. Your team\'s respect skyrockets. Marketing lesson: Standing firm earns trust — even from the people you stand up to.' }], outcome: 'HR agrees with you technically, but the CEO is FURIOUS. "I was just trying to give the kid experience!" Your next budget review is going to be... interesting. Marketing lesson: Being right and being politically smart are different skills.' },
       { text: 'Make him "Chief Vibes Officer" with a chat channel nobody reads', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: 5, outcome: 'He posts daily "vibe checks" to a channel with 2 members (him and the bot). Everyone wins. He feels important, you keep control. Marketing lesson: The org chart is a suggestion, not a prison.' }
     ]
   },
@@ -154,8 +154,8 @@ const CONFLICTS = [
     id: 'quarter_crunch', type: 'pressure', title: '📊 Quarter-End Crunch Time',
     text: 'It\'s the end of the quarter. Sales is at 82% of target. The CEO, CFO, and VP Sales are in your office. "We need you to shift EVERYTHING to performance marketing. Run a 40% discount. NOW." The CFO is literally sweating.',
     choices: [
-      { text: 'Comply: slash prices 40% and blast performance ads', cost: 20000, brandEquity: -15, revMult: 1.35, ceoPat: 15, outcome: 'Revenue spikes! The quarter is saved! But your brand now screams "discount bin." Customers who paid full price last week are livid. And now everyone will wait for the next sale. Marketing lesson: Discounting is a drug - easy to start, hard to stop.' },
-      { text: 'Push back with a brand investment roadmap', cost: 0, brandEquity: 3, revMult: 0.95, ceoPat: -15, outcome: 'You present a beautiful deck about "long-term brand equity compound growth." The CFO falls asleep on slide 3. The CEO respects your conviction but questions your priorities. Marketing lesson: Being strategically right doesn\'t help if you get fired before the strategy plays out.' },
+      { text: 'Comply: slash prices 40% and blast performance ads', cost: 20000, brandEquity: -15, revMult: 1.35, ceoPat: 15, outcome: 'Revenue spikes! Quarter saved. But your brand now screams "discount bin." Full-price customers are livid, and everyone will wait for the next sale. Marketing lesson: Discounting is a drug — easy to start, hard to stop.' },
+      { text: 'Push back with a brand investment roadmap', cost: 0, brandEquity: 3, revMult: 0.95, ceoPat: -15, outcome: 'You present a deck on "long-term brand equity compound growth." The CFO falls asleep on slide 3. The CEO respects your conviction but questions your priorities. Marketing lesson: Being strategically right doesn\'t help if you get fired before the strategy plays out.' },
       { text: 'Compromise: 15% promo with brand-safe messaging', cost: 10000, brandEquity: -6, revMult: 1.12, ceoPat: 5, outcome: 'A measured response. Nobody\'s thrilled, nobody\'s fired. You thread the needle between brand integrity and commercial reality. Marketing lesson: The best answer in corporate life is usually the one where everyone is equally unhappy.' },
       { text: 'Propose a creative campaign that drives urgency without discounting', cost: 25000, brandEquity: 5, revMult: 1.0, ceoPat: -5, luck: [0.45, { brandEquity: 10, revMult: 1.25, ceoPat: 15, override: 'Your "limited edition" campaign creates genuine FOMO. Sales spike without a single discount. The CEO hugs you in the elevator. It\'s awkward but validating.' }], outcome: 'The creative campaign takes too long to produce. By the time it launches, the quarter is over. Results are meh. The CEO sends you a one-word message: "Noted." Marketing lesson: Timing matters as much as quality.' }
     ]
@@ -174,30 +174,30 @@ const CONFLICTS = [
     id: 'ad_apocalypse', type: 'crisis', title: '💸 The Ad-pocalypse',
     text: 'Your paid ads account got flagged by an overzealous algorithm. Your search quality score tanked because a competitor filed bogus complaints. CPMs tripled overnight. Your $50k monthly ad budget is now delivering the results of $15k.',
     choices: [
-      { text: 'Pause all paid media, pivot 100% to organic', cost: 0, brandEquity: 3, revMult: 0.7, ceoPat: -10, outcome: 'Revenue drops hard. Organic content takes months to compound. The CEO asks "where did the sales go?" Your data analyst shows a very sad chart. Marketing lesson: Never be 100% dependent on any single channel.' },
-      { text: 'Double the budget to maintain volume', cost: 40000, brandEquity: -2, revMult: 0.95, ceoPat: 0, outcome: 'You\'re throwing money into a broken machine. It sort of works, but your CAC is now higher than your LTV. Your finance team starts involuntarily twitching. Marketing lesson: Spending more on a broken system just breaks it faster.' },
-      { text: 'Diversify to new and emerging channels', cost: 20000, brandEquity: 2, revMult: 0.85, ceoPat: -5, luck: [0.5, { brandEquity: 8, revMult: 1.2, ceoPat: 10, override: 'You struck GOLD on short-form video. A scrappy ad made on an iPhone outperforms your entire paid strategy. Your intern who "knows social" is now your most important employee.' }], outcome: 'The new channels take time to optimize. Results are mixed - Forum users roast your ads, short-form video shows promise but you don\'t have the creative muscle yet. Marketing lesson: Channel diversification is insurance, not a quick fix.' },
-      { text: 'Call your platform reps, escalate, fight it', cost: 5000, brandEquity: 0, revMult: 0.9, ceoPat: 0, luck: [0.6, { brandEquity: 0, revMult: 1.05, ceoPat: 5, override: 'Your rep actually comes through! Account restored, competitor complaints dismissed. Back to business. Sometimes the boring solution works.' }], outcome: 'You spend 3 weeks in platform support hell. Automated responses. Ticket escalations. "We\'ll look into it." Meanwhile, no ads running. Marketing lesson: Platform dependency is a business risk, not just a marketing one.' }
+      { text: 'Pause all paid media, pivot 100% to organic', cost: 0, brandEquity: 3, revMult: 0.7, ceoPat: -10, outcome: 'Revenue drops hard. Organic takes months to compound. The CEO asks "where did the sales go?" Marketing lesson: Never be 100% dependent on any single channel.' },
+      { text: 'Double the budget to maintain volume', cost: 40000, brandEquity: -2, revMult: 0.95, ceoPat: 0, outcome: 'You\'re throwing money into a broken machine. It sort of works, but your CAC is now higher than your LTV. Marketing lesson: Spending more on a broken system just breaks it faster.' },
+      { text: 'Diversify to new and emerging channels', cost: 20000, brandEquity: 2, revMult: 0.85, ceoPat: -5, luck: [0.5, { brandEquity: 8, revMult: 1.2, ceoPat: 10, override: 'You struck GOLD on short-form video. A scrappy iPhone ad outperforms your entire paid strategy. Your intern who "knows social" is now your most important employee.' }], outcome: 'New channels take time to optimize. Results are mixed — forums roast your ads, short-form video shows promise but you lack the creative muscle. Marketing lesson: Channel diversification is insurance, not a quick fix.' },
+      { text: 'Call your platform reps, escalate, fight it', cost: 5000, brandEquity: 0, revMult: 0.9, ceoPat: 0, luck: [0.6, { brandEquity: 0, revMult: 1.05, ceoPat: 5, override: 'Your rep actually comes through! Account restored, competitor complaints dismissed. Back to business. Sometimes the boring solution works.' }], outcome: 'Three weeks in platform support hell. Automated responses. Ticket escalations. "We\'ll look into it." Meanwhile, no ads running. Marketing lesson: Platform dependency is a business risk, not just a marketing one.' }
     ]
   },
   {
     id: 'review_bomb', type: 'crisis', title: '⭐ The Review Bomb',
     text: 'Someone posted "I tried {product} and here\'s what ACTUALLY happened" - a scathing (and somewhat unfair) review. It went viral. Now your rating has dropped from 4.5 to 2.3 stars. Sales are in freefall.',
     choices: [
-      { text: 'Launch review generation campaign with happy customers ($15k)', cost: 15000, brandEquity: 0, revMult: 0.9, ceoPat: 5, outcome: 'Real reviews from real customers slowly push the rating back up. It takes a month, but authenticity wins. Your rating recovers to 3.8. Marketing lesson: Authentic customer voices are more credible than any PR response.' },
-      { text: 'Respond personally to every negative review', cost: 0, brandEquity: 2, revMult: 0.85, ceoPat: 0, outcome: 'It takes you 60 hours, but people notice. Screenshots of your thoughtful responses go viral in a GOOD way. "This brand actually cares" becomes the new narrative. Marketing lesson: The unsexy work often has the highest ROI.' },
+      { text: 'Launch review generation campaign with happy customers ($15k)', cost: 15000, brandEquity: 0, revMult: 0.9, ceoPat: 5, outcome: 'Real reviews from real customers slowly push the rating back up. Authenticity wins. Rating recovers to 3.8. Marketing lesson: Authentic customer voices beat any PR response.' },
+      { text: 'Respond personally to every negative review', cost: 0, brandEquity: 2, revMult: 0.85, ceoPat: 0, outcome: 'It takes 60 hours, but people notice. Screenshots of your thoughtful responses go viral. "This brand actually cares" becomes the narrative. Marketing lesson: The unsexy work often has the highest ROI.' },
       { text: 'Hire a reputation management firm ($30k)', cost: 30000, brandEquity: -5, revMult: 0.95, ceoPat: 5, luck: [0.5, { brandEquity: 5, revMult: 1.05, ceoPat: 5, override: 'The firm works their magic. Bad reviews suppressed, positive content amplified. Ethically gray? Sure. Effective? Absolutely.' }], outcome: 'The firm\'s tactics get exposed by a journalist writing about "corporate astroturfing." Now you have TWO PR problems. Marketing lesson: Authenticity shortcuts usually cost more in the end.' },
-      { text: 'Actually improve the product based on the feedback ($50k)', cost: 50000, brandEquity: 6, revMult: 0.75, ceoPat: -5, futureRevBonus: 0.15, outcome: 'Revenue takes a hit this month as you invest in product improvements. But the next version is genuinely better. The original reviewer posts an update: "They actually listened." Marketing lesson: A genuinely improved product markets itself through word of mouth.' }
+      { text: 'Actually improve the product based on the feedback ($50k)', cost: 50000, brandEquity: 6, revMult: 0.75, ceoPat: -5, futureRevBonus: 0.15, outcome: 'Revenue takes a hit, but the next version is genuinely better. The original reviewer posts an update: "They actually listened." Marketing lesson: A genuinely improved product markets itself.' }
     ]
   },
   {
     id: 'celebrity', type: 'positive', title: '🌟 Celebrity Sighting!',
     text: 'BREAKING: A-list celebrity was photographed using your {product} at Soho House! Paparazzi photos are everywhere. Your social mentions just 10x\'d. The phone is ringing off the hook.',
     choices: [
-      { text: 'Reach out for a paid endorsement deal ($80k)', cost: 80000, brandEquity: 10, revMult: 1.3, ceoPat: 15, outcome: 'They sign! Your brand is now officially celebrity-endorsed. Revenue soars, brand equity skyrockets. The contract is expensive, but the halo effect is worth it. Marketing lesson: Strike while the iron is hot - authenticity has a short shelf life.' },
+      { text: 'Reach out for a paid endorsement deal ($80k)', cost: 80000, brandEquity: 10, revMult: 1.3, ceoPat: 15, outcome: 'They sign! Revenue soars, brand equity skyrockets. The contract is expensive, but the halo effect is worth it. Marketing lesson: Strike while the iron is hot — authenticity has a short shelf life.' },
       { text: 'Amplify organically - repost, engage, ride the wave', cost: 0, brandEquity: 6, revMult: 1.15, ceoPat: 10, outcome: 'Free publicity! You repost, the comments section explodes, and your social team works overtime. The buzz lasts about 2 weeks. Marketing lesson: Organic moments are precious - and temporary.' },
-      { text: 'Create an entire UGC campaign around it ($35k)', cost: 35000, brandEquity: 8, revMult: 1.2, ceoPat: 10, outcome: 'You launch a "Spotted In The Wild" campaign featuring real customers alongside the celeb sighting. It feels organic and aspirational. Marketing lesson: Campaigns that make customers feel like participants, not spectators, earn deeper loyalty.' },
-      { text: 'Play it cool - don\'t acknowledge it', cost: 0, brandEquity: -5, revMult: 1.05, ceoPat: -5, outcome: 'Mystery is underrated. By not acknowledging it, you seem too cool to care. Some brand enthusiasts love the subtlety. Others wonder why you\'re ignoring your biggest moment. Marketing lesson: Playing it cool works for luxury. Not great for mass market.' }
+      { text: 'Create an entire UGC campaign around it ($35k)', cost: 35000, brandEquity: 8, revMult: 1.2, ceoPat: 10, outcome: 'Your "Spotted In The Wild" campaign features real customers alongside the celeb sighting. Organic and aspirational. Marketing lesson: Campaigns that make customers feel like participants earn deeper loyalty.' },
+      { text: 'Play it cool - don\'t acknowledge it', cost: 0, brandEquity: -5, revMult: 1.05, ceoPat: -5, outcome: 'By not acknowledging it, you seem too cool to care. Some love the subtlety. Others wonder why you\'re ignoring your biggest moment. Marketing lesson: Playing it cool works for luxury. Not great for mass market.' }
     ]
   },
   {
@@ -206,7 +206,7 @@ const CONFLICTS = [
     choices: [
       { text: 'Collab on a follow-up video + offer them a micro-influencer deal ($5k)', cost: 5000, brandEquity: 7, revMult: 1.25, ceoPat: 15, outcome: 'They\'re thrilled! Your brand collab gets another 3 million views. Authentic, scrappy, and exactly what social media rewards. Marketing lesson: Micro-influencer authenticity beats macro-influencer reach.' },
       { text: 'Launch a viral challenge campaign ($20k)', cost: 20000, brandEquity: 8, revMult: 1.1, ceoPat: 10, luck: [0.6, { brandEquity: 12, revMult: 1.4, ceoPat: 20, override: 'The challenge EXPLODES. 50 million views across all participants. You\'re the #1 trending brand on social media. Your intern cries tears of joy. This is the moment.' }], outcome: 'The challenge gets moderate participation. It\'s fine, but it feels like a brand trying too hard to be cool. "How do you do, fellow kids?" energy. Marketing lesson: You can\'t manufacture virality.' },
-      { text: 'Send free product + personal note, hope for more content', cost: 2000, brandEquity: 6, revMult: 1.1, ceoPat: 5, outcome: 'They post an unboxing! "OMG {product} actually sent me free stuff!" Another 2 million views. The gift that keeps on giving. Marketing lesson: Generosity can be a surprisingly effective form of marketing.' },
+      { text: 'Send free product + personal note, hope for more content', cost: 2000, brandEquity: 6, revMult: 1.1, ceoPat: 5, outcome: 'They post an unboxing! "OMG {product} actually sent me free stuff!" Another 2 million views. Marketing lesson: Generosity is a surprisingly effective form of marketing.' },
       { text: 'Boost the original video with paid media ($10k)', cost: 10000, brandEquity: 4, revMult: 1.2, ceoPat: 10, outcome: 'Smart move. You amplify authentic content rather than creating fake authenticity. The boosted video drives real conversions. Marketing lesson: Amplify what works. Don\'t reinvent it.' }
     ]
   },
@@ -217,16 +217,16 @@ const CONFLICTS = [
       { text: 'Accept gracefully and optimize', cost: -100000, brandEquity: 0, revMult: 0.85, ceoPat: 15, outcome: 'You\'re $100k lighter but the CEO respects your team-player attitude. You find some genuine waste to cut. The performance marketing campaign that was spending $8k/month on bot clicks? Gone. Marketing lesson: Constraints breed creativity. (That\'s what you tell yourself.)' },
       { text: 'Present ROI analysis to fight the cuts', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -5, luck: [0.55, { brandEquity: 2, revMult: 1.0, ceoPat: 10, override: 'Your data is AIRTIGHT. The CFO actually reverses the cut and apologizes. "I didn\'t realize marketing was driving this much pipeline." Screenshot this moment. It will never happen again.', cost: 0 }], outcome: 'The CFO doesn\'t care about your attribution model. "Every department thinks they\'re special." Budget cut stands. You also now have an enemy in Finance. Marketing lesson: Data only wins arguments with people who believe in data.' },
       { text: 'Threaten to quit', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -25, luck: [0.2, { brandEquity: 0, revMult: 1.0, ceoPat: 5, override: 'The CEO blinks! "Fine, keep your budget." You feel powerful for exactly 24 hours until you realize you can never use this card again.', cost: 0 }], outcome: '"We\'ll miss you." The CEO calls your bluff. Security is walking you out while you try to explain you were just negotiating. Marketing lesson: Don\'t bring a threat to a spreadsheet fight.', gameOver: 0.6 },
-      { text: 'Propose cutting 50k and reallocating to higher-ROI channels', cost: -50000, brandEquity: 0, revMult: 0.95, ceoPat: 10, outcome: 'The compromise lands well. You lose less than threatened, and the reallocation actually improves efficiency. The CFO feels like they won. You feel like you won. Classic corporate win-win-lose (the budget lost). Marketing lesson: Compromise is the language of survival.' }
+      { text: 'Propose cutting 50k and reallocating to higher-ROI channels', cost: -50000, brandEquity: 0, revMult: 0.95, ceoPat: 10, outcome: 'The compromise lands. You lose less than threatened, and the reallocation improves efficiency. The CFO feels like they won. You feel like you won. Marketing lesson: Compromise is the language of survival.' }
     ]
   },
   {
     id: 'sales_fight', type: 'pressure', title: '⚔️ Sales vs. Marketing Showdown',
     text: 'The VP of Sales storms into your standup. "YOUR LEADS ARE GARBAGE. My team is wasting time on tire-kickers who can\'t spell their own credit card number!" He\'s red-faced. The CEO is cc\'d on the angry email.',
     choices: [
-      { text: 'Implement lead scoring + SLA between teams ($10k)', cost: 10000, brandEquity: 2, revMult: 1.05, ceoPat: 10, luck: [0.5, { brandEquity: -2, revMult: 0.9, ceoPat: -5, override: 'The dashboard is beautiful. The integrations are seamless. And nobody uses it. Sales says the scoring model is wrong. Marketing says Sales isn\'t following the SLA. Six weeks later you\'re back to spreadsheets and finger-pointing. The $10k bought you a very expensive screensaver. Marketing lesson: Technology doesn\'t fix broken relationships — it just makes the dysfunction more visible.' }], outcome: 'You set up proper lead scoring, define MQLs vs SQLs, and create a handoff SLA. It takes a month to calibrate, but suddenly Sales and Marketing are speaking the same language. Marketing lesson: Alignment > argument. Process > politics.' },
+      { text: 'Implement lead scoring + SLA between teams ($10k)', cost: 10000, brandEquity: 2, revMult: 1.05, ceoPat: 10, luck: [0.5, { brandEquity: -2, revMult: 0.9, ceoPat: -5, override: 'The dashboard is beautiful. Nobody uses it. Sales says the model is wrong. Marketing says Sales isn\'t following the SLA. Six weeks later you\'re back to spreadsheets. The $10k bought you a very expensive screensaver. Marketing lesson: Technology doesn\'t fix broken relationships — it just makes the dysfunction more visible.' }], outcome: 'Proper lead scoring, defined MQLs vs SQLs, a handoff SLA. It takes a month to calibrate, but Sales and Marketing start speaking the same language. Marketing lesson: Alignment > argument. Process > politics.' },
       { text: '"Your team can\'t close a door, let alone a deal"', cost: 0, brandEquity: 0, revMult: 0.95, ceoPat: -15, outcome: 'SHOTS FIRED. The war between Sales and Marketing goes nuclear. The CEO calls an all-hands to address "team culture." You both get a talking-to. Marketing lesson: Being right doesn\'t matter if you burn the relationship.' },
-      { text: 'Joint "smarketing" workshop + shared dashboard ($5k)', cost: 5000, brandEquity: 3, revMult: 1.0, ceoPat: 5, luck: [0.5, { brandEquity: 0, revMult: 0.95, ceoPat: -3, override: 'The pizza was great. Everyone laughed. Sales and Marketing exchanged war stories and found common ground over pepperoni. Then Monday came and nothing changed. The shared Slack channel went quiet by Wednesday. Turns out team bonding without structural change is just a party. Marketing lesson: Pizza builds rapport, not process. Good vibes don\'t survive a bad quarter.' }], outcome: 'You bring pizza and a shared analytics dashboard. It\'s awkward for 30 minutes, then actually productive. You discover Sales was ignoring follow-up emails. They discover your lead forms were broken on mobile. Marketing lesson: 80% of marketing-sales problems are communication problems.' },
+      { text: 'Joint "smarketing" workshop + shared dashboard ($5k)', cost: 5000, brandEquity: 3, revMult: 1.0, ceoPat: 5, luck: [0.5, { brandEquity: 0, revMult: 0.95, ceoPat: -3, override: 'The pizza was great. Everyone laughed, found common ground over pepperoni. Then Monday came and nothing changed. The Slack channel went quiet by Wednesday. Marketing lesson: Pizza builds rapport, not process. Good vibes don\'t survive a bad quarter.' }], outcome: 'Pizza and a shared dashboard. Awkward for 30 minutes, then productive. You discover Sales was ignoring follow-ups. They discover your lead forms were broken on mobile. Marketing lesson: 80% of marketing-sales problems are communication problems.' },
       { text: 'Give Sales exactly what they want: gate everything, qualify harder', cost: 0, brandEquity: -3, revMult: 0.9, ceoPat: 5, outcome: 'Lead volume drops 60%. The leads are "better" but there are so few that Sales still can\'t hit quota. Now it\'s somehow still your fault. Marketing lesson: Giving people what they ask for and what they need are different things.' }
     ]
   },
@@ -234,9 +234,9 @@ const CONFLICTS = [
     id: 'algorithm_change', type: 'market', title: '🔄 Algorithm Apocalypse',
     text: 'Every major social platform changed their algorithms on the same week. Your organic reach dropped 75%. The content strategy you spent 3 months building? Worthless. Your social media manager is stress-eating in the break room.',
     choices: [
-      { text: 'Pivot to short-form video ($15k production)', cost: 15000, brandEquity: 2, revMult: 0.9, ceoPat: 0, luck: [0.55, { brandEquity: 8, revMult: 1.1, ceoPat: 10, override: 'Your pivot to video pays off beautifully. The new video strategy actually gets MORE reach than the old approach. Turns out the algorithm change was a gift in disguise.' }], outcome: 'The pivot takes time. Your first batch of videos looks like a hostage video. Quality improves by week 3, but you\'ve lost momentum. Marketing lesson: Platform dependency is a strategic risk. Always have a Plan B.' },
+      { text: 'Pivot to short-form video ($15k production)', cost: 15000, brandEquity: 2, revMult: 0.9, ceoPat: 0, luck: [0.55, { brandEquity: 8, revMult: 1.1, ceoPat: 10, override: 'The pivot pays off. Your video strategy gets MORE reach than the old approach. The algorithm change was a gift in disguise.' }], outcome: 'The pivot takes time. Your first videos look like hostage footage. Quality improves by week 3, but you\'ve lost momentum. Marketing lesson: Platform dependency is a strategic risk. Always have a Plan B.' },
       { text: 'Shift budget from organic to paid social', cost: 15000, brandEquity: -6, revMult: 1.0, ceoPat: 5, outcome: 'You\'re now paying for what you used to get free. The platforms win again. Your paid social works but it\'s essentially a tax on reach. Marketing lesson: The platforms always win. Always.' },
-      { text: 'Invest in owned channels: email, SEO, community ($25k)', cost: 25000, brandEquity: 8, revMult: 0.85, ceoPat: -5, futureRevBonus: 0.10, outcome: 'Revenue dips this month but you\'re building on land you OWN. Email list grows. SEO starts climbing. Your online community has 5,000 members who actually care. Marketing lesson: Rented audiences are rented. Build on owned land.' },
+      { text: 'Invest in owned channels: email, SEO, community ($25k)', cost: 25000, brandEquity: 8, revMult: 0.85, ceoPat: -5, futureRevBonus: 0.10, outcome: 'Revenue dips but you\'re building on land you OWN. Email list grows. SEO climbs. Community hits 5,000 members who actually care. Marketing lesson: Rented audiences are rented. Build on owned land.' },
       { text: 'Create engagement bait content to game the algorithm', cost: 0, brandEquity: -12, revMult: 1.05, ceoPat: 0, outcome: '"Tag someone who needs to see this!" "Save for later!" Your content becomes the marketing equivalent of clickbait. Reach recovers but your audience quality plummets. Marketing lesson: Gaming algorithms is a treadmill - you\'ll never stop running.' }
     ]
   },
@@ -244,17 +244,17 @@ const CONFLICTS = [
     id: 'copycat', type: 'market', title: '🐱 The Copycat Competitor',
     text: 'A VC-backed competitor just launched a nearly identical {product} at 20% less. They\'re running side-by-side comparison ads. Their tagline? "Like {name}, but better." They have $5M in funding. You have anxiety.',
     choices: [
-      { text: 'Differentiate: double down on brand story ($30k)', cost: 30000, brandEquity: 7, revMult: 0.95, ceoPat: 5, outcome: 'You can\'t outspend them, so you outbrand them. Your "why" story resonates deeper than their "what" features. Customers who love your brand are immune to price competition. Marketing lesson: Brand storytelling is one of the strongest competitive moats you can build.' },
-      { text: 'Match their price', cost: 0, brandEquity: -12, revMult: 0.85, ceoPat: 0, outcome: 'You can match their price but not their funding. They can keep bleeding; can you? Revenue drops as margins shrink. This is a war of attrition you can\'t win. Marketing lesson: Never compete on price unless you\'re the low-cost leader.' },
+      { text: 'Differentiate: double down on brand story ($30k)', cost: 30000, brandEquity: 7, revMult: 0.95, ceoPat: 5, outcome: 'You can\'t outspend them, so you outbrand them. Your "why" story resonates deeper than their "what" features. Marketing lesson: Brand storytelling is one of the strongest competitive moats.' },
+      { text: 'Match their price', cost: 0, brandEquity: -12, revMult: 0.85, ceoPat: 0, outcome: 'You match their price but not their funding. Revenue drops as margins shrink. A war of attrition you can\'t win. Marketing lesson: Never compete on price unless you\'re the low-cost leader.' },
       { text: 'Sue for trademark/trade dress infringement ($50k)', cost: 50000, brandEquity: 0, revMult: 0.9, ceoPat: -5, luck: [0.3, { brandEquity: 6, revMult: 1.1, ceoPat: 15, override: 'You win the injunction! Competitor forced to rebrand. The press coverage frames you as the original innovator. Sometimes a well-timed legal win generates more press than any ad campaign could.', cost: -20000 }], outcome: 'Legal drags on for months. Meanwhile, they keep selling. The judge says it\'s not similar enough to warrant an injunction. You\'re out $50k with nothing to show for it. Marketing lesson: Litigation is not a marketing strategy.' },
-      { text: 'Ignore them and focus on your core audience', cost: 0, brandEquity: 3, revMult: 0.9, ceoPat: -5, luck: [0.4, { brandEquity: 5, revMult: 1.05, ceoPat: 5, override: 'Your confidence pays off. They run out of funding in 6 months and pivot to crypto. Your audience respects that you didn\'t flinch.' }], outcome: 'Staying the course while a competitor eats your lunch requires nerves of steel. And a board that believes in you. Yours is getting nervous. Marketing lesson: Ignore the competition at your own risk — confidence without awareness is just hubris.' }
+      { text: 'Ignore them and focus on your core audience', cost: 0, brandEquity: 3, revMult: 0.9, ceoPat: -5, luck: [0.4, { brandEquity: 5, revMult: 1.05, ceoPat: 5, override: 'Your confidence pays off. They run out of funding in 6 months and pivot to crypto. Your audience respects that you didn\'t flinch.' }], outcome: 'Staying the course while a competitor eats your lunch requires nerves of steel — and a board that believes in you. Yours is getting nervous. Marketing lesson: Confidence without awareness is just hubris.' }
     ]
   },
   {
     id: 'data_breach', type: 'crisis', title: '🔐 Data Breach Scare',
     text: 'Your email service provider was hacked. Customer emails and purchase history may have been exposed. A security researcher just tweeted about it. Media is reaching out for comment. Legal is panicking.',
     choices: [
-      { text: 'Full transparency: notify everyone, offer credit monitoring ($40k)', cost: 40000, brandEquity: 3, revMult: 0.85, ceoPat: -5, outcome: 'You take a revenue hit and the CEO is furious about the cost, but customers TRUST you now. Privacy-conscious consumers become loyal advocates. Marketing lesson: Transparency is expensive in the short term and invaluable in the long term.' },
+      { text: 'Full transparency: notify everyone, offer credit monitoring ($40k)', cost: 40000, brandEquity: 3, revMult: 0.85, ceoPat: -5, outcome: 'Revenue takes a hit and the CEO is furious, but customers TRUST you now. Privacy-conscious consumers become loyal advocates. Marketing lesson: Transparency is expensive short-term and invaluable long-term.' },
       { text: 'Minimal disclosure: notify only confirmed affected users ($15k)', cost: 15000, brandEquity: -2, revMult: 0.92, ceoPat: 5, luck: [0.4, { brandEquity: -15, revMult: 0.7, ceoPat: -15, override: 'A journalist discovers you under-reported the breach. Now it\'s not just a data incident - it\'s a COVER-UP. Regulators are involved. This is a nightmare.' }], outcome: 'You thread the legal needle. Technically compliant, ethically questionable. Most customers never notice. Marketing lesson: Minimum compliance is a strategy - until it isn\'t.' },
       { text: 'Spin it: "We proactively identified a security concern" ($10k)', cost: 10000, brandEquity: -8, revMult: 0.95, ceoPat: 5, outcome: 'The spin works on boomers. Gen Z sees right through it and drags you on social media. "Proactively identified" becomes a meme. Marketing lesson: Corporate euphemisms are a language nobody trusts.' },
       { text: 'Say nothing. Hope it goes away.', cost: 0, brandEquity: -14, revMult: 0.9, ceoPat: 0, luck: [0.3, { brandEquity: 0, revMult: 1.0, ceoPat: 5, override: 'By some miracle, the story gets buried under bigger news. You got away with it this time. Start looking for a better email provider.' }], outcome: 'The journalist publishes without your comment. "Company refused to respond" is never a good look. The narrative is written without you. Marketing lesson: Silence is not a communications strategy.' }
@@ -265,48 +265,48 @@ const CONFLICTS = [
     text: 'Your latest campaign went viral... for the wrong reasons. The ad intended to be empowering is being called tone-deaf. There are already 15 parody versions. Your brand name is trending with 🤡 emojis.',
     choices: [
       { text: 'Pull the campaign immediately', cost: 20000, brandEquity: -5, revMult: 0.9, ceoPat: -5, outcome: 'You eat the production cost and move on. The memes die in 48 hours. Your brand takes a small hit but recovers quickly. Marketing lesson: Kill your darlings fast. Sunk costs are sunk.' },
-      { text: 'Lean into the memes - repost and laugh at yourself', cost: 0, brandEquity: 0, revMult: 0.95, ceoPat: -5, luck: [0.5, { brandEquity: 7, revMult: 1.1, ceoPat: 10, override: 'MASTERCLASS in self-awareness. You repost the best parodies, create your own, and the narrative flips from "tone-deaf brand" to "brand with actual personality." Marketing blogs write about your response.' }], outcome: 'Laughing at yourself while people are genuinely upset reads as dismissive. The memes continue, now with "they think this is funny" added to the criticism. Marketing lesson: Self-deprecation only works when you\'re not the villain.' },
+      { text: 'Lean into the memes - repost and laugh at yourself', cost: 0, brandEquity: 0, revMult: 0.95, ceoPat: -5, luck: [0.5, { brandEquity: 7, revMult: 1.1, ceoPat: 10, override: 'MASTERCLASS. You repost the best parodies, create your own, and the narrative flips from "tone-deaf brand" to "brand with actual personality."' }], outcome: 'Laughing at yourself while people are genuinely upset reads as dismissive. The memes continue, now with "they think this is funny" added to the criticism. Marketing lesson: Self-deprecation only works when you\'re not the villain.' },
       { text: 'Double down: "We stand by our creative vision"', cost: 0, brandEquity: -14, revMult: 0.85, ceoPat: -10, luck: [0.2, { brandEquity: 8, revMult: 1.1, ceoPat: 10, override: 'Somehow your defiance resonates. "At least they have conviction," people say. Contrarians rally to your defense. You just became a cult brand by accident.' }], outcome: 'The "we stand by it" statement becomes its own meme. You are now the brand that doesn\'t listen to customers. Bold strategy. Marketing lesson: Conviction is admirable. Stubbornness is not.' },
-      { text: 'Quietly replace the ad and redirect the conversation ($5k)', cost: 5000, brandEquity: -1, revMult: 0.95, ceoPat: 0, outcome: 'You swap the creative, post something unrelated and upbeat, and slowly the conversation moves on. Not glamorous, but effective. Marketing lesson: After a crisis, sometimes the most effective move is simply showing up normal the next day.' }
+      { text: 'Quietly replace the ad and redirect the conversation ($5k)', cost: 5000, brandEquity: -1, revMult: 0.95, ceoPat: 0, outcome: 'You swap the creative, post something upbeat, and the conversation moves on. Not glamorous, but effective. Marketing lesson: Sometimes the best crisis move is simply showing up normal the next day.' }
     ]
   },
   {
     id: 'recession', type: 'market', title: '📉 Recession Vibes',
     text: 'The economy is shaking. Consumer confidence is down. Your category is seeing 15% declines across the board. The board wants to know: do you cut marketing or lean in while competitors retreat?',
     choices: [
-      { text: 'Cut marketing spend 30% to preserve runway', cost: -30000, brandEquity: -8, revMult: 0.8, ceoPat: 3, outcome: 'You survive but shrink. Every marketing textbook says this is the wrong move, but the CFO\'s relief is palpable. You\'ll spend months rebuilding what you cut. Marketing lesson: Brands that cut during recessions lose market share they never recover.' },
-      { text: 'Maintain spending - grab market share while competitors hide', cost: 0, brandEquity: 8, revMult: 0.9, ceoPat: -10, outcome: 'Revenue dips and the CFO is furious — you spent budget while the top line shrank. Your share of voice is up, but share of voice doesn\'t pay the bills today. If the recovery comes soon, this looks like genius. If it doesn\'t, it looks like recklessness. Marketing lesson: Spending through a downturn is a trade: short-term pain for long-term gain.' },
+      { text: 'Cut marketing spend 30% to preserve runway', cost: -30000, brandEquity: -8, revMult: 0.8, ceoPat: 3, outcome: 'You survive but shrink. Every textbook says this is wrong, but the CFO\'s relief is palpable. You\'ll spend months rebuilding. Marketing lesson: Brands that cut during recessions lose share they never recover.' },
+      { text: 'Maintain spending - grab market share while competitors hide', cost: 0, brandEquity: 8, revMult: 0.9, ceoPat: -10, outcome: 'Revenue dips and the CFO is furious. Share of voice is up, but that doesn\'t pay bills today. If the recovery comes soon, this looks like genius. If not, recklessness. Marketing lesson: Spending through a downturn is a trade: short-term pain for long-term gain.' },
       { text: 'Shift to value messaging and practical positioning ($10k)', cost: 10000, brandEquity: 3, revMult: 0.95, ceoPat: 5, outcome: 'Smart pivot. "Why {product} is worth it, even now" resonates with anxious consumers. You don\'t look out of touch, and you don\'t look desperate. Marketing lesson: Match your messaging to the moment.' },
-      { text: 'Go AGGRESSIVE: "Buy when there\'s blood in the streets" ($50k extra)', cost: 50000, brandEquity: 5, revMult: 0.85, ceoPat: -15, luck: [0.4, { brandEquity: 9, revMult: 1.3, ceoPat: 15, override: 'LEGENDARY MOVE. You gobbled up cheap ad inventory, hired two people your competitor laid off, and when the market rebounds, you EXPLODE. Marketing case studies will be written about this.' }], outcome: 'You burn through cash during a downturn. The board is apoplectic. Revenue doesn\'t spike because consumer spending is DOWN regardless of your ad spend. Marketing lesson: You can\'t advertise your way out of a recession.' }
+      { text: 'Go AGGRESSIVE: "Buy when there\'s blood in the streets" ($50k extra)', cost: 50000, brandEquity: 5, revMult: 0.85, ceoPat: -15, luck: [0.4, { brandEquity: 9, revMult: 1.3, ceoPat: 15, override: 'LEGENDARY MOVE. Cheap ad inventory, two hires from your competitor\'s layoffs, and when the market rebounds, you EXPLODE. Case studies will be written about this.' }], outcome: 'You burn through cash during a downturn. The board is apoplectic. Revenue doesn\'t spike because consumer spending is DOWN regardless of your ad spend. Marketing lesson: You can\'t advertise your way out of a recession.' }
     ]
   },
   {
     id: 'press_feature', type: 'positive', title: '📰 Glowing Press Coverage',
     text: 'A major newspaper just published a feature: "How {product} Is Changing the {industry}." The article is overwhelmingly positive. Your PR team is popping champagne at 10am (acceptable in PR).',
     choices: [
-      { text: 'Maximize it: social amplification + email blast + landing page ($8k)', cost: 8000, brandEquity: 9, revMult: 1.2, ceoPat: 15, outcome: 'You squeeze every drop of value from that feature. "As Featured In..." becomes your new email signature, website banner, and conversation starter. Marketing lesson: Earned media has a multiplier effect when properly amplified.' },
-      { text: 'Use it to pitch more outlets - ride the press wave ($3k)', cost: 3000, brandEquity: 6, revMult: 1.1, ceoPat: 10, outcome: 'Other outlets pick up the story. Other outlets and three podcasts want to interview you. Press begets press. Marketing lesson: PR momentum compounds. One story can become ten.' },
+      { text: 'Maximize it: social amplification + email blast + landing page ($8k)', cost: 8000, brandEquity: 9, revMult: 1.2, ceoPat: 15, outcome: 'You squeeze every drop of value. "As Featured In..." becomes your email signature, website banner, and conversation starter. Marketing lesson: Earned media has a multiplier effect when amplified.' },
+      { text: 'Use it to pitch more outlets - ride the press wave ($3k)', cost: 3000, brandEquity: 6, revMult: 1.1, ceoPat: 10, outcome: 'Other outlets pick up the story. Three podcasts want interviews. Press begets press. Marketing lesson: PR momentum compounds. One story can become ten.' },
       { text: 'Negotiate a sponsored content series with the paper ($60k)', cost: 60000, brandEquity: 8, revMult: 1.15, ceoPat: 5, outcome: 'The sponsored content is professional but everyone can tell it\'s an ad. It\'s fine, but lacks the magic of the original organic feature. Marketing lesson: You can\'t buy what earned media gives you for free.' },
-      { text: 'Stay humble - just share it once and move on', cost: 0, brandEquity: 6, revMult: 1.05, ceoPat: 0, outcome: 'Understated. Some people respect the humility. Your CEO, however, is furious you\'re not making a bigger deal of it. Marketing lesson: In the attention economy, modesty is a luxury few brands can afford.' }
+      { text: 'Stay humble - just share it once and move on', cost: 0, brandEquity: 6, revMult: 1.05, ceoPat: 0, outcome: 'Some respect the humility. Your CEO is furious you\'re not making a bigger deal of it. Marketing lesson: In the attention economy, modesty is a luxury few can afford.' }
     ]
   },
   {
     id: 'community_love', type: 'positive', title: '💕 Organic Community Growth',
     text: 'Something beautiful is happening. Without any paid effort, a community of {product} fans has formed. They have forums (12k members), a community server (8k), and they\'re creating memes, fan art, and unboxing videos. This is the holy grail.',
     choices: [
-      { text: 'Nurture it: dedicate resources to community management ($12k)', cost: 12000, brandEquity: 9, revMult: 1.15, ceoPat: 10, outcome: 'You hire a community manager who actually Gets It. They engage authentically, share insider content, and the community grows 3x in a month. These are your most loyal customers. Marketing lesson: Community is the most undervalued marketing channel.' },
+      { text: 'Nurture it: dedicate resources to community management ($12k)', cost: 12000, brandEquity: 9, revMult: 1.15, ceoPat: 10, outcome: 'You hire a community manager who Gets It. Authentic engagement, insider content, and the community grows 3x in a month. Marketing lesson: Community is the most undervalued marketing channel.' },
       { text: 'Monetize it: launch an ambassador/referral program ($8k)', cost: 8000, brandEquity: 5, revMult: 1.2, ceoPat: 15, outcome: 'The referral program converts community love into revenue. Some purists grumble about "selling out," but most people appreciate the discount codes. Marketing lesson: There\'s a thin line between empowering a community and exploiting it.' },
-      { text: 'Join it as the brand - post directly in the community', cost: 0, brandEquity: 8, revMult: 1.05, ceoPat: 5, luck: [0.5, { brandEquity: 7, revMult: 1.15, ceoPat: 10, override: 'Your brand\'s presence in the community is welcomed with open arms! They love that you\'re "one of them." Direct feedback improves your product AND your marketing.' }], outcome: 'The community has mixed feelings about the brand showing up in "their" space. Some welcome it, others feel like the cool indie thing just got corporate. Tread carefully. Marketing lesson: Brands entering organic communities should listen 10x more than they speak.' },
-      { text: 'Leave it alone - organic is organic, don\'t ruin it', cost: 0, brandEquity: 5, revMult: 1.05, ceoPat: -5, outcome: 'The community continues to grow naturally. No intervention, no interference. It\'s authentic and pure. The CEO wanted you to monetize it, but some things are better left untouched. Marketing lesson: Sometimes doing nothing is the right decision.' }
+      { text: 'Join it as the brand - post directly in the community', cost: 0, brandEquity: 8, revMult: 1.05, ceoPat: 5, luck: [0.5, { brandEquity: 7, revMult: 1.15, ceoPat: 10, override: 'The community welcomes you with open arms. They love that you\'re "one of them." Direct feedback improves both product and marketing.' }], outcome: 'Mixed feelings about the brand showing up in "their" space. Some welcome it, others feel the cool indie thing just got corporate. Marketing lesson: Brands entering organic communities should listen 10x more than they speak.' },
+      { text: 'Leave it alone - organic is organic, don\'t ruin it', cost: 0, brandEquity: 5, revMult: 1.05, ceoPat: -5, outcome: 'The community grows naturally. Authentic and pure. The CEO wanted you to monetize it, but some things are better left untouched. Marketing lesson: Sometimes the right move is no move at all.' }
     ]
   },
   {
     id: 'rebrand_tempt', type: 'pressure', title: '🎨 The Rebrand Temptation',
     text: 'Your agency (or your designer, if you didn\'t hire an agency) pitches a complete rebrand. New logo, new colors, new messaging, new everything. The mockups are stunning. But you\'re only {month} months in...',
     choices: [
-      { text: 'Full rebrand! Out with the old! ($60k)', cost: 60000, brandEquity: -18, revMult: 0.85, ceoPat: -10, luck: [0.3, { brandEquity: 9, revMult: 1.1, ceoPat: 10, override: 'Against all odds, the rebrand is a SMASH. The new identity perfectly captures the zeitgeist. Customers love it. Design blogs feature it. You just pulled off the riskiest move in marketing.' }], outcome: 'You just reset 6 months of brand recognition to zero. Existing customers are confused. "Is this the same company?" Your SEO tanks as the brand name change destroys search equity. Marketing lesson: Rebranding mid-launch is like changing planes mid-flight.' },
+      { text: 'Full rebrand! Out with the old! ($60k)', cost: 60000, brandEquity: -18, revMult: 0.85, ceoPat: -10, luck: [0.3, { brandEquity: 9, revMult: 1.1, ceoPat: 10, override: 'The rebrand is a SMASH. The new identity captures the zeitgeist perfectly. Design blogs feature it. Riskiest move in marketing, pulled off.' }], outcome: 'You just reset months of brand recognition to zero. Customers are confused. SEO tanks. Marketing lesson: Rebranding mid-launch is like changing planes mid-flight.' },
       { text: 'Minor refresh - keep the core, update the edges ($15k)', cost: 15000, brandEquity: 3, revMult: 1.0, ceoPat: 5, outcome: 'A sensible evolution. New brand photography, tightened messaging, updated social templates. Familiar enough to keep recognition, fresh enough to feel current. Marketing lesson: Brand evolution > brand revolution.' },
-      { text: 'Stick with what we have', cost: 0, brandEquity: 1, revMult: 1.0, ceoPat: 0, outcome: 'Consistency is an underrated superpower. Your brand may not be perfect, but people recognize it. In a world of constant change, staying the course IS a strategy. Marketing lesson: Consistency builds recognition. Recognized brands earn trust. Trust drives revenue.' },
+      { text: 'Stick with what we have', cost: 0, brandEquity: 1, revMult: 1.0, ceoPat: 0, outcome: 'Consistency is underrated. Your brand isn\'t perfect, but people recognize it. Marketing lesson: Consistency builds recognition. Recognition builds trust. Trust drives revenue.' },
       { text: 'Fire the agency for suggesting this', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: 0, outcome: 'Dramatic. The agency is stunned. (They also bill you for the pitch work: $8k.) But your message is clear: we\'re focused on execution, not decoration. Marketing lesson: Know when creativity serves strategy and when it derails it.' }
     ]
   },
@@ -315,9 +315,9 @@ const CONFLICTS = [
     condition: (g) => g.product !== 'software',
     text: 'Your manufacturer just called: production delays mean you\'ll have 60% less inventory for the next 6 weeks. Your best-selling SKU is already out of stock. Customer service is drowning in "where\'s my order" emails.',
     choices: [
-      { text: 'Pause marketing completely until supply stabilizes', cost: 0, brandEquity: -6, revMult: 0.5, ceoPat: -10, outcome: 'Revenue craters but at least you\'re not advertising something people can\'t buy. The dark period feels like an eternity. Your team starts "exploring other opportunities." Marketing lesson: Going dark is rarely the right answer - you\'re ceding ground to competitors.' },
+      { text: 'Pause marketing completely until supply stabilizes', cost: 0, brandEquity: -6, revMult: 0.5, ceoPat: -10, outcome: 'Revenue craters, but at least you\'re not advertising what people can\'t buy. The dark period feels like an eternity. Marketing lesson: Going dark is rarely the right answer — you\'re ceding ground to competitors.' },
       { text: 'Pivot to waitlist / pre-order strategy ($10k)', cost: 10000, brandEquity: 4, revMult: 0.7, ceoPat: 5, outcome: 'Scarcity becomes a feature, not a bug. "Join the waitlist" creates FOMO. When products ship, the unboxing content is GRATEFUL, not entitled. Marketing lesson: Scarcity + transparency = desire.' },
-      { text: 'Keep marketing but shift to brand storytelling', cost: 5000, brandEquity: 3, revMult: 0.6, ceoPat: 0, outcome: 'You use the downtime to invest in content: founder story, behind-the-scenes, production quality. People fall in love with the brand before they can even buy. Marketing lesson: A great story can inspire people to take action — including opening their wallets.' },
+      { text: 'Keep marketing but shift to brand storytelling', cost: 5000, brandEquity: 3, revMult: 0.6, ceoPat: 0, outcome: 'You use the downtime for content: founder story, behind-the-scenes, production quality. People fall in love with the brand before they can buy. Marketing lesson: A great story inspires action — including opening wallets.' },
       { text: 'Source from a backup manufacturer at 2x cost ($30k premium)', cost: 30000, brandEquity: -5, revMult: 0.9, ceoPat: 0, outcome: 'Product keeps flowing, but margins are razor-thin. The backup quality is slightly lower. Three 1-star reviews mention it. Marketing lesson: Quality consistency IS marketing.' }
     ]
   },
@@ -325,9 +325,9 @@ const CONFLICTS = [
     id: 'hockey_stick', type: 'pressure', title: '📈 The Hockey Stick',
     text: 'Revenue just popped 1,500% overnight. The CEO is popping champagne and asking what lever you pulled. But your attribution dashboard is empty and you have no idea what\'s driving the spike in sales. Do you take the credit or check the receipts?',
     choices: [
-      { text: '"I optimized the funnel. It\'s paying off." (Claim Credit)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -50, gameOver: 0.3, luck: [0.25, { ceoPat: 100, override: 'It was real! A mega-influencer tweeted about {product} and sales exploded organically. You\'re a genius — or at least everyone thinks you are. The CEO gives you a standing ovation at the all-hands. Marketing lesson: Sometimes it\'s better to be lucky than good.' }], outcome: 'Finance walks in with a grim face. "Those orders? Credit card testing fraud from a bot farm in Eastern Europe." The refunds destroy your Q3 net revenue. The CEO stares at you. "You said this was YOUR strategy." Marketing lesson: Never claim credit for numbers you can\'t explain.' },
-      { text: '"Let me verify the data source first." (Investigate)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, weakAnalyticsPenalty: true, luck: [0.8, { ceoPat: 20, cost: -50000, override: 'You find 10,000 fraudulent orders and block them before shipping. You just saved the company $50k in shipping costs. The CEO respects the diligence. "This is why we have you." Marketing lesson: It pays to do the unglamorous data work.' }], outcome: 'It was real sales. An organic forum thread drove genuine traffic. And you just told the CEO you "needed to verify" your own numbers. "Do you... not know what\'s happening in your own department?" Marketing lesson: Sometimes the data is real and hesitation costs you credibility.' },
-      { text: '"Our AI-driven omnichannel synergy is kicking in." (Buzzword Bluff)', cost: 0, brandEquity: -5, revMult: 1.0, ceoPat: -40, luck: [0.5, { ceoPat: 10, brandEquity: 0, cost: 20000, override: 'The CEO nods blankly. "Good. Keep... synergizing." You survive the meeting. But Finance discovers the fraud next month — costing you $20k in chargebacks. Marketing lesson: Buzzwords buy time, not results.' }], outcome: 'The CEO perks up. "Excellent! Present the full attribution model to the Board tomorrow." You spend all night faking a slide deck. The Board asks three follow-up questions you can\'t answer. Your credibility craters. Marketing lesson: If you can\'t explain it simply, you don\'t understand it — and neither does your slide deck.' },
+      { text: '"I optimized the funnel. It\'s paying off." (Claim Credit)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -50, gameOver: 0.3, luck: [0.25, { ceoPat: 100, override: 'It was real! A mega-influencer tweeted about {product} and sales exploded. You\'re a genius — or at least everyone thinks you are. Marketing lesson: Sometimes it\'s better to be lucky than good.' }], outcome: 'Finance walks in. "Those orders? Credit card fraud from a bot farm." The refunds destroy your Q3 revenue. The CEO stares at you. "You said this was YOUR strategy." Marketing lesson: Never claim credit for numbers you can\'t explain.' },
+      { text: '"Let me verify the data source first." (Investigate)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, weakAnalyticsPenalty: true, luck: [0.8, { ceoPat: 20, cost: -50000, override: 'You find 10,000 fraudulent orders and block them before shipping — saving $50k. The CEO respects the diligence. "This is why we have you." Marketing lesson: The unglamorous data work pays off.' }], outcome: 'It was real sales. An organic forum thread drove genuine traffic. And you just told the CEO you "needed to verify" your own numbers. "Do you... not know what\'s happening in your department?" Marketing lesson: Sometimes hesitation costs you credibility.' },
+      { text: '"Our AI-driven omnichannel synergy is kicking in." (Buzzword Bluff)', cost: 0, brandEquity: -5, revMult: 1.0, ceoPat: -40, luck: [0.5, { ceoPat: 10, brandEquity: 0, cost: 20000, override: 'The CEO nods blankly. "Good. Keep... synergizing." You survive the meeting. But Finance discovers the fraud next month — costing you $20k in chargebacks. Marketing lesson: Buzzwords buy time, not results.' }], outcome: '"Excellent! Present the attribution model to the Board tomorrow." You spend all night faking a deck. The Board asks three questions you can\'t answer. Credibility craters. Marketing lesson: If you can\'t explain it simply, you don\'t understand it.' },
       { text: '"Gen Z found us. We must be trending on social media." (Hype Gamble)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -60, luck: [0.1, { ceoPat: 150, override: 'You check social media and... you actually ARE trending. A creator with 5M followers made a meme about {product}. The CEO promotes you to "Chief Hype Officer" on the spot. Marketing lesson: Even a blind squirrel finds a nut sometimes.' }], outcome: 'You check social media. You have 4 views — three of which are you. The sales are bots. The CEO asks if you actually know what "Skibidi" means. You do not. An uncomfortable silence fills the room. Marketing lesson: "We\'re viral" is not a strategy. It\'s a prayer.' }
     ]
   },
@@ -336,8 +336,8 @@ const CONFLICTS = [
     condition: (g) => ['premium', 'lifestyle'].includes(g.positioning) && g.product !== 'software',
     text: 'The first 50,000 units of {product} just arrived from the factory. They look beautiful. Except the tagline reads: "World Class Koala Tea." Somebody in production thought it was intentional. You launch in 48 hours.',
     choices: [
-      { text: '"It\'s not a typo. It\'s a Save the Wildlife campaign." (Lean In)', cost: 15000, brandEquity: 0, revMult: 1.0, ceoPat: -5, luck: [0.25, { brandEquity: 7, revMult: 1.15, ceoPat: 10, override: 'The "Koala Tea" limited edition becomes a collector\'s item! People are reselling them for 3x online. You donate 1% to a koala sanctuary. The internet loves it. Marketing lesson: Sometimes the most memorable campaigns start as accidents.' }], outcome: 'Premium customers don\'t want "quirky." They want flawless. Returns spike 20%. "Wait, do you sell {product} or tea?" Support tickets flood in asking for brewing instructions. Marketing lesson: Premium positioning means premium execution. Every. Single. Time.' },
-      { text: '"Trash them. Reprint everything." (Nuclear Option)', cost: 35000, brandEquity: 2, revMult: 0.95, ceoPat: -15, outcome: 'You miss the launch date. The CEO\'s vein is visible from across the room. But the grammar is perfect and your brand integrity survives. Marketing lesson: The cost of fixing mistakes early is always less than the cost of explaining them later.' },
+      { text: '"It\'s not a typo. It\'s a Save the Wildlife campaign." (Lean In)', cost: 15000, brandEquity: 0, revMult: 1.0, ceoPat: -5, luck: [0.25, { brandEquity: 7, revMult: 1.15, ceoPat: 10, override: '"Koala Tea" becomes a collector\'s item! Reselling for 3x online. You donate 1% to a koala sanctuary. The internet loves it. Marketing lesson: Sometimes the best campaigns start as accidents.' }], outcome: 'Premium customers don\'t want "quirky." Returns spike 20%. Support tickets flood in asking for brewing instructions. Marketing lesson: Premium positioning means premium execution. Every. Single. Time.' },
+      { text: '"Trash them. Reprint everything." (Nuclear Option)', cost: 35000, brandEquity: 2, revMult: 0.95, ceoPat: -15, outcome: 'You miss the launch date. The CEO\'s vein is visible from across the room. But the grammar is perfect and brand integrity survives. Marketing lesson: Fixing mistakes early always costs less than explaining them later.' },
       { text: '"Sticker over it. Ship them to the discount channel." (Compromise)', cost: 20000, brandEquity: -2, revMult: 1.0, ceoPat: 5, outcome: 'You salvage the misprints through discount outlets and get clean inventory into premium channels. The team stays all night putting stickers on boxes. One employee quits to work at a literal zoo. Marketing lesson: Creative problem-solving beats perfectionism.' }
     ]
   },
@@ -345,9 +345,9 @@ const CONFLICTS = [
     id: 'visionary_ceo', type: 'pressure', title: '🎨 The "Creative" Director',
     text: 'It\'s 11 PM on a Friday. The CEO just messaged you a mocked-up ad they made in a free design tool. It uses Comic Sans, three different shades of neon green, and a meme format from 2014. They say: "I think this is the bold direction {product} has been missing."',
     choices: [
-      { text: '"Love the energy! Let\'s A/B test it." (Yes Man)', cost: 5000, brandEquity: -8, revMult: 0.95, ceoPat: 15, luck: [0.5, { brandEquity: -2, revMult: 1.0, ceoPat: 8, neutral: true, override: 'The A/B test kills the idea with data and the CEO accepts it. But your creative director pulls you aside: "You ran a test on Comic Sans? You couldn\'t just say no?" The team feels you don\'t trust their judgment. Marketing lesson: Testing obviously bad work signals to your team that you don\'t have a spine.' }], outcome: 'You spend $5k producing the CEO\'s "vision." The result looks like a fever dream. Customers are confused. Your design team considers a group resignation. The CEO blames you for "executing it poorly." Marketing lesson: Saying yes to every executive idea is a fast track to brand incoherence.' },
-      { text: '"Fascinating. Let me run a quick focus group." (Slow Roll)', cost: 2000, brandEquity: 0, revMult: 1.0, ceoPat: -5, outcome: 'The focus group buys you time. Results come back mixed (you made sure the questions were framed that way). "The data doesn\'t support a pivot right now." The CEO forgets about it by Monday. Marketing lesson: Data gives you a diplomatic way to say no. Hard to argue with a focus group.' },
-      { text: '"With respect, please never open a design tool again." (Hard Truth)', cost: 0, brandEquity: 2, revMult: 1.0, ceoPat: -15, luck: [0.2, { ceoPat: 15, brandEquity: 5, override: 'The CEO stares at you for an uncomfortable 8 seconds. Then: "You know what? I respect that. Nobody else has the guts to push back." You just earned something money can\'t buy: executive trust. Marketing lesson: Respectful pushback is a leadership skill.' }], outcome: 'The CEO\'s face goes blank. "I see." The next three meetings are tense. Your budget review is suddenly "re-prioritized." You were right, but being right doesn\'t always win. Marketing lesson: HOW you deliver the truth matters as much as the truth itself.' }
+      { text: '"Love the energy! Let\'s A/B test it." (Yes Man)', cost: 5000, brandEquity: -8, revMult: 0.95, ceoPat: 15, luck: [0.5, { brandEquity: -2, revMult: 1.0, ceoPat: 8, neutral: true, override: 'The A/B test kills the idea with data. But your creative director pulls you aside: "You ran a test on Comic Sans? You couldn\'t just say no?" Marketing lesson: Testing obviously bad work signals that you don\'t have a spine.' }], outcome: 'You produce the CEO\'s "vision." It looks like a fever dream. Customers are confused. Your design team considers a group resignation. Marketing lesson: Saying yes to every executive idea is a fast track to brand incoherence.' },
+      { text: '"Fascinating. Let me run a quick focus group." (Slow Roll)', cost: 2000, brandEquity: 0, revMult: 1.0, ceoPat: -5, outcome: 'The focus group buys you time. Results come back mixed (you framed the questions that way). "The data doesn\'t support a pivot." The CEO forgets by Monday. Marketing lesson: Data is a diplomatic way to say no.' },
+      { text: '"With respect, please never open a design tool again." (Hard Truth)', cost: 0, brandEquity: 2, revMult: 1.0, ceoPat: -15, luck: [0.2, { ceoPat: 15, brandEquity: 5, override: 'The CEO stares at you for 8 seconds. "You know what? I respect that. Nobody else pushes back." You just earned executive trust. Marketing lesson: Respectful pushback is a leadership skill.' }], outcome: 'The CEO\'s face goes blank. "I see." The next three meetings are tense. Your budget review is suddenly "re-prioritized." You were right, but being right doesn\'t always win. Marketing lesson: HOW you deliver the truth matters as much as the truth itself.' }
     ]
   },
   {
@@ -366,7 +366,7 @@ const CONFLICTS = [
     choices: [
       { text: '"AI is a tool, not a replacement." (The Defense)', cost: 0, brandEquity: 2, revMult: 1.0, ceoPat: -5, luck: [0.3, { ceoPat: 15, brandEquity: 5, override: 'The CFO pauses, then nods. "Fair enough. But I want a pilot program with metrics by next quarter." You get approved for an AI integration budget ON your terms. Marketing lesson: Defending your team with data earns respect.' }], outcome: 'The CFO sighs. The meeting notes read: "Marketing to revisit AI integration timeline." They trim your contractor budget by 10% anyway. Marketing lesson: You stood by your principles, but sometimes being principled has a cost.' },
       { text: '"Already on it. Let me fire the writers." (Malicious Compliance)', cost: 0, brandEquity: -6, revMult: 1.0, ceoPat: 10, luck: [0.8, { brandEquity: 3, revMult: 1.1, ceoPat: 20, cost: -15000, override: 'The AI copy is... actually fine? Content production triples. You save $15k/month. Your creative team hates you, but the CFO calls you "forward-thinking" in the next all-hands. Marketing lesson: Sometimes the expedient answer is the right answer.' }], outcome: 'The AI writes a press release announcing a {product} feature that doesn\'t exist. Legal has a panic attack. You rehire the writers at a 20% premium. Marketing lesson: You can outsource the work to AI, but you can\'t outsource the responsibility.' },
-      { text: '"We\'re deploying LLM-driven semantic optimization layers." (Buzzword Salad)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, luck: [0.6, { ceoPat: 15, override: 'The CFO nods slowly. Nobody wants to admit they don\'t know what "semantic optimization" means. Meeting adjourns early. You survived another quarter. Marketing lesson: Sometimes the meta-strategy is managing the room, not the work.' }], outcome: 'The CTO is in the room. She asks on the spot: "Which LLM are you fine-tuning and what\'s your attribution model?" You don\'t have answers. The silence says everything. Marketing lesson: If you can\'t explain it simply, someone in the room WILL call your bluff.' }
+      { text: '"We\'re deploying LLM-driven semantic optimization layers." (Buzzword Salad)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, luck: [0.6, { ceoPat: 15, override: 'The CFO nods slowly. Nobody wants to admit they don\'t know what "semantic optimization" means. Meeting adjourns early. You survived another quarter. Marketing lesson: Sometimes the meta-strategy is managing the room, not the work.' }], outcome: 'The CTO is in the room. "Which LLM are you fine-tuning and what\'s your attribution model?" You don\'t have answers. The silence says everything. Marketing lesson: If you can\'t explain it simply, someone WILL call your bluff.' }
     ]
   }
 ];
@@ -1126,7 +1126,7 @@ function evaluateMonth1Congruency() {
     findings.push({
       type: 'neutral',
       title: 'Steady Launch',
-      text: `${G.productName} hits the market without major surprises. A solid, unremarkable start. The real test comes next month.`,
+      text: `${G.productName} hits the market without major surprises. A solid, unremarkable start.`,
       revMult: 1.0, ceoPat: 0, brandEquity: 0
     });
   }
@@ -1491,23 +1491,6 @@ function getConflictCallback(conflictId, isGood) {
     if (G.brandTier === 'worldClass' && isGood) lines.push("Your world-class brand identity gave you credibility that helped here.");
   }
 
-  // Positioning-specific callbacks (overlaid on any conflict)
-  if (G.positioning === 'premium' && G.brandEquity < 30) {
-    lines.push("As a premium brand, underinvesting in brand equity leaves you especially exposed.");
-  }
-  if (G.positioning === 'lifestyle' && G.brandEquity < 30) {
-    lines.push("As a lifestyle brand, underinvesting in brand equity leaves you especially exposed.");
-  }
-  if (G.positioning === 'value' && G.allocation.events > 0) {
-    lines.push("Your value positioning means events spending has little impact — performance marketing would serve you better.");
-  }
-  if (G.positioning === 'lifestyle' && G.team.pr === 'skip') {
-    lines.push("Lifestyle brands live and die by PR & influencer perception. Skipping PR was a risky call.");
-  }
-  if (['enterprise', 'government'].includes(G.positioning) && G.allocation.events === 0) {
-    lines.push("Enterprise and government audiences expect event presence. Skipping that channel hurts your credibility.");
-  }
-
   return lines.length > 0 ? lines[0] : '';
 }
 
@@ -1664,6 +1647,11 @@ function generateMonthInsights() {
     lines.push(`Brand equity (${Math.round(G.brandEquity)}) is low, which will limit your holiday season multiplier.`);
   }
 
+  // Positioning-specific allocation flags
+  if (G.positioning === 'value' && alloc.events > 0) {
+    lines.push('Events spend on a value product is low-ROI — your customers want deals, not pop-up shops. Consider reallocating to performance or PR.');
+  }
+
   // In-house ONLY: one clear, non-contradictory recommendation
   if (dataLevel === 'ft' && monthsLeft >= 1) {
     let rec = '';
@@ -1717,8 +1705,23 @@ function generateConflictInsights(conflictResult) {
     lines.push(`CEO confidence dropped significantly (${r.effects.ceoPat}). ${G.ceoPat < 30 ? 'CEO vibes are now in a critical zone. Further drops risk termination.' : 'Monitor this metric — consistent drops make it harder to recover.'}`);
   }
   if (r.effects.revMult && r.effects.revMult !== 1) {
-    if (r.effects.revMult < 1) lines.push(`This choice will reduce your upcoming monthly revenue — expect roughly ${Math.round(r.effects.revMult * 100)}% of what you would earn otherwise. One-time effect, does not carry forward.`);
-    else lines.push(`This choice will boost your upcoming monthly revenue by roughly ${Math.round((r.effects.revMult - 1) * 100)}%. One-time effect, does not carry forward.`);
+    if (r.effects.revMult < 1) {
+      const pct = Math.round(r.effects.revMult * 100);
+      const isTradeoff = r.effects.brandEquity > 0 && r.effects.revMult >= 0.85;
+      if (isTradeoff) {
+        lines.push(`Short-term revenue tradeoff: expect roughly ${pct}% of normal this month. One-time cost, does not carry forward — and the brand equity gain should compound in your favor.`);
+      } else {
+        lines.push(`This choice will reduce your upcoming monthly revenue — expect roughly ${pct}% of what you would earn otherwise. One-time effect, does not carry forward.`);
+      }
+    } else {
+      const boostPct = Math.round((r.effects.revMult - 1) * 100);
+      const isCostlyBoost = r.effects.brandEquity < -5;
+      if (isCostlyBoost) {
+        lines.push(`Revenue boost of roughly ${boostPct}% this month — but at the cost of brand equity. Short-term gain, long-term risk.`);
+      } else {
+        lines.push(`This choice will boost your upcoming monthly revenue by roughly ${boostPct}%. One-time effect, does not carry forward.`);
+      }
+    }
   }
   if (r.effects.futureRevBonus) {
     lines.push(`This decision provides a permanent ${Math.round(r.effects.futureRevBonus * 100)}% revenue bonus for all remaining months — a compounding benefit.`);
@@ -1731,6 +1734,19 @@ function generateConflictInsights(conflictResult) {
     }
     if (G.ceoPat < 25) {
       lines.push('<strong>Alert:</strong> CEO confidence is critically low. Focus on revenue growth and avoid risky conflict choices until vibes recover.');
+    }
+  }
+
+  // Positioning-specific insights (agency or in-house only)
+  if (dataLevel !== 'skip') {
+    if ((G.positioning === 'premium' || G.positioning === 'lifestyle') && G.brandEquity < 30) {
+      lines.push(`As a ${G.positioning} brand, low brand equity (${Math.round(G.brandEquity)}) is especially risky. Prioritize brand spend to recover.`);
+    }
+    if (G.positioning === 'lifestyle' && G.team.pr === 'skip') {
+      lines.push('Lifestyle brands rely heavily on PR & influencer perception. Skipping PR limits your reach.');
+    }
+    if (['enterprise', 'government'].includes(G.positioning) && G.allocation.events === 0) {
+      lines.push('Enterprise and government audiences expect event presence. Skipping that channel hurts credibility.');
     }
   }
 
@@ -1826,15 +1842,6 @@ function renderStatsBar() {
   const equityColor = G.brandEquity >= 60 ? 'green' : G.brandEquity >= 30 ? 'amber' : 'red';
   const ceoColor = G.ceoPat >= 60 ? 'green' : G.ceoPat >= 30 ? 'amber' : 'red';
 
-  // Run rate calculation
-  const alloc = G.allocation;
-  const monthlyBurn = alloc.brand + alloc.performance + alloc.pr + alloc.events + G.teamCostPerMonth;
-  const monthsLeft = Math.max(1, 12 - G.turn + 1);
-  const runwayMonths = monthlyBurn > 0 ? Math.floor(G.budget / monthlyBurn) : 99;
-  // First half: only warn if runway is 2+ months short. Second half: warn if any shortfall.
-  const inFirstHalf = G.turn <= 6;
-  const runRateWarning = inFirstHalf ? (runwayMonths < monthsLeft - 1) : (runwayMonths < monthsLeft);
-
   // Revenue pacing color: annualize based on months played (scaled to $50M target)
   let revColor = 'money';
   if (G.turn >= 1 && G.monthlyRevenue.length > 0) {
@@ -1848,8 +1855,6 @@ function renderStatsBar() {
 
   return `<div class="stats-bar">
     <div class="stat"><div class="label">Title</div><div class="value">${rankInfo.icon} ${rankInfo.short}</div></div>
-    <div class="stat"><div class="label">Budget</div><div class="value money">${fmtFull(G.budget)}</div>
-      ${G.turn >= 1 ? `<div style="font-size:.6rem;margin-top:3px;color:${runRateWarning ? 'var(--red)' : 'var(--muted)'}">~${runwayMonths}mo at this pace${runRateWarning ? ' ⚠️' : ''}</div>` : ''}</div>
     <div class="stat"><div class="label">Revenue</div><div class="value ${revColor}">${fmtFull(G.totalRevenue)}</div>${G.monthlyRevenue.length > 1 ? `<div class="sparkline">${G.monthlyRevenue.map(r => {
       const maxRev = Math.max(...G.monthlyRevenue);
       const h = maxRev > 0 ? Math.round((r / maxRev) * 18) + 2 : 2;
@@ -1981,7 +1986,7 @@ function renderTeamBuilding() {
         <div>
           <div style="font-weight:600">${r.icon} ${r.name}</div>
         </div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <div style="display:flex;gap:4px;flex-wrap:nowrap">
           <button class="radio-btn ${sel === 'ft' ? 'active' : ''}" data-action="setTeam" data-role="${r.id}" data-choice="ft">
             In-House ${fmt(r.ftCost)}/mo
           </button>
@@ -1995,6 +2000,7 @@ function renderTeamBuilding() {
       </div>
       <div style="font-size:.75rem;color:var(--muted);margin-top:8px">
         ${effectLabel}
+        ${r.id === 'data' && sel ? '<div style="margin-top:4px;color:var(--muted)">' + (sel === 'ft' ? 'Revenue forecasts will be accurate to ±15%.' : sel === 'agency' ? 'Revenue forecasts will be accurate to ±35%.' : 'Revenue forecasts will be rough guesses (±50%).') + '</div>' : ''}
       </div>
     </div>`;
   }).join('');
@@ -2022,7 +2028,7 @@ function renderTeamBuilding() {
       <button class="help-btn ${helpActive ? 'active' : ''}" data-action="toggleHelp" data-value="teamBuilding">?</button>
     </div>
     ${helpActive ? `<div class="help-overlay">${getTeamBuildingHelp()}</div>` : ''}
-    <div class="section-sub">Hiring costs money every month but makes everything work better. Skipping saves cash but hurts you later.</div>
+    <div class="section-sub">Hire in-house for better results, agencies for cheaper coverage, or skip to save budget.</div>
     <div class="section-sub" style="margin-top:0">Monthly team burn: <strong class="text-amber">${fmt(totalCost)}/mo</strong> (${fmt(totalSpend)}/year)</div>
     <div class="card" style="padding:12px;margin-bottom:15px">
       <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px">
@@ -2103,7 +2109,7 @@ function renderPreLaunch() {
       <button class="help-btn ${helpActive ? 'active' : ''}" data-action="toggleHelp" data-value="preLaunch">?</button>
     </div>
     ${helpActive ? `<div class="help-overlay">${getPreLaunchHelp()}</div>` : ''}
-    <div class="section-sub">Build your marketing engine before you hit the gas.</div>
+    <div class="section-sub" style="text-align:center">Build your marketing engine before you hit the gas.</div>
 
     <h3 style="margin-top:20px;margin-bottom:8px">🎨 Brand Identity</h3>
     <div class="tier-group">${brandCards}</div>
@@ -2127,7 +2133,7 @@ function renderPreLaunch() {
       <div class="progress-bar" style="margin-top:10px"><div class="fill ${commitColor}" style="width:${commitPct}%"></div></div>
       <div style="margin-top:10px;font-size:.85rem;color:var(--muted);text-align:center">You'll have <strong class="text-amber">${fmt(5000000 - totalCommitment)}</strong> remaining to spend over the next 12 months.</div>
       ${totalCommitment > 5000000 ? '<div style="margin-top:10px;font-size:.85rem;color:var(--red);text-align:center;font-weight:600">⚠️ You are projected to go over budget this year.</div>' : ''}
-      ${totalCommitment < 2000000 && canProceed ? '<div style="margin-top:10px;font-size:.85rem;color:var(--amber);text-align:center">💡 Your launch is looking a little light. That\'s okay if it\'s intentional — but remember, unspent budget doesn\'t go back in your pocket. It just means you left growth on the table.</div>' : ''}
+      ${totalCommitment < 2000000 && canProceed ? '<div style="margin-top:10px;font-size:.85rem;color:var(--amber);text-align:center">💡 Your launch is light. Unspent budget is wasted budget — you weren\'t hired to save money.</div>' : ''}
     </div>
 
     <div class="btn-group" style="margin-top:25px">
@@ -2156,7 +2162,7 @@ function renderPreLaunchSummary() {
       <div class="event-title">🚀 ${G.productName} is ready to launch!</div>
       <img src="${getProductImage()}" alt="${G.productName}" class="product-icon product-icon-md" style="margin:10px auto">
       <p><strong>${G.playerName}</strong>, ${G.title}, launching <strong>${G.productName}</strong> — a ${getPositioning().name.toLowerCase()} ${p.name.toLowerCase()} play.</p>
-      <p style="margin-top:10px"><strong>The game:</strong> 12 rounds. Each round: a crisis or opportunity hits, you choose how to respond, then set your monthly budget. Grow revenue, protect brand equity, and keep the CEO happy — or get replaced. Earn promotions along the way. Make CMO by year's end to win.</p>
+      <p style="margin-top:10px">One year to make CMO. Face monthly challenges, managing your budget and brand. Grow revenue and keep the CEO happy to climb the ladder... or get replaced.</p>
     </div>
 
     <div class="card">
@@ -2254,7 +2260,7 @@ function renderConflictResult() {
     <div class="outcome-box ${cls}">
       ${r.isLucky && !r.isNeutralLuck ? '<div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">🍀 Lucky Break!</div>' : ''}
       ${conflictResultImg ? `<img src="${conflictResultImg}" alt="" class="product-icon product-icon-sm" style="float:right;margin:0 0 8px 12px">` : ''}
-      <p>${r.outcome.replace(/\{product\}/g, G.productName).replace(/\{name\}/g, G.productName).replace(/\{industry\}/g, PRODUCTS[G.product].flavor).replace(/\{month\}/g, G.turn)}</p>
+      <p>${r.outcome.replace(/\{product\}/g, G.productName).replace(/\{name\}/g, G.productName).replace(/\{industry\}/g, PRODUCTS[G.product].flavor).replace(/\{month\}/g, G.turn).replace(/\s*Marketing lesson:.*$/, '')}</p>
       ${callbackLine ? `<div class="conflict-callback">${callbackLine}</div>` : ''}
       <div style="margin-top:12px;font-size:.85rem">${effectsText.join(' &nbsp;|&nbsp; ')}</div>
       ${r.outcome.includes('Marketing lesson: ') ? `<div class="lesson">💡 ${r.outcome.replace(/\{product\}/g, G.productName).split('Marketing lesson: ')[1]}</div>` : ''}
@@ -2272,6 +2278,34 @@ function getPresetForecast(presetAlloc) {
   return { rev: result.total, beChange };
 }
 
+function getForecastAccuracy() {
+  if (G.team.data === 'ft') return 0.15;
+  if (G.team.data === 'agency') return 0.35;
+  return 0.50;
+}
+
+function getFuzzyForecast(exactRev) {
+  const accuracy = getForecastAccuracy();
+  // Use a seeded-ish offset so it doesn't jump around on re-render, but changes each turn
+  const seed = (G.turn * 7 + 13) % 100 / 100; // 0-1 deterministic per turn
+  const offset = 1 + (seed * 2 - 1) * accuracy; // range: [1-accuracy, 1+accuracy]
+  return Math.round(exactRev * offset);
+}
+
+function forecastAccuracyLabel() {
+  if (G.team.data === 'ft') return '(±15% accuracy)';
+  if (G.team.data === 'agency') return '(±35% estimate)';
+  return '(±50% rough guess)';
+}
+
+function getRevPacingColor(projectedMonthlyRev) {
+  const monthsLeft = 12 - G.turn + 1;
+  const projectedTotal = G.totalRevenue + projectedMonthlyRev * monthsLeft;
+  if (projectedTotal >= 55000000) return 'var(--green)';
+  if (projectedTotal >= 35000000) return 'var(--amber)';
+  return 'var(--red)';
+}
+
 function renderAllocation() {
   const a = G.allocation;
   const total = a.brand + a.performance + a.pr + a.events;
@@ -2280,6 +2314,9 @@ function renderAllocation() {
   const monthsLeft = 12 - G.turn + 1;
   const suggested = Math.round(remaining / monthsLeft);
   const showAdvanced = G._showAdvancedAlloc || false;
+  const runwayMonths = totalWithTeam > 0 ? Math.floor(remaining / totalWithTeam) : 99;
+  const inFirstHalf = G.turn <= 6;
+  const runRateWarning = inFirstHalf ? (runwayMonths < monthsLeft - 1) : (runwayMonths < monthsLeft);
 
   // Build preset cards with forecasts — top 4 strategies + "Same as Last Month" separate
   const mainPresets = Object.entries(PRESETS).filter(([k, p]) => !p.isSame);
@@ -2293,7 +2330,6 @@ function renderAllocation() {
     return `<div class="preset-card ${isActive ? 'active' : ''}" data-action="applyPreset" data-value="${key}">
       <div class="preset-name">${p.name}</div>
       <div class="preset-spend">${fmt(presetTotal)}/mo spend</div>
-      <div class="preset-forecast">Projected: ~${fmt(forecast.rev)} revenue | Brand ${forecast.beChange >= 0 ? '+' : ''}${forecast.beChange.toFixed(1)}</div>
     </div>`;
   }).join('');
 
@@ -2301,14 +2337,12 @@ function renderAllocation() {
   if (samePreset && G._lastAllocation) {
     const [sKey, sP] = samePreset;
     const sAlloc = { ...G._lastAllocation };
-    const sForecast = getPresetForecast(sAlloc);
     const sTotal = sAlloc.brand + sAlloc.performance + sAlloc.pr + sAlloc.events;
     const sActive = a.brand === sAlloc.brand && a.performance === sAlloc.performance && a.pr === sAlloc.pr && a.events === sAlloc.events;
     sameAsLastCard = `<div style="text-align:center;margin-top:8px">
       <div class="preset-card same-as-last ${sActive ? 'active' : ''}" data-action="applyPreset" data-value="${sKey}" style="display:inline-block;width:auto;min-width:200px;cursor:pointer">
         <div class="preset-name">${sP.name}</div>
         <div class="preset-spend">${fmt(sTotal)}/mo spend</div>
-        <div class="preset-forecast">Projected: ~${fmt(sForecast.rev)} revenue</div>
       </div>
     </div>`;
   }
@@ -2331,9 +2365,7 @@ function renderAllocation() {
   return `<div class="screen">
     ${renderStatsBar()}
     <div class="section-title">Monthly Budget Allocation — Month ${G.turn}</div>
-    <div class="section-sub">
-      Team cost: ${fmt(G.teamCostPerMonth)}/mo (fixed) | Budget remaining: ${fmtFull(remaining)} | Suggested monthly: ~${fmt(suggested)}
-    </div>
+    <div class="section-sub">Choose a strategy or customize your spend.</div>
     <div class="preset-grid">${mainPresetCards}</div>
     ${sameAsLastCard}
     <div style="text-align:center;margin:12px 0">
@@ -2341,11 +2373,19 @@ function renderAllocation() {
     </div>
     ${showAdvanced ? `<div class="advanced-alloc">
       ${rows}
-      <div style="text-align:center;margin-top:10px;font-size:.8rem;color:var(--muted)">
-        Marketing spend: <strong class="text-amber">${fmt(total)}</strong> | Total: <strong class="${totalWithTeam > suggested ? 'text-red' : 'text-amber'}">${fmt(totalWithTeam)}/mo</strong> |
-        Projected: ~${fmt(customForecast.rev)} revenue
-      </div>
     </div>` : ''}
+
+    <div class="card" style="margin-top:20px;text-align:center">
+      <h3>💰 Budget Summary</h3>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;font-size:.85rem;text-align:left">
+        <div><span class="text-muted">Campaign spend:</span></div><div class="text-amber" style="text-align:right">${fmt(total)}/mo</div>
+        <div><span class="text-muted">+ Team cost:</span></div><div class="text-amber" style="text-align:right">${fmt(G.teamCostPerMonth)}/mo</div>
+        <div style="border-top:1px solid var(--border);padding-top:8px"><strong>Total monthly:</strong></div><div style="border-top:1px solid var(--border);padding-top:8px;text-align:right"><strong class="text-amber">${fmt(totalWithTeam)}/mo</strong></div>
+      </div>
+      <div style="margin-top:12px;font-size:.85rem;color:var(--muted)">Budget left: <strong class="text-amber">${fmtFull(remaining)}</strong></div>
+      <div style="font-size:.85rem;color:${runRateWarning ? 'var(--red)' : 'var(--muted)'}">${totalWithTeam > 0 ? `~${runwayMonths}mo at this pace${runRateWarning ? ' ⚠️' : ''}` : 'No spend'}</div>
+      <div style="margin-top:10px;font-size:.85rem;color:var(--muted)">Projected revenue: <strong style="color:${getRevPacingColor(getFuzzyForecast(customForecast.rev))}">~${fmt(getFuzzyForecast(customForecast.rev))}</strong></div>
+    </div>
     <div class="btn-group" style="margin-top:20px">
       <button class="btn primary" data-action="confirmAllocation">Lock In & Run Month ${G.turn} →</button>
     </div>
@@ -2447,7 +2487,7 @@ function renderMidYearReview() {
             </div>
           </div>
           ${isSkipped ? `
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <div style="display:flex;gap:4px;flex-wrap:nowrap">
             <button class="radio-btn skip ${hireChoice === 'skip' ? 'active' : ''}" data-action="reviewHire" data-role="${r.id}" data-type="skip" style="font-size:.75rem;padding:6px 12px">Keep Skipped</button>
             <button class="radio-btn agency ${hireChoice === 'agency' ? 'active' : ''}" data-action="reviewHire" data-role="${r.id}" data-type="agency" style="font-size:.75rem;padding:6px 12px">Hire Agency ${fmt(r.agCost)}/mo</button>
             <button class="radio-btn ${hireChoice === 'ft' ? 'active' : ''}" data-action="reviewHire" data-role="${r.id}" data-type="ft" style="font-size:.75rem;padding:6px 12px">Hire In-House ${fmt(r.ftCost)}/mo</button>
@@ -2565,11 +2605,6 @@ function renderMonthResults() {
   if (scamPenaltyActive) {
     scamWarning = `<div class="outcome-box bad" style="margin:10px 0">⚠️ Your ${getPositioning().name.toLowerCase()} ${G.productName} is being sold with ${G.siteTier === 'template' ? 'a template website' : 'a DIY brand identity'}. Customers think it's a scam. Revenue and brand growth are taking a massive hit. <em style="color:var(--muted)">Max out Brand Building spend to fix this.</em></div>`;
   }
-  // Value + events waste warning
-  let eventsWarning = '';
-  if (G.positioning === 'value' && G.allocation.events > 0) {
-    eventsWarning = '<div class="outcome-box neutral" style="margin:10px 0">💸 Events spend on a value product? Your customers want a coupon, not a pop-up shop. That budget is essentially wasted.</div>';
-  }
 
   // Milestone detection
   let milestoneText = '';
@@ -2601,7 +2636,7 @@ function renderMonthResults() {
         <div>
           <div style="font-size:.75rem;color:var(--muted)">Monthly Revenue</div>
           <div class="rev-big" style="font-weight:700;color:var(--amber)">${fmtFull(rev)}</div>
-          ${isLaunchMonth ? '<div class="text-amber" style="font-size:.85rem">🚀 Launch Month</div>' : `<div class="${growthColor}" style="font-size:.85rem">${rev >= lastRev ? '▲' : '▼'} ${growth}% vs last month</div>`}
+          ${isLaunchMonth ? '<div class="text-amber" style="font-size:.85rem">🚀 Launch Month</div>' : `<div class="${growthColor}" style="font-size:.85rem">${rev >= lastRev ? '▲' : '▼'} ${growth}% MoM</div>`}
           <div style="font-size:.75rem;color:var(--muted);margin-top:3px">That's ~${Math.round(rev / PRODUCTS[G.product].unitPrice).toLocaleString()} ${PRODUCTS[G.product].unitName}</div>
         </div>
         <div>
@@ -2610,13 +2645,13 @@ function renderMonthResults() {
           <div style="font-size:.85rem;color:var(--muted)">across ${G.monthlyRevenue.length} months</div>
         </div>
       </div>
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;text-align:center;font-size:.85rem">
-        <div><span class="text-muted">Month Spend:</span> <span class="text-red">${fmtFull(r.totalSpend)}</span></div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;font-size:.8rem">
+        <div><span class="text-muted">Spend:</span> <span class="text-red">${fmtFull(r.totalSpend)}</span></div>
         <div><span class="text-muted">Brand Δ:</span> <span class="${r.beChange >= 0 ? 'text-green' : 'text-red'}">${r.beChange >= 0 ? '+' : ''}${r.beChange.toFixed(1)}</span></div>
-        <div><span class="text-muted">Budget left:</span> <span class="text-amber">${fmtFull(G.budget)}</span></div>
+        <div><span class="text-muted">Left:</span> <span class="text-amber">${fmtFull(G.budget)}</span></div>
       </div>
     </div>
-    ${scamWarning}${eventsWarning}
+    ${scamWarning}
     ${bonusText}
     <div style="text-align:center;color:var(--muted);font-style:italic;margin:15px 0">${commentary}</div>
     ${renderInsightsToggle(generateMonthInsights(), 'month' + G.turn)}
@@ -2727,13 +2762,11 @@ function renderHolidayAllocation() {
 
   const hMainPresetCards = hMainPresets.map(([key, p]) => {
     const presetAlloc = { brand: p.brand, performance: p.performance, pr: p.pr, events: p.events };
-    const forecast = getPresetForecast(presetAlloc);
     const presetTotal = presetAlloc.brand + presetAlloc.performance + presetAlloc.pr + presetAlloc.events;
     const isActive = a.brand === presetAlloc.brand && a.performance === presetAlloc.performance && a.pr === presetAlloc.pr && a.events === presetAlloc.events;
     return `<div class="preset-card ${isActive ? 'active' : ''}" data-action="applyPreset" data-value="${key}">
       <div class="preset-name">${p.name}</div>
       <div class="preset-spend">${fmt(presetTotal)}/mo spend</div>
-      <div class="preset-forecast">Projected: ~${fmt(forecast.rev)} revenue | Brand ${forecast.beChange >= 0 ? '+' : ''}${forecast.beChange.toFixed(1)}</div>
     </div>`;
   }).join('');
 
@@ -2741,14 +2774,12 @@ function renderHolidayAllocation() {
   if (hSamePreset && G._lastAllocation) {
     const [sKey, sP] = hSamePreset;
     const sAlloc = { ...G._lastAllocation };
-    const sForecast = getPresetForecast(sAlloc);
     const sTotal = sAlloc.brand + sAlloc.performance + sAlloc.pr + sAlloc.events;
     const sActive = a.brand === sAlloc.brand && a.performance === sAlloc.performance && a.pr === sAlloc.pr && a.events === sAlloc.events;
     hSameAsLastCard = `<div style="text-align:center;margin-top:8px">
       <div class="preset-card same-as-last ${sActive ? 'active' : ''}" data-action="applyPreset" data-value="${sKey}" style="display:inline-block;width:auto;min-width:200px;cursor:pointer">
         <div class="preset-name">${sP.name}</div>
         <div class="preset-spend">${fmt(sTotal)}/mo spend</div>
-        <div class="preset-forecast">Projected: ~${fmt(sForecast.rev)} revenue</div>
       </div>
     </div>`;
   }
@@ -2798,9 +2829,7 @@ function renderHolidayAllocation() {
     </div>
 
     <h3 style="margin-top:20px;margin-bottom:8px">📊 Monthly Budget Allocation</h3>
-    <div class="section-sub" style="margin-top:0">
-      Team cost: ${fmt(G.teamCostPerMonth)}/mo (fixed) | Marketing spend: <strong id="holiday-marketing-spend" class="text-amber">${fmt(allocTotal)}</strong>
-    </div>
+    <div class="section-sub" style="margin-top:0">Choose a strategy or customize your spend.</div>
     <div class="preset-grid">${hMainPresetCards}</div>
     ${hSameAsLastCard}
     <div style="text-align:center;margin:12px 0">
@@ -2814,12 +2843,13 @@ function renderHolidayAllocation() {
     <div class="card" style="margin-top:20px;text-align:center">
       <h3>💰 Total Month 12 Spend</h3>
       <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;font-size:.85rem;text-align:left">
-        <div><span class="text-muted">Marketing allocation:</span></div><div id="holiday-alloc-total" class="text-amber" style="text-align:right">${fmtFull(allocTotal)}</div>
+        <div><span class="text-muted">Campaign allocation:</span></div><div id="holiday-alloc-total" class="text-amber" style="text-align:right">${fmtFull(allocTotal)}</div>
         <div><span class="text-muted">Team cost:</span></div><div class="text-amber" style="text-align:right">${fmtFull(G.teamCostPerMonth)}</div>
         <div><span class="text-muted">Holiday tactics:</span></div><div id="holiday-tactic-total" class="text-amber" style="text-align:right">${fmtFull(holidayTotal)}</div>
         <div style="border-top:1px solid var(--border);padding-top:8px"><strong>Total:</strong></div><div id="holiday-grand-total" style="border-top:1px solid var(--border);padding-top:8px;text-align:right"><strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(totalWithTeamAndHoliday)}</strong></div>
       </div>
-      <div id="holiday-budget-after" style="margin-top:10px;font-size:.85rem;color:var(--muted)">Budget after: <strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(budgetAfter)}</strong></div>
+      <div id="holiday-budget-after" style="margin-top:12px;font-size:.85rem;color:var(--muted)">Budget left after: <strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(budgetAfter)}</strong></div>
+      <div style="margin-top:10px;font-size:.85rem;color:var(--muted)">Projected revenue: <strong style="color:${getRevPacingColor(getFuzzyForecast(getPresetForecast(a).rev))}">~${fmt(getFuzzyForecast(getPresetForecast(a).rev))}</strong></div>
       ${budgetAfter > 50000 ? '<div style="margin-top:10px;font-size:.85rem;color:var(--amber)">💡 This is the last month. There\'s no advantage to ending with money in the bank — unspent budget is wasted budget. Go big.</div>' : ''}
     </div>
 
