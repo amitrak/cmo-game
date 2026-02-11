@@ -423,6 +423,8 @@ function initState() {
     lastConflictOutcome: null,
     bonusesReceived: 0,
     hasSave: false,
+    symposiumDone: false,
+    symposiumResults: null,
     midYearReviewDone: false,
     midYearAdjustments: {},
     allFiredPenalty: false,
@@ -465,6 +467,8 @@ function loadGame() {
       if (G.achievements === undefined) G.achievements = [];
       if (G._luckyBreaks === undefined) G._luckyBreaks = 0;
       if (G._ceoVibesMinReached === undefined) G._ceoVibesMinReached = G.ceoPat || 75;
+      if (G.symposiumDone === undefined) G.symposiumDone = false;
+      if (G.symposiumResults === undefined) G.symposiumResults = null;
       render();
     }
   } catch (e) { console.error('Load failed', e); }
@@ -685,16 +689,16 @@ function shuffleConflicts() {
     }
   });
 
-  // Build 10 conflicts ensuring variety (turns 2-11)
+  // Build 9 conflicts ensuring variety (turns 2-5, 7-11; month 6 = symposium)
   let selected = [];
-  // At least 3 crises, 2 positive, 2 pressure, 2 market
-  selected.push(...crises.slice(0, 3));
+  // At least 2 crises, 2 positive, 2 pressure, 2 market
+  selected.push(...crises.slice(0, 2));
   selected.push(...positive.slice(0, 2));
   selected.push(...pressure.slice(0, 2));
   selected.push(...market.slice(0, 2));
 
   // Fill remaining 1 slot randomly
-  let remaining = [...crises.slice(3), ...positive.slice(2), ...pressure.slice(2), ...market.slice(2)];
+  let remaining = [...crises.slice(2), ...positive.slice(2), ...pressure.slice(2), ...market.slice(2)];
   for (let i = remaining.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
@@ -1788,6 +1792,11 @@ function render() {
     case 'conflictResult': app.innerHTML = renderConflictResult(); break;
     case 'allocation': app.innerHTML = renderAllocation(); break;
     case 'monthResults': app.innerHTML = renderMonthResults(); break;
+    case 'symposium':
+      if (!document.getElementById('symposium-frame')) {
+        app.innerHTML = renderSymposium();
+      }
+      break;
     case 'promotionReview': app.innerHTML = renderPromotionReview(); break;
     case 'holiday': app.innerHTML = renderHoliday(); break;
     case 'holidayAllocation': app.innerHTML = renderHolidayAllocation(); break;
@@ -1887,6 +1896,9 @@ function renderTitle() {
     </div>
     <div class="btn-group">
       <button class="btn" style="font-size:.7rem;padding:8px 16px" data-action="showLeaderboard">🏆 Hall of Fame</button>
+    </div>
+    <div class="btn-group">
+      <button class="btn" style="font-size:.6rem;padding:6px 12px;opacity:.4" data-action="debugMonth6">⚙ Jump to Month 6</button>
     </div>
   </div>
   <div style="margin-top:auto;padding:20px 0;text-align:center;color:var(--muted);font-size:.75rem">
@@ -2192,7 +2204,13 @@ function renderPreLaunchSummary() {
 
 
 function renderConflict() {
-  const conflictIdx = G.turn - 2; // turns 2-11 map to conflicts 0-9
+  // Month 6 is the symposium — redirect if we somehow land here
+  if (G.turn === 6 && !G.symposiumDone) {
+    G.screen = 'symposium';
+    return renderSymposium();
+  }
+
+  const conflictIdx = G.turn >= 7 ? G.turn - 3 : G.turn - 2; // skip month 6 (symposium)
   const conflict = G.conflictOrder[conflictIdx];
 
   // Replace placeholders
@@ -2514,6 +2532,121 @@ function renderMidYearReview() {
   </div>`;
 }
 
+function renderSymposium() {
+  const SYMP_NAMES = { soda: 'Soda Symposium', sneakers: 'Shoe Symposium', skincare: 'Skincare Symposium', software: 'Software Symposium' };
+  const expoName = SYMP_NAMES[G.product] || 'The Symposium';
+  const params = new URLSearchParams({
+    product: G.product,
+    positioning: G.positioning,
+    name: G.productName,
+    be: Math.round(G.brandEquity)
+  });
+  return `<div class="screen">
+    ${renderStatsBar()}
+    <div class="section-title" style="margin-bottom:10px">🏛️ Month 6: ${expoName}</div>
+    <div style="display:flex;justify-content:center">
+      <iframe id="symposium-frame"
+        src="symposium.html?${params}"
+        style="width:100%;max-width:420px;aspect-ratio:1;border:1px solid var(--border);border-radius:8px;display:block"
+        allow="autoplay"
+        scrolling="no">
+      </iframe>
+    </div>
+  </div>`;
+}
+
+// Listen for symposium mini-game results
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'symposiumResults' && G.screen === 'symposium' && !G.symposiumDone) {
+    G.symposiumDone = true;
+    G.symposiumResults = {
+      revenue: e.data.revenue || 0,
+      brandEquity: e.data.brandEquity || 0,
+      hits: e.data.hits || 0,
+      shots: e.data.shots || 0,
+      steals: e.data.steals || 0,
+      accuracy: e.data.accuracy || 0
+    };
+
+    // Process month 6 manually (symposium replaces conflict + allocation)
+    // Deduct team costs
+    G.budget -= G.teamCostPerMonth;
+
+    // Brand momentum still compounds
+    G.brandMomentum *= 1.12;
+    G.brandMomentum = clamp(G.brandMomentum, 0, 5);
+
+    // Symposium IS the revenue for this month
+    const rev = G.symposiumResults.revenue;
+    G.monthlyRevenue.push(rev);
+    G.totalRevenue += rev;
+    G._lastBrandRev = rev;
+    G._lastPerfRev = 0;
+
+    // Brand equity from symposium
+    const beChange = G.symposiumResults.brandEquity;
+    G.brandEquity = clamp(G.brandEquity + beChange, 0, 100);
+
+    // CEO patience based on revenue trend
+    if (G.monthlyRevenue.length >= 2) {
+      const prev = G.monthlyRevenue[G.monthlyRevenue.length - 2];
+      if (rev > prev * 1.1) G.ceoPat = clamp(G.ceoPat + 5, 0, 100);
+      else if (rev < prev * 0.85) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
+    }
+
+    // CEO vibes drain based on annualized pacing
+    if (G.monthlyRevenue.length >= 2) {
+      const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
+      if (annualized < 15000000) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
+      else if (annualized < 25000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+      else if (annualized < 40000000) G.ceoPat = clamp(G.ceoPat - 2, 0, 100);
+      let ceoMax = 100;
+      if (annualized < 15000000) ceoMax = 50;
+      else if (annualized < 25000000) ceoMax = 70;
+      else if (annualized < 40000000) ceoMax = 85;
+      G.ceoPat = Math.min(G.ceoPat, ceoMax);
+    }
+
+    // Expo performance CEO bonus
+    if (G.symposiumResults.accuracy >= 50 && G.symposiumResults.hits >= 10) {
+      G.ceoPat = clamp(G.ceoPat + 5, 0, 100);
+    } else if (G.symposiumResults.hits >= 5) {
+      G.ceoPat = clamp(G.ceoPat + 2, 0, 100);
+    }
+
+    // Fire-everyone penalty still applies
+    if (G.allFiredPenalty) {
+      G.ceoPat = clamp(G.ceoPat - 3, 0, 100);
+    }
+
+    // Reset zero-spend counter (expo counts as activity)
+    G.consecutiveZeroSpend = 0;
+
+    // Track CEO vibes min for comeback achievement
+    if (G.ceoPat < (G._ceoVibesMinReached || 75)) G._ceoVibesMinReached = G.ceoPat;
+    checkAchievements();
+
+    // Create month result for display
+    G._monthResult = { rev: rev, totalSpend: G.teamCostPerMonth, beChange: beChange, bonus: 0 };
+
+    // Game over checks
+    if (G.budget < 0) {
+      G.gameOver = true;
+      G.gameOverReason = 'The CFO cut up your corporate card in front of the entire marketing team. Security escorted you past the promotional banner you\'d just approved. It hadn\'t even shipped yet.';
+      G.screen = 'gameOver';
+    } else if (G.ceoPat <= 0) {
+      G.gameOver = true;
+      G.gameOverReason = 'The CEO\'s last Slack message to you was a single emoji: \uD83E\uDEA6. HR filled in the rest. Your access was revoked before you finished reading the termination email.';
+      G.screen = 'gameOver';
+    } else {
+      G.screen = 'monthResults';
+    }
+
+    saveGame();
+    render();
+  }
+});
+
 function renderMonthResults() {
   const r = G._monthResult;
   const monthNum = G.turn;
@@ -2655,10 +2788,33 @@ function renderMonthResults() {
     </div>
     ${scamWarning}
     ${bonusText}
+    ${G.turn === 6 && G.symposiumResults ? renderSymposiumSummary() : ''}
     <div style="text-align:center;color:var(--muted);font-style:italic;margin:15px 0">${commentary}</div>
     ${renderInsightsToggle(generateMonthInsights(), 'month' + G.turn)}
     <div class="btn-group">
       <button class="btn primary" data-action="${continueAction}">${continueLabel}</button>
+    </div>
+  </div>`;
+}
+
+function renderSymposiumSummary() {
+  const s = G.symposiumResults;
+  if (!s) return '';
+  const SYMP_NAMES = { soda: 'Soda Symposium', sneakers: 'Shoe Symposium', skincare: 'Skincare Symposium', software: 'Software Symposium' };
+  const expoName = SYMP_NAMES[G.product] || 'The Symposium';
+  let verdict = '';
+  if (s.accuracy >= 60 && s.hits >= 15) verdict = G.productName + ' stole the show.';
+  else if (s.accuracy >= 50 && s.hits >= 10) verdict = 'Solid showing. Made real connections.';
+  else if (s.hits >= 5) verdict = 'A decent presence on the expo floor.';
+  else verdict = 'Most attendees walked past your booth.';
+  return `<div class="outcome-box good" style="margin:10px 0">
+    <div style="font-size:.9rem;font-weight:700;margin-bottom:6px">🏛️ ${expoName} Results</div>
+    <p style="margin-bottom:8px">${verdict}</p>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;font-size:.85rem">
+      <div>Revenue: <span class="text-green">+${fmtFull(s.revenue)}</span></div>
+      <div>Brand Equity: <span style="color:var(--blue)">+${s.brandEquity}</span></div>
+      <div>Demos: <span class="text-amber">${s.hits} / ${s.shots}</span></div>
+      ${s.steals > 0 ? `<div>Steals: <span class="text-red">${s.steals}</span></div>` : `<div>Accuracy: <span class="text-muted">${s.accuracy}%</span></div>`}
     </div>
   </div>`;
 }
@@ -3482,7 +3638,7 @@ document.getElementById('app').addEventListener('click', function (e) {
       break;
     }
     case 'chooseConflict': {
-      const conflictIdx = G.turn - 2;
+      const conflictIdx = G.turn >= 7 ? G.turn - 3 : G.turn - 2;
       const result = applyConflictChoice(conflictIdx, parseInt(value));
       G.lastConflictOutcome = result;
       if (G.gameOver) {
@@ -3565,7 +3721,11 @@ document.getElementById('app').addEventListener('click', function (e) {
     case 'nextMonth':
       G.turn++;
       G._promotionResult = null;
-      G.screen = 'conflict';
+      if (G.turn === 6 && !G.symposiumDone) {
+        G.screen = 'symposium';
+      } else {
+        G.screen = 'conflict';
+      }
       break;
     case 'goToHoliday':
       G.turn = 12;
@@ -3672,6 +3832,37 @@ document.getElementById('app').addEventListener('click', function (e) {
       initState();
       G.screen = 'title';
       break;
+    case 'debugMonth6': {
+      clearSave();
+      initState();
+      G.playerName = 'Debug';
+      G.product = 'soda';
+      G.productName = 'FizzCo';
+      G.positioning = 'premium';
+      G.team = { brand: 'ft', content: 'agency', growth: 'ft', pr: 'agency', data: 'skip' };
+      G.brandTier = 'boutique';
+      G.siteTier = 'custom';
+      G.researchTier = 'panel';
+      G.budget = 3200000;
+      G.startingBudget = 5000000;
+      G.totalRevenue = 8500000;
+      G.monthlyRevenue = [800000, 1200000, 1600000, 2100000, 2800000];
+      G.brandEquity = 35;
+      G.ceoPat = 60;
+      G.turn = 5;
+      G.rank = 2;
+      G.title = 'Senior Director of Marketing';
+      G.brandMomentum = 1.2;
+      G.allocation = { brand: 50000, performance: 75000, pr: 40000, events: 25000 };
+      G._lastAllocation = { ...G.allocation };
+      G.teamCostPerMonth = 0;
+      calcTeamCost();
+      shuffleConflicts();
+      // Jump straight to month 6 symposium
+      G.turn = 6;
+      G.screen = 'symposium';
+      break;
+    }
   }
 
   render();
