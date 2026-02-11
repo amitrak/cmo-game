@@ -202,7 +202,7 @@ const CONFLICTS = [
   },
   {
     id: 'tiktok_viral', type: 'positive', title: '📱 Viral Fame (For the Right Reasons)',
-    text: 'A 19-year-old just posted a video using your {product} in a completely unexpected way. 8 million views. 500k likes. Comments are overwhelmingly positive. Your website traffic is up 300%.',
+    text: '{creator} just posted a video using your {product} in a completely unexpected way. 8 million views. 500k likes. Comments are overwhelmingly positive. Your website traffic is up 300%.',
     choices: [
       { text: 'Collab on a follow-up video + offer them a micro-influencer deal ($5k)', cost: 5000, brandEquity: 7, revMult: 1.25, ceoPat: 15, outcome: 'They\'re thrilled! Your brand collab gets another 3 million views. Authentic, scrappy, and exactly what social media rewards. Marketing lesson: Micro-influencer authenticity beats macro-influencer reach.' },
       { text: 'Launch a viral challenge campaign ($20k)', cost: 20000, brandEquity: 8, revMult: 1.1, ceoPat: 10, luck: [0.6, { brandEquity: 12, revMult: 1.4, ceoPat: 20, override: 'The challenge EXPLODES. 50 million views across all participants. You\'re the #1 trending brand on social media. Your intern cries tears of joy. This is the moment.' }], outcome: 'The challenge gets moderate participation. It\'s fine, but it feels like a brand trying too hard to be cool. "How do you do, fellow kids?" energy. Marketing lesson: You can\'t manufacture virality.' },
@@ -294,7 +294,7 @@ const CONFLICTS = [
     id: 'community_love', type: 'positive', title: '💕 Organic Community Growth',
     text: 'Something beautiful is happening. Without any paid effort, a community of {product} fans has formed. They have forums (12k members), a community server (8k), and they\'re creating memes, fan art, and unboxing videos. This is the holy grail.',
     choices: [
-      { text: 'Nurture it: dedicate resources to community management ($12k)', cost: 12000, brandEquity: 9, revMult: 1.15, ceoPat: 10, outcome: 'You hire a community manager who Gets It. Authentic engagement, insider content, and the community grows 3x in a month. Marketing lesson: Community is the most undervalued marketing channel.' },
+      { text: 'Nurture it: dedicate resources to community management ($12k)', cost: 12000, brandEquity: 9, revMult: 1.15, ceoPat: 10, outcome: 'You hire a community manager who Gets It. Authentic engagement, insider content, and the community grows 3x in a month. Marketing lesson: Building and nurturing a community pays dividends.' },
       { text: 'Monetize it: launch an ambassador/referral program ($8k)', cost: 8000, brandEquity: 5, revMult: 1.2, ceoPat: 15, outcome: 'The referral program converts community love into revenue. Some purists grumble about "selling out," but most people appreciate the discount codes. Marketing lesson: There\'s a thin line between empowering a community and exploiting it.' },
       { text: 'Join it as the brand - post directly in the community', cost: 0, brandEquity: 8, revMult: 1.05, ceoPat: 5, luck: [0.5, { brandEquity: 7, revMult: 1.15, ceoPat: 10, override: 'The community welcomes you with open arms. They love that you\'re "one of them." Direct feedback improves both product and marketing.' }], outcome: 'Mixed feelings about the brand showing up in "their" space. Some welcome it, others feel the cool indie thing just got corporate. Marketing lesson: Brands entering organic communities should listen 10x more than they speak.' },
       { text: 'Leave it alone - organic is organic, don\'t ruin it', cost: 0, brandEquity: 5, revMult: 1.05, ceoPat: -5, outcome: 'The community grows naturally. Authentic and pure. The CEO wanted you to monetize it, but some things are better left untouched. Marketing lesson: Sometimes the right move is no move at all.' }
@@ -1411,7 +1411,7 @@ function getShareText() {
   const grade = G.rank >= 5 ? ' 👑' : '';
   return `🎮 I just played The CMO Game!
 
-👔 Final Title: ${G.title}${grade}
+🏅 Final Title: ${G.title}${grade}
 📦 Product: ${G.productName}
 💰 Revenue: ${fmt(G.totalRevenue)}
 🏗️ Brand Equity: ${Math.round(G.brandEquity)}/100
@@ -2161,7 +2161,7 @@ function renderPreLaunchSummary() {
     <div class="narrative">
       <div class="event-title">🚀 ${G.productName} is ready to launch!</div>
       <img src="${getProductImage()}" alt="${G.productName}" class="product-icon product-icon-md" style="margin:10px auto">
-      <p><strong>${G.playerName}</strong>, ${G.title}, launching <strong>${G.productName}</strong> — a ${getPositioning().name.toLowerCase()} ${p.name.toLowerCase()} play.</p>
+      <p><strong>${G.playerName}</strong>, ${G.title}, launching <strong>${G.productName}</strong> — ${'aeiou'.includes(getPositioning().name[0].toLowerCase()) ? 'an' : 'a'} ${getPositioning().name.toLowerCase()} ${p.name.toLowerCase()} play.</p>
       <p style="margin-top:10px">One year to make CMO. Face monthly challenges, managing your budget and brand. Grow revenue and keep the CEO happy to climb the ladder... or get replaced.</p>
     </div>
 
@@ -2196,11 +2196,13 @@ function renderConflict() {
   const conflict = G.conflictOrder[conflictIdx];
 
   // Replace placeholders
+  const creatorLabel = G.positioning === 'enterprise' ? 'An IT influencer' : G.positioning === 'smb' ? 'A VC podcaster' : 'A 19-year-old';
   let text = conflict.text
     .replace(/\{product\}/g, G.productName)
     .replace(/\{name\}/g, G.productName)
     .replace(/\{industry\}/g, PRODUCTS[G.product].flavor)
-    .replace(/\{month\}/g, G.turn);
+    .replace(/\{month\}/g, G.turn)
+    .replace(/\{creator\}/g, creatorLabel);
 
   const choices = conflict.choices.map((c, i) =>
     `<div class="choice-btn" data-action="chooseConflict" data-value="${i}">
@@ -2214,7 +2216,7 @@ function renderConflict() {
   return `<div class="screen">
     ${renderStatsBar()}
     ${ceoMsg ? `<div class="ceo-dm">
-      <div class="ceo-dm-avatar">👔</div>
+      <div class="ceo-dm-avatar">🫡</div>
       <div>
         <div class="ceo-dm-header">CEO (DM)</div>
         <div class="ceo-dm-text">${ceoMsg}</div>
@@ -2378,13 +2380,13 @@ function renderAllocation() {
     <div class="card" style="margin-top:20px;text-align:center">
       <h3>💰 Budget Summary</h3>
       <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;font-size:.85rem;text-align:left">
-        <div><span class="text-muted">Campaign spend:</span></div><div class="text-amber" style="text-align:right">${fmt(total)}/mo</div>
+        <div><span class="text-muted">Campaign spend:</span></div><div id="bs-campaign" class="text-amber" style="text-align:right">${fmt(total)}/mo</div>
         <div><span class="text-muted">+ Team cost:</span></div><div class="text-amber" style="text-align:right">${fmt(G.teamCostPerMonth)}/mo</div>
-        <div style="border-top:1px solid var(--border);padding-top:8px"><strong>Total monthly:</strong></div><div style="border-top:1px solid var(--border);padding-top:8px;text-align:right"><strong class="text-amber">${fmt(totalWithTeam)}/mo</strong></div>
+        <div style="border-top:1px solid var(--border);padding-top:8px"><strong>Total monthly:</strong></div><div id="bs-total" style="border-top:1px solid var(--border);padding-top:8px;text-align:right"><strong class="text-amber">${fmt(totalWithTeam)}/mo</strong></div>
       </div>
-      <div style="margin-top:12px;font-size:.85rem;color:var(--muted)">Budget left: <strong class="text-amber">${fmtFull(remaining)}</strong></div>
-      <div style="font-size:.85rem;color:${runRateWarning ? 'var(--red)' : 'var(--muted)'}">${totalWithTeam > 0 ? `~${runwayMonths}mo at this pace${runRateWarning ? ' ⚠️' : ''}` : 'No spend'}</div>
-      <div style="margin-top:10px;font-size:.85rem;color:var(--muted)">Projected revenue: <strong style="color:${getRevPacingColor(getFuzzyForecast(customForecast.rev))}">~${fmt(getFuzzyForecast(customForecast.rev))}</strong></div>
+      <div id="bs-remaining" style="margin-top:12px;font-size:.85rem;color:var(--muted)">Budget left: <strong class="text-amber">${fmtFull(remaining)}</strong></div>
+      <div id="bs-runway" style="font-size:.85rem;color:${runRateWarning ? 'var(--red)' : 'var(--muted)'}">${totalWithTeam > 0 ? `~${runwayMonths}mo at this pace${runRateWarning ? ' ⚠️' : ''}` : 'No spend'}</div>
+      <div id="bs-projected" style="margin-top:10px;font-size:.85rem;color:var(--muted)">Projected revenue: <strong style="color:${getRevPacingColor(getFuzzyForecast(customForecast.rev))}">~${fmt(getFuzzyForecast(customForecast.rev))}</strong></div>
     </div>
     <div class="btn-group" style="margin-top:20px">
       <button class="btn primary" data-action="confirmAllocation">Lock In & Run Month ${G.turn} →</button>
@@ -2979,7 +2981,7 @@ function generateStoryRecap() {
   const conflicts = G.conflictOrder || [];
 
   // Opening
-  let story = `You launched ${G.productName} as a ${pos.name.toLowerCase()} play in ${p.flavor}. `;
+  let story = `You launched ${G.productName} as ${'aeiou'.includes(pos.name[0].toLowerCase()) ? 'an' : 'a'} ${pos.name.toLowerCase()} play in ${p.flavor}. `;
 
   // Pick 2-3 dramatic conflict moments
   const dramaticConflicts = conflicts.filter(c => c.type === 'crisis' || c.type === 'positive').slice(0, 3);
@@ -3683,6 +3685,34 @@ document.getElementById('app').addEventListener('input', function (e) {
     G.allocation[cat] = val;
     const display = document.getElementById('alloc-' + cat);
     if (display) display.textContent = fmt(val);
+
+    // Update regular allocation budget summary if on that screen
+    const bsCampaign = document.getElementById('bs-campaign');
+    if (bsCampaign) {
+      const a = G.allocation;
+      const campSpend = a.brand + a.performance + a.pr + a.events;
+      const totalMonthly = campSpend + G.teamCostPerMonth;
+      const remaining = G.budget - totalMonthly;
+      const monthsLeft = 12 - G.turn;
+      const runwayMonths = totalMonthly > 0 ? Math.floor(G.budget / totalMonthly) : 99;
+      const runRateWarning = G.turn <= 6 && totalMonthly > 0 && runwayMonths < monthsLeft - 2;
+      bsCampaign.textContent = fmt(campSpend) + '/mo';
+      const bsTotal = document.getElementById('bs-total');
+      if (bsTotal) bsTotal.innerHTML = `<strong class="text-amber">${fmt(totalMonthly)}/mo</strong>`;
+      const bsRemaining = document.getElementById('bs-remaining');
+      if (bsRemaining) bsRemaining.innerHTML = `Budget left: <strong class="text-amber">${fmtFull(remaining)}</strong>`;
+      const bsRunway = document.getElementById('bs-runway');
+      if (bsRunway) {
+        bsRunway.style.color = runRateWarning ? 'var(--red)' : 'var(--muted)';
+        bsRunway.textContent = totalMonthly > 0 ? `~${runwayMonths}mo at this pace${runRateWarning ? ' ⚠️' : ''}` : 'No spend';
+      }
+      const bsProjected = document.getElementById('bs-projected');
+      if (bsProjected) {
+        const forecast = getPresetForecast(a);
+        const fuzzy = getFuzzyForecast(forecast.rev);
+        bsProjected.innerHTML = `Projected revenue: <strong style="color:${getRevPacingColor(fuzzy)}">~${fmt(fuzzy)}</strong>`;
+      }
+    }
 
     // Update holiday allocation summary if on that screen
     const allocTotalEl = document.getElementById('holiday-alloc-total');
