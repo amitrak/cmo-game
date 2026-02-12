@@ -2024,12 +2024,12 @@ function renderNaming() {
     <div class="card" style="max-width:500px;margin:20px auto">
       <img src="${getProductImage()}" alt="${p.name}" class="product-icon product-icon-md" style="margin:0 auto 15px">
       <input type="text" id="productName" placeholder="Brand Name" maxlength="25" autofocus>
-      ${hasNames ? '<button class="btn" data-action="generateName" style="margin-top:12px;font-size:.8rem;padding:6px 16px">🎲 Generate A Name</button>' : ''}
       <div style="margin-top:10px;font-size:.75rem;color:var(--muted)">Examples: ${examples}</div>
+      ${hasNames ? '<button class="btn" data-action="generateName" style="margin-top:14px;font-size:.8rem;padding:6px 16px">🎲 Generate A Name</button>' : ''}
     </div>
     <div class="btn-group">
-      <button class="btn primary" data-action="confirmName">Lock It In</button>
       <button class="btn" data-action="backToPositioning">← Back</button>
+      <button class="btn primary" data-action="confirmName">That's My Name →</button>
     </div>
   </div>`;
 }
