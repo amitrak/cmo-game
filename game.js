@@ -49,6 +49,37 @@ const PRODUCTS = {
   }
 };
 
+const GENERATED_NAMES = {
+  soda: {
+    premium: ['Populence','Fizzness Class','Perri-Yay','Haute Cola','Sprite-Geist','Faux Cola','Fizz Khalifa','Fizzy Cent','Bougie Bubbles','Bel-Air Bubbles','Fizzante','Peps-CMO','Fizzness Casual','Liquid Asset','Nepo Baby Brew','Top Tier Tonic','Mint Condition','Stock Pop','Boardroom Brew','Sparkling Résumé','Trust Fund Fizz','Velvet Pour','Champagne Problems','Private Reserve','First Class Fizz','Penthouse Pour','Platinum Sip','Black Tie Bubbles','Caviar Cola','Posh Pop','Pour Favor','Proper Pour','Refined Refreshment','Gilt & Guzzle','Regal Ripple','Prestige Punch','Bubbly Broker','Tasteful Tonic','Opulent Orange','Classy Carbonation','Ritzy Refresher','Dignified Dew','Pristine Pop','Noble Nectar','Affluent Ale','Swanky Spritz','Debonair Dew','Pedigree Pop','Mink & Mango'],
+    lifestyle: ['Vibe Check','Yoga Cola','Matcha Dew','Pilates Pop','Aura Ale','Hustle Juice','Flex Fizz','Status Quench','Zen Tonic','Mount Do','Slay Soda','Fit Fizz','Hype Water','Adulting Ale','Avo Cola','Brunch Brew','Golden Hour','Sunset Sip','Core Memory','Main Character','Gratitude Gulp','Ritual Fizz','Self Care Soda','Cold Pressed Cola','Oat Milk Pop','Wanderlust Water','Capsule Cola','Slow Living Soda','Mood Boost','Mantra Mango','Karma Cola','Chakra Cherry','Namaste Nectar','Peaceful Peach','Serene Sip','Bliss Brew','Soulful Spritz','Dreamy Dew','Mellow Melon','Mindful Mango','Tranquil Tonic','Radiant Raspberry','Soothing Spritz','Balanced Brew','Wholesome Water','Cozy Cola','Grateful Grape','Centered Citrus','Present Pop'],
+    value: ['Budget Bubbles','Penny Pop','Thrift Sip','Generic Juice','Discount Dew','Coupon Cola','Bottom Shelf','No Frills','Wallet Water','Generic Fizz','Cheap Thrill','Bulk Brew','Basic Batch','Humble Soda','Frugal Fizz','Dollar Dew','Dr Cheaper','Mr Cheap','Passable Pop','Bargain Brew','Clearance Cola','Sale Soda','Nickel Nectar','Adequate Ale','Thrifty Tonic','Rain Check','Price Match','Almost Name Brand','Knockoff Cola','Dupe Dew','B-Side Bubbles','Plan B Pop','Fine I Guess','Broke Brew','Lean Lemon','Meager Melon','Modest Mango','Sensible Sip','Stingy Spritz','Practical Pop','Reasonable Root','Corner Cut Cola','Half Off','Leftovers Lime','Rock Bottom Root','Sparse Spritz','Dime a Dozen Dew','Slim Pickings Pop','Flatline Fizz','Last Pick Lemon','Whatever Works'],
+    disruptor: ['Unicorn Juice','Series Ale','Moonshot Pop','Stealth Mode','Snake Oil','Dark Matter','Bitter End','Hard Truth','Bad Blood','Bitter Pill','Cold Comfort','Total Eclipse','Scorched Earth','Heavy Water','Deep State','Sour Grapes','Rogue Wave','Atomic Ale','Quantum Quench','Cold Fusion','Gamma Grape','Black Swan','Burn Rate','Chaos Theory','Pivot Pop','Plot Twist Pop','Contraband Cola','Rebel Ripple','Anarchy Ale','Mutiny Mango','Ruckus Root','Havoc Haze','Defiant Dew','Volatile Vanilla','Radical Raspberry','Savage Sip','Wicked Water','Brazen Brew','Deviant Dew','Maverick Mango','Renegade Root','Sabotage Soda','Venom Vanilla','Outlaw Orange','Dissident Dew','Insurrection IPA','Molotov Mango','Hostile Hops','Coup Cola','Blitz Brew'],
+  },
+  skincare: {
+    premium: ['Pore Favor','Glossier Than Thou','Pore Choices','In Your Face','Dew Process','Skin In The Game','About Face','Glow Up','Youth Hostage','Wrinkle Room','Pore Relations','Skin Deep','Fine Lines','Skinny Dip','Face Value','Smooth Operator','Best Face Forward','Skin Tight','Dew Diligence','Skin Win','Oil Money','Glow Getter','Clean Queen','Surface Tension','Pearl Finish','Glass Skin','Velvet Veil','Gilt Complex','Luxe Layer','Grand Serum','Status Glow','Crown Jewel','Old Money Mist','Rich Texture','Pristine Pore','Polished Pour','Refined Radiance','Regal Rinse','Proper Pore','Opulent Ointment','Prestige Paste','Posh Polish','Dignified Derm','Decadent Dew','Lavish Lather','Exquisite Elixir','Majestic Mist','Aristocrat Acid','Heirloom Hydration','Gilded Glow','Plush Pore','Swank Serum'],
+    lifestyle: ['Dewtiful','Balm Voyage','S\'cream','Derm & Order','Lord of the Rinse','Game of Tones','Scrub Club','Maskerade','You Dew You','Slaycation Skin','Chill & Spill','Lather & Laugh','Bright Side Up','Zen & Tonic','Skin City','Gloss Boss','Pore Galore','Glow Show','Peel Feel','Slick Stick','Butter Better','Main Squeeze','Sunday Reset','Skin & Tonic','Good Glow Days','Resting Glow Face','Mist Congeniality','Hygge Hydration','Spa La La','Tone Poem','Bliss & Blot','Peel Good','Serene Serum','Karma Cream','Glow With The Flow','Rise & Shine','Soft Spot','Fresh to Depth','Mood Cream','Clean Slate','Slow Glow','Balm & Collected','Pore & Simple','Rinse & Repeat','Smooth Sailing','Toner Turner','Inner Glow','Outer Peace','Bloom Room','Blush Hour'],
+    value: ['Pore Me','Cents Less','Budget Balm','Spare Change','Bare Minimum','Penny Pore','Thrift Gift','Generic Glow','Second Skin','Payday Paste','Layaway Lotion','Coupon Cream','Recession Rub','Value Visage','Bulk Balm','Basic Batch','Humble Hydration','Almost Luxury','Tube Cream','Plain Paste','Default Derma','Simple Slather','Average Aloe','Dupe Cream','Knockoff Glow','Close Enough Cream','No Logo Lotion','Bargain Bright','Dollar Derm','Factory Direct','Flat Rate Face','Bottom Dollar Balm','Cheapskate Cream','Modest Moisture','Penny Pinch Paste','Sensible Serum','Practical Paste','Corner Cut Cream','Half Price Hydra','No Name Nectar','Reasonable Rinse','Economy Elixir','Lean Lotion','Thrifty Therapy','Meager Moisture','Rock Bottom Rub','Bare Bones Balm','Last Resort Lotion'],
+    disruptor: ['Shock Treatment','Face Off','Skin Sin','Toxic Asset','Raw Deal','Dirty Secret','Active Ingredient','Peptide Party','Formula One','Molecular Mist','Snake Oil','Placebo Effect','Magic Mud','Holy Grail','Secret Sauce','Liquid Ego','Mystic Mist','Acid Test','Chain Reaction','Volatile Compound','Double Blind','Side Effect','Clinical Trial','Controlled Burn','Proof of Concept','Scorched Serum','Calculated Risk','Rogue Rinse','Rebel Rub','Radical Rinse','Deviant Derm','Savage Serum','Brazen Balm','Maverick Mist','Outlaw Ointment','Renegade Rinse','Hostile Hydration','Contraband Cream','Villain Veil','Chaos Cream','Sabotage Serum','Venom Veil','Mutant Moisture','Sinister Smooth','Wicked Wipe','Menace Mist','Danger Dew'],
+  },
+  sneakers: {
+    premium: ['Shoe La La','Sole Mate','Heel No','Arch Nemesis','Sole Survivor','In-Step','Oxford Comma','Laced Up','Elite Feet','Posh Pumps','Wealthy Walkers','Silken Soles','Mansion Mocs','Fancy Footies','Palace Platforms','Lavish Loafers','Stately Steps','Velvet Vibe','Rich Run','Opulent Oxfords','Gilt Trip','Trust Fund Treads','Black Card Boots','Old Money Mocs','Platinum Pace','Penthouse Pumps','Runway Ready','Couture Kicks','Bespoke Bounce','Pristine Pumps','Prestige Pace','Dignified Dash','Regal Runner','Proper Pumps','Plush Platforms','Polished Pace','Swanky Striders','Ritzy Racers','Refined Run','Classy Climbers','Dapper Dash','Elegant Elevations','Graceful Gallop','Majestic Mules','Pedigree Pumps','Luxe Laces','Noble Nikes','Exquisite Exits','Uptown Uppers','Prime Pumps'],
+    lifestyle: ['Miss Steps','Social Climber','Sole Searching','Heel Thy Self','Well Heeled','Sole Purpose','Sandal Scandal','Toe Jamz','Sole Seeker','Suede Sway','Loafer Legend','Goal Getter','Slipper Slope','Angel Wingtips','Clog On','Hot Girl Walk','Sunset Stroll','Step Therapy','Wanderlust Walk','Fresh Steps','Zen Stride','Sunday Stroll','Coffee Run','Free Spirit','Bliss Boot','Mood Mules','Soul Stroll','Karma Kicks','Groove Move','Happy Feet','Vibe Stride','Dreamy Dashers','Serene Sneakers','Mellow Mocs','Peaceful Pace','Radiant Runners','Soulful Soles','Tranquil Treads','Wholesome Walkers','Cozy Kicks','Wander Lusters','Roam & Rest','Drift & Dream','Float Foot','Cloud Climber','Gentle Giants','Blissful Boots'],
+    value: ['Budget Boots','Cents Able','Sole Less','Payday Pumps','Discount Drifter','Coupon Kick','Recession Runner','Bottom Shelf','Wallet Walk','Humble Heels','Bargain Boots','Penny Pumps','Thrift Lifts','Wallet Walkers','Saver Sneakers','Frugal Footwear','Basic Boots','Knockoff Kicks','Dupe Drops','Dollar Dash','No Name Runner','Clearance Climber','Factory Seconds','Final Sale Flats','Broke Boots','Lean Loafers','Meager Mocs','Modest Mules','Sensible Soles','Stingy Striders','Practical Pumps','Corner Cut Kicks','Half Off Hoppers','Cheap Cheats','Last Chance Laces','Rock Bottom Runners','Sparse Sneakers','Dime a Dozen Dash','Slim Step','Leftovers Laces','Flat Rate Flats','Bare Budget Boots','Plain Pace','Adequate Ankles','Whatever Walkers'],
+    disruptor: ['Mocca Sins','Cobbler Gobbler','Hard Pivot','Sole Crusher','Boot Licker','Carbon Footprint','Kick Back','Rough Tread','Rogue Runner','Cold Feet','Burn Rubber','Lead Foot','Bare Bones','Curb Crushers','Killer Kickz','Sidewalk Slayers','Street Steppers','Dead Stock','Dark Horse','Trojan Kicks','No Brakes','Scorched Sole','Rebel Runner','Renegade Run','Deviant Dash','Savage Sole','Brazen Boots','Maverick Mocs','Outlaw Oxfords','Havoc Heels','Hostile Hoppers','Chaos Kicks','Mutiny Mules','Ruckus Runner','Defiant Dash','Volatile Vans','Radical Runner','Menace Mocs','Wicked Walkers','Sinister Stride','Venom Vibe','Coup Kicks','Sabotage Soles','Blitz Boots','Dissident Dash','Insurrection Inch'],
+  },
+  software: {
+    premium: ['Cloud Nine','Suite Life','Platinum Pipeline','Crown Cloud','Summit SaaS','Elite Engine','Gilded Gate','Prestige Logic','Apex Suite','Sterling Stack','Pinnacle','Paragon Cloud','Grand Central','Gold Standard','Prime Protocol','Polished Platform','Pristine Pipeline','Refined Runtime','Dignified Deploy','Regal Registry','Proper Protocol','Noble Node','Exquisite Engine','Majestic Mesh','Stately Stack','Opulent Ops','Upper Echelon','Velvet Vault','Sovereign Suite','Ivory Index','Patrician Platform','Pedigree Pipeline','Silk Suite','Lustrous Logic','Bespoke Build','Immaculate Infra','Curated Cloud','Artisan API'],
+    lifestyle: ['Vibe.io','Flow State','Chill Code','Mood Board','Life Hack','Daily Drive','Side Hustle','Sunday Mode','Daylight','Coast','Breezy','Campfire','Treehouse','Hammock','Sunset Suite','Slow Code','Horizon','Cabin','Golden Hour','Driftwood','Daydream','Almanac','Calm Cloud','Drift','Meadow','Wander','Ember','Still Water','Breathe','Solstice','Canopy','Lantern Light','Porch Swing','Stargazer','Firefly','Moonrise','Cobblestone','Paper Trail','Wildflower','Morning Fog','Quiet Launch','Gentle Build','Warm Start','Soft Ship','Easy Bake','Bloom','Field Guide','Compass Code'],
+    value: ['Budget Bytes','Thrift Stack','Basic Build','Lean Launch','No Frills SaaS','Starter Kit','Bare Metal','Light Stack','Simple Suite','Ship It','Minimum Viable','Plain Text','Good Enough','Lite Mode','Free Tier','Boilerplate','Draft Mode','Quick & Dirty','Hot Fix','Band-Aid','Duct Tape Dev','Patch Work','Zip File','Freeware','Shareware','Open Source-ish','Copy Paste','Bargain Bin','Clearance Code','Dollar Deploy','Markdown','Shortcut','Rough Cut','Stub Hub','Placeholder Pro','MVP Mode','Wireframe','Napkin Code','Shoestring SaaS','Ramen Stack','Close Enough Cloud'],
+    disruptor: ['Kill Switch','Dark Mode','Root Access','Zero Day','Brute Force','Null Pointer','Core Dump','Fork Bomb','Dead Code','Logic Bomb','Payload','Memory Leak','Race Condition','Breaking Change','Hard Fork','Rogue Process','Shadow IT','Dark Launch','Chaos Monkey','Red Team','Flash Crash','Circuit Breaker','Fail Fast','Burn Down','Fatal Error','Bad Gateway','Runaway Thread','Seg Fault','Blue Screen','Black Hat','Trojan Build','Worm Hole','Hostile Merge','Panic Mode','Override','Deadlock','Scorched Stack','Rogue Deploy','Rebel Runtime','Mutiny Mode','Coup Cloud','Volatile Variable'],
+    enterprise: ['Iron Gate','Vault Logic','Shield Suite','Sentinel','Bastion','Citadel','Fortress','Keystone','Bedrock','Monolith','Bulwark','Rampart','Stronghold','Aegis','Phalanx','Mainframe','Backbone','Foundation','Pillar','Anvil','Forge','Bunker Build','Granite Grid','Steel Stack','Titanium Tier','Armored API','Concrete Cloud','Fortified Flow','Ironclad Infra','Bombproof Build','Garrison Grid','Watchtower','Command Deck','Mission Control','Central Command','Hardened Hub','Battle Bridge','Classified Cloud','Secure Sector','Lockdown Logic'],
+    smb: ['Spark Plug','Hustle Hub','Lean Machine','Quick Start','Boost Box','Nimble','Swift Suite','Scrappy Stack','Underdog','Bootstrap','Ramen Mode','Launchpad','Catapult','Springboard','Slingshot','Rocket Fuel','Day One','Ground Floor','Garage Code','Dorm Room Deploy','Whiteboard','Napkin Plan','Pitch Deck','Seed Round','Pre-Revenue','Pivot Point','Venture Build','Cap Table','Runway','Hockey Stick','Growth Hack','Scale Up','Moonshot Mode','Hypergrowth','Blitzscale','Angel Fund','Demo Day','Incubator','Accelerator','Stealth Mode','Beta Build','Ship Fast','Move Fast','Break Things','Disrupt This'],
+    consumer: ['Click Bait','Easy Mode','One Tap','No Brainer','Plug & Play','Smart Start','Quick Fix','Snap Stack','Swipe Right','Scroll Stop','Double Tap','Screen Time','Binge Mode','Refresh','Bookmark','One Click','Add to Cart','Trending','Share Link','Push Alert','Feed Me','Doom Scroll','Like & Subscribe','Infinite Scroll','Pop Up','Toast Note','Dark Pattern','Rage Click','Thumb Trap','Sticky App','Hook & Loop','Habit Hack','Daily Active','Dopamine Drop','Retention Ring','Churn Burn','Viral Loop','Growth Loop','Flywheel','Engagement Engine','Attention Span','Thumb Stopper'],
+    government: ['Red Tape','Clearance Level','Protocol','Mandate','Compliance Cloud','Audit Trail','Due Process','Chain of Command','Oversight','Bureau Suite','Rubber Stamp','Form 404','Regulation','Classified','Redacted','Top Secret','Need to Know','Public Record','Case File','Docket','Gavel','Tribunal','Filibuster','Quorum','Bipartisan Build','Bicameral','Subcommittee SaaS','Lobbyist Logic','Veto Vector','Executive Order','Policy Platform','Statute Stack','Amendment App','Ratified Runtime','Legislate','Bureaucratic Build','Notarized Node','Sworn Stack','Civic Code','Census Suite','Ballot Box','Permit Portal'],
+  },
+};
+
 const POSITIONINGS = {
   premium: { name: 'Premium', icon: '👑', brandBonus: 2.5, revMult: 1.2, desc: 'High margins, high expectations. Your customers pay more and complain louder.' },
   lifestyle: { name: 'Lifestyle', icon: '🌟', brandBonus: 3.0, revMult: 1.1, desc: 'You\'re not selling a product, you\'re selling a vibe. Hope Gen Z agrees.' },
@@ -144,7 +175,7 @@ const CONFLICTS = [
     id: 'ceo_nephew', type: 'pressure', title: '👔 The CEO\'s Nephew Has "Ideas"',
     text: 'The CEO\'s nephew - fresh MBA, zero marketing experience - has been "assigned" to your team. His first proposal: pivot your entire social strategy to the metaverse. He\'s already bought a $40k virtual billboard in a virtual world where 12 people visit daily.',
     choices: [
-      { text: 'Give him a harmless side project ("Head of Innovation")', cost: 10000, brandEquity: 0, revMult: 1.0, ceoPat: 10, luck: [0.5, { brandEquity: -3, ceoPat: -5, override: 'Your creative director closes the door. "You gave the CEO\'s nephew a title and a budget? I\'ve been pitching an innovation lab for two years." She updates her LinkedIn that afternoon. Morale drops. Marketing lesson: Creative containment works until your best people feel passed over.' }], outcome: 'He spends 3 months building a "Web3 loyalty program" nobody uses, but he\'s out of your hair. The CEO is happy his nephew is "learning." Marketing lesson: A side project can protect your core strategy without burning political capital.' },
+      { text: 'Give him a harmless side project ("Head of Innovation")', cost: 10000, brandEquity: 0, revMult: 1.0, ceoPat: 10, luck: [0.5, { neutral: true, brandEquity: -3, ceoPat: -5, override: 'Your creative director closes the door. "You gave the CEO\'s nephew a title and a budget? I\'ve been pitching an innovation lab for two years." She updates her LinkedIn that afternoon. Morale drops. Marketing lesson: Creative containment works until your best people feel passed over.' }], outcome: 'He spends 3 months building a "Web3 loyalty program" nobody uses, but he\'s out of your hair. The CEO is happy his nephew is "learning." Marketing lesson: A side project can protect your core strategy without burning political capital.' },
       { text: 'Actually try his metaverse idea', cost: 50000, brandEquity: -3, revMult: 0.95, ceoPat: 15, luck: [0.15, { brandEquity: 7, revMult: 1.15, ceoPat: 20, override: 'A gaming streamer discovers your metaverse presence. 2 million views. The nephew is insufferable, but it worked.' }], outcome: 'You just spent $50k on a metaverse presence that got 47 visitors. The nephew calls it a "soft launch." Your team calls it something else. Marketing lesson: Don\'t let politics override strategy.' },
       { text: 'Go to HR: "This is a conflict of interest"', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -20, luck: [0.5, { ceoPat: 10, brandEquity: 3, override: 'The CEO is quiet for a week, then calls you in. "You were right. He wasn\'t ready." The nephew is reassigned to Operations. Your team\'s respect skyrockets. Marketing lesson: Standing firm earns trust — even from the people you stand up to.' }], outcome: 'HR agrees with you technically, but the CEO is FURIOUS. "I was just trying to give the kid experience!" Your next budget review is going to be... interesting. Marketing lesson: Being right and being politically smart are different skills.' },
       { text: 'Make him "Chief Vibes Officer" with a chat channel nobody reads', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: 5, outcome: 'He posts daily "vibe checks" to a channel with 2 members (him and the bot). Everyone wins. He feels important, you keep control. Marketing lesson: The org chart is a suggestion, not a prison.' }
@@ -224,9 +255,9 @@ const CONFLICTS = [
     id: 'sales_fight', type: 'pressure', title: '⚔️ Sales vs. Marketing Showdown',
     text: 'The VP of Sales storms into your standup. "YOUR LEADS ARE GARBAGE. My team is wasting time on tire-kickers who can\'t spell their own credit card number!" He\'s red-faced. The CEO is cc\'d on the angry email.',
     choices: [
-      { text: 'Implement lead scoring + SLA between teams ($10k)', cost: 10000, brandEquity: 2, revMult: 1.05, ceoPat: 10, luck: [0.5, { brandEquity: -2, revMult: 0.9, ceoPat: -5, override: 'The dashboard is beautiful. Nobody uses it. Sales says the model is wrong. Marketing says Sales isn\'t following the SLA. Six weeks later you\'re back to spreadsheets. The $10k bought you a very expensive screensaver. Marketing lesson: Technology doesn\'t fix broken relationships — it just makes the dysfunction more visible.' }], outcome: 'Proper lead scoring, defined MQLs vs SQLs, a handoff SLA. It takes a month to calibrate, but Sales and Marketing start speaking the same language. Marketing lesson: Alignment > argument. Process > politics.' },
+      { text: 'Implement lead scoring + SLA between teams ($10k)', cost: 10000, brandEquity: 2, revMult: 1.05, ceoPat: 10, luck: [0.5, { neutral: true, brandEquity: -2, revMult: 0.9, ceoPat: -5, override: 'The dashboard is beautiful. Nobody uses it. Sales says the model is wrong. Marketing says Sales isn\'t following the SLA. Six weeks later you\'re back to spreadsheets. The $10k bought you a very expensive screensaver. Marketing lesson: Technology doesn\'t fix broken relationships — it just makes the dysfunction more visible.' }], outcome: 'Proper lead scoring, defined MQLs vs SQLs, a handoff SLA. It takes a month to calibrate, but Sales and Marketing start speaking the same language. Marketing lesson: Alignment > argument. Process > politics.' },
       { text: '"Your team can\'t close a door, let alone a deal"', cost: 0, brandEquity: 0, revMult: 0.95, ceoPat: -15, outcome: 'SHOTS FIRED. The war between Sales and Marketing goes nuclear. The CEO calls an all-hands to address "team culture." You both get a talking-to. Marketing lesson: Being right doesn\'t matter if you burn the relationship.' },
-      { text: 'Joint "smarketing" workshop + shared dashboard ($5k)', cost: 5000, brandEquity: 3, revMult: 1.0, ceoPat: 5, luck: [0.5, { brandEquity: 0, revMult: 0.95, ceoPat: -3, override: 'The pizza was great. Everyone laughed, found common ground over pepperoni. Then Monday came and nothing changed. The Slack channel went quiet by Wednesday. Marketing lesson: Pizza builds rapport, not process. Good vibes don\'t survive a bad quarter.' }], outcome: 'Pizza and a shared dashboard. Awkward for 30 minutes, then productive. You discover Sales was ignoring follow-ups. They discover your lead forms were broken on mobile. Marketing lesson: 80% of marketing-sales problems are communication problems.' },
+      { text: 'Joint "smarketing" workshop + shared dashboard ($5k)', cost: 5000, brandEquity: 3, revMult: 1.0, ceoPat: 5, luck: [0.5, { neutral: true, brandEquity: 0, revMult: 0.95, ceoPat: -3, override: 'The pizza was great. Everyone laughed, found common ground over pepperoni. Then Monday came and nothing changed. The Slack channel went quiet by Wednesday. Marketing lesson: Pizza builds rapport, not process. Good vibes don\'t survive a bad quarter.' }], outcome: 'Pizza and a shared dashboard. Awkward for 30 minutes, then productive. You discover Sales was ignoring follow-ups. They discover your lead forms were broken on mobile. Marketing lesson: 80% of marketing-sales problems are communication problems.' },
       { text: 'Give Sales exactly what they want: gate everything, qualify harder', cost: 0, brandEquity: -3, revMult: 0.9, ceoPat: 5, outcome: 'Lead volume drops 60%. The leads are "better" but there are so few that Sales still can\'t hit quota. Now it\'s somehow still your fault. Marketing lesson: Giving people what they ask for and what they need are different things.' }
     ]
   },
@@ -255,7 +286,7 @@ const CONFLICTS = [
     text: 'Your email service provider was hacked. Customer emails and purchase history may have been exposed. A security researcher just tweeted about it. Media is reaching out for comment. Legal is panicking.',
     choices: [
       { text: 'Full transparency: notify everyone, offer credit monitoring ($40k)', cost: 40000, brandEquity: 3, revMult: 0.85, ceoPat: -5, outcome: 'Revenue takes a hit and the CEO is furious, but customers TRUST you now. Privacy-conscious consumers become loyal advocates. Marketing lesson: Transparency is expensive short-term and invaluable long-term.' },
-      { text: 'Minimal disclosure: notify only confirmed affected users ($15k)', cost: 15000, brandEquity: -2, revMult: 0.92, ceoPat: 5, luck: [0.4, { brandEquity: -15, revMult: 0.7, ceoPat: -15, override: 'A journalist discovers you under-reported the breach. Now it\'s not just a data incident - it\'s a COVER-UP. Regulators are involved. This is a nightmare.' }], outcome: 'You thread the legal needle. Technically compliant, ethically questionable. Most customers never notice. Marketing lesson: Minimum compliance is a strategy - until it isn\'t.' },
+      { text: 'Minimal disclosure: notify only confirmed affected users ($15k)', cost: 15000, brandEquity: -2, revMult: 0.92, ceoPat: 5, luck: [0.4, { neutral: true, brandEquity: -15, revMult: 0.7, ceoPat: -15, override: 'A journalist discovers you under-reported the breach. Now it\'s not just a data incident - it\'s a COVER-UP. Regulators are involved. This is a nightmare.' }], outcome: 'You thread the legal needle. Technically compliant, ethically questionable. Most customers never notice. Marketing lesson: Minimum compliance is a strategy - until it isn\'t.' },
       { text: 'Spin it: "We proactively identified a security concern" ($10k)', cost: 10000, brandEquity: -8, revMult: 0.95, ceoPat: 5, outcome: 'The spin works on boomers. Gen Z sees right through it and drags you on social media. "Proactively identified" becomes a meme. Marketing lesson: Corporate euphemisms are a language nobody trusts.' },
       { text: 'Say nothing. Hope it goes away.', cost: 0, brandEquity: -14, revMult: 0.9, ceoPat: 0, luck: [0.3, { brandEquity: 0, revMult: 1.0, ceoPat: 5, override: 'By some miracle, the story gets buried under bigger news. You got away with it this time. Start looking for a better email provider.' }], outcome: 'The journalist publishes without your comment. "Company refused to respond" is never a good look. The narrative is written without you. Marketing lesson: Silence is not a communications strategy.' }
     ]
@@ -736,11 +767,14 @@ function calcTeamMultiplier() {
   let mult = 0.7; // base with no team
   const t = G.team;
   const adj = G.midYearAdjustments || {};
+  let cutPenalty = 0;
   ROLES.forEach(r => {
     const scale = adj[r.id] !== undefined ? adj[r.id] : 1.0;
     if (t[r.id] === 'ft') mult += 0.08 * scale;
     else if (t[r.id] === 'agency') mult += 0.06 * scale;
     // skip = 0
+    // Disruption penalty: cutting a role you had hurts more than never hiring
+    if (t[r.id] !== 'skip' && scale === 0) cutPenalty += 0.04;
   });
   // Bonus for performance agency (they're specialists)
   const growthScale = adj.growth !== undefined ? adj.growth : 1.0;
@@ -748,7 +782,7 @@ function calcTeamMultiplier() {
   // Bonus for full-time brand strategist
   const brandScale = adj.brand !== undefined ? adj.brand : 1.0;
   if (t.brand === 'ft') mult += 0.02 * brandScale;
-  return mult;
+  return mult - cutPenalty;
 }
 
 function calcTeamCost() {
@@ -829,17 +863,35 @@ function calcMonthlyRevenue(month, allocOverride, forecast) {
   return { total: Math.round(rev), brandRev: Math.round(brandRev), perfRev: Math.round(perfRev) };
 }
 
+function getBrandEquityDiminishing() {
+  // Diminishing returns: harder to gain brand equity at higher levels
+  if (G.brandEquity >= 90) return 0.3;
+  if (G.brandEquity >= 75) return 0.6;
+  if (G.brandEquity >= 50) return 0.75;
+  return 1.0;
+}
+
 function calcBrandEquityChange(alloc) {
   let change = 0;
   const t = G.team;
+  const adj = G.midYearAdjustments || {};
 
-  // Team effects (reduced base)
-  if (t.brand === 'ft') change += 1.0;
-  else if (t.brand === 'agency') change += 0.5;
+  // Team effects — scaled by mid-year adjustments
+  const brandAdj = adj.brand !== undefined ? adj.brand : 1.0;
+  const contentAdj = adj.content !== undefined ? adj.content : 1.0;
+  const dataAdj = adj.data !== undefined ? adj.data : 1.0;
+
+  if (t.brand === 'ft') change += 1.0 * brandAdj;
+  else if (t.brand === 'agency') change += 0.5 * brandAdj;
   else change -= 1.5;
 
-  if (t.content === 'ft') change += 0.3;
-  if (t.data === 'ft') change += 0.2;
+  if (t.content === 'ft') change += 0.3 * contentAdj;
+  else if (t.content === 'agency') change += 0.15 * contentAdj;
+  if (t.data === 'ft') change += 0.2 * dataAdj;
+
+  // Penalty for cutting teams that were previously active
+  if (brandAdj === 0 && t.brand !== 'skip') change -= 1.5;
+  if (contentAdj === 0 && t.content !== 'skip') change -= 0.8;
 
   // Positioning bonus
   change += getPositioning().brandBonus * 0.15;
@@ -865,6 +917,9 @@ function calcBrandEquityChange(alloc) {
     if (change > 0) change *= 0.5;
   }
 
+  // Diminishing returns at higher brand equity levels
+  if (change > 0) change *= getBrandEquityDiminishing();
+
   return change;
 }
 
@@ -873,8 +928,16 @@ function processMonth() {
   const totalSpend = alloc.brand + alloc.performance + alloc.pr + alloc.events + G.teamCostPerMonth;
 
   // Update brand momentum (the compounding flywheel engine)
+  const adj = G.midYearAdjustments || {};
+  const brandTeamCut = adj.brand !== undefined && adj.brand === 0 && G.team.brand !== 'skip';
+  const contentTeamCut = adj.content !== undefined && adj.content === 0 && G.team.content !== 'skip';
   G.brandMomentum += (alloc.brand / 30000) * 0.04;
-  G.brandMomentum *= 1.12; // 12% compound growth per month
+  if (brandTeamCut) {
+    G.brandMomentum *= 0.85; // momentum decays without brand team
+  } else {
+    G.brandMomentum *= 1.12; // 12% compound growth per month
+  }
+  if (contentTeamCut) G.brandMomentum *= 0.92; // content team loss slows momentum
   G.brandMomentum = clamp(G.brandMomentum, 0, 5); // cap to prevent runaway
 
   // Track events spend for symposium bonus
@@ -1293,6 +1356,8 @@ function applyConflictChoice(conflictIdx, choiceIdx) {
   // Apply effects
   G.budget -= effects.cost;
   G.budget = Math.min(G.budget, 5000000);
+  // Apply diminishing returns to positive brand equity gains from conflicts
+  if (effects.brandEquity > 0) effects.brandEquity = Math.round(effects.brandEquity * getBrandEquityDiminishing());
   G.brandEquity = clamp(G.brandEquity + effects.brandEquity, 0, 100);
   G.ceoPat = clamp(G.ceoPat + effects.ceoPat, 0, 100);
 
@@ -1952,12 +2017,14 @@ function renderProductSelect() {
 function renderNaming() {
   const p = PRODUCTS[G.product];
   const examples = p.namingExamples.join(', ');
+  const hasNames = GENERATED_NAMES[G.product] && GENERATED_NAMES[G.product][G.positioning];
   return `<div class="screen text-center">
     <div class="section-title">Name your ${p.namingLabel}</div>
     <div class="section-sub">Make your brand memorable and SEO-optimized. Don't use a pun. (Okay, you can use a pun.)</div>
     <div class="card" style="max-width:500px;margin:20px auto">
       <img src="${getProductImage()}" alt="${p.name}" class="product-icon product-icon-md" style="margin:0 auto 15px">
       <input type="text" id="productName" placeholder="Brand Name" maxlength="25" autofocus>
+      ${hasNames ? '<button class="btn" data-action="generateName" style="margin-top:12px;font-size:.8rem;padding:6px 16px">🎲 Generate A Name</button>' : ''}
       <div style="margin-top:10px;font-size:.75rem;color:var(--muted)">Examples: ${examples}</div>
     </div>
     <div class="btn-group">
@@ -3840,6 +3907,15 @@ document.getElementById('app').addEventListener('click', function (e) {
       G.positioning = null; // reset positioning when changing product
       G.screen = 'positioning';
       break;
+    case 'generateName': {
+      const names = GENERATED_NAMES[G.product] && GENERATED_NAMES[G.product][G.positioning];
+      if (names && names.length > 0) {
+        const pick = names[Math.floor(Math.random() * names.length)];
+        const input = document.getElementById('productName');
+        if (input) { input.value = pick; input.style.borderColor = ''; }
+      }
+      return; // don't re-render, just update the input
+    }
     case 'confirmName': {
       const name = document.getElementById('productName')?.value.trim();
       if (!name) { document.getElementById('productName').style.borderColor = 'var(--red)'; return; }
@@ -3935,6 +4011,15 @@ document.getElementById('app').addEventListener('click', function (e) {
         delete G._reviewHires;
       }
       calcTeamCost();
+
+      // Per-role penalties for cutting or reducing team members
+      let cutCount = 0;
+      ROLES.forEach(r => {
+        if (G.team[r.id] === 'skip') return; // was never hired, no penalty
+        const scale = G.midYearAdjustments[r.id] !== undefined ? G.midYearAdjustments[r.id] : 1.0;
+        if (scale === 0) { G.ceoPat = clamp(G.ceoPat - 5, 0, 100); cutCount++; }
+        else if (scale === 0.5) { G.ceoPat = clamp(G.ceoPat - 2, 0, 100); }
+      });
 
       // Check if all roles are cut or were skipped (fire-everyone penalty)
       const allCutOrSkipped = ROLES.every(r => {
@@ -4091,6 +4176,21 @@ document.getElementById('app').addEventListener('click', function (e) {
         G.allocation = { ...G._lastAllocation };
       } else if (!preset.isSame) {
         G.allocation = { brand: preset.brand, performance: preset.performance, pr: preset.pr, events: preset.events };
+      }
+      // On holiday screen, scale down preset if it exceeds remaining budget
+      if (G.screen === 'holidayAllocation') {
+        const a = G.allocation;
+        let hTotal = 0;
+        G.holidayTactics.forEach(i => { hTotal += HOLIDAY_EVENT.strategies[i].cost; });
+        const allocSum = a.brand + a.performance + a.pr + a.events;
+        const available = G.budget - G.teamCostPerMonth - hTotal;
+        if (allocSum > available && allocSum > 0) {
+          const scale = Math.max(0, available / allocSum);
+          a.brand = Math.floor(a.brand * scale / 1000) * 1000;
+          a.performance = Math.floor(a.performance * scale / 1000) * 1000;
+          a.pr = Math.floor(a.pr * scale / 1000) * 1000;
+          a.events = Math.floor(a.events * scale / 1000) * 1000;
+        }
       }
       // Preserve current screen (works for both 'allocation' and 'holidayAllocation')
       break;
@@ -4300,7 +4400,20 @@ document.getElementById('app').addEventListener('click', function (e) {
 document.getElementById('app').addEventListener('input', function (e) {
   if (e.target.dataset.action === 'updateAlloc') {
     const cat = e.target.dataset.cat;
-    const val = parseInt(e.target.value);
+    let val = parseInt(e.target.value);
+
+    // On holiday screen, cap sliders so total spend can't exceed remaining budget
+    if (G.screen === 'holidayAllocation') {
+      const a = G.allocation;
+      const otherAlloc = Object.keys(a).reduce((sum, k) => k !== cat ? sum + a[k] : sum, 0);
+      let holidayTotal = 0;
+      G.holidayTactics.forEach(i => { holidayTotal += HOLIDAY_EVENT.strategies[i].cost; });
+      const maxForThis = Math.max(0, G.budget - otherAlloc - G.teamCostPerMonth - holidayTotal);
+      val = Math.min(val, maxForThis);
+      // Snap slider to capped value
+      e.target.value = val;
+    }
+
     G.allocation[cat] = val;
     const display = document.getElementById('alloc-' + cat);
     if (display) display.textContent = fmt(val);
