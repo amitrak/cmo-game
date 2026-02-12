@@ -1270,10 +1270,8 @@
 
     /* ---- Symposium Mini-Game ---- */
     .symp-screen { display: flex; flex-direction: column; align-items: center; }
-    .symp-header { text-align: center; margin-bottom: 16px; max-width: 500px; width: 100%; }
-    .symp-header-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+    .symp-header { text-align: center; margin-bottom: 16px; width: 100%; }
     .symp-header-title { font-family: 'Press Start 2P', monospace; font-size: 1rem; color: var(--green); text-shadow: 2px 2px 0 #000; text-transform: uppercase; margin-bottom: 6px; }
-    .symp-header-booth { font-size: .85rem; color: var(--amber); }
 
     /* Intro — normal page content */
     #symp-intro { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
@@ -1287,23 +1285,32 @@
     #symp-intro button { animation: symp-pulse 1.5s ease-in-out infinite; }
 
     /* Game area — shown after Start Expo */
-    #symp-game { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    #symp-game {
+      width: 100%; max-width: min(100%, calc(80vh * 0.75));
+      display: flex; flex-direction: column; align-items: center;
+    }
     #symp-hud {
       display: flex; justify-content: space-between; align-items: center;
-      width: 100%; max-width: 420px; margin-bottom: 10px;
+      width: 100%; margin-bottom: 10px;
       font-family: 'Roboto Mono', monospace; font-size: 14px; color: var(--text);
     }
     #symp-hud .sb { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 6px 14px; }
     #symp-hud .sl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
     #symp-hud .sv { font-size: 22px; font-weight: bold; }
     #symp-wrapper {
-      position: relative; width: 100%; max-width: 420px;
+      position: relative; width: 100%;
       aspect-ratio: 3/4; overflow: hidden; background: #0d1117;
     }
     #symp-wrapper canvas {
       display: block; width: 100%; height: 100%;
       image-rendering: pixelated; image-rendering: crisp-edges; cursor: crosshair;
     }
+    .symp-legend-row {
+      display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+      font-size: .75rem; color: var(--muted);
+    }
+    .symp-legend-item { display: flex; align-items: center; gap: 5px; }
+    .symp-legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
     #symp-end {
       display: none; position: absolute; inset: 0; z-index: 100;
       background: rgba(13,17,23,.92);
@@ -1492,6 +1499,7 @@
 
       .symp-header { margin-bottom: 10px; }
       .symp-header-title { font-size: .85rem; }
+      #symp-game { max-width: 100%; }
       #symp-intro .si-banner { margin-bottom: 12px; }
       #symp-intro .si-rules { font-size: .8rem; line-height: 1.5; margin-bottom: 14px; }
       #symp-intro .si-rules p { margin-bottom: 8px; }

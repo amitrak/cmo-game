@@ -2582,9 +2582,7 @@ function renderSymposium() {
   const whaleLabel = sympGetWhaleLabel();
   return `<div class="screen symp-screen">
     <div class="symp-header">
-      <div class="symp-header-label">Midway Mini Game</div>
       <div class="symp-header-title">${expoName}</div>
-      <div class="symp-header-booth">${G.productName} — Booth #42</div>
     </div>
 
     <div id="symp-intro">
@@ -2593,10 +2591,10 @@ function renderSymposium() {
         <p>You've got a booth at the industry's biggest event.</p>
         <p><strong>Tap to launch</strong> ${ammoWord} and reel in leads.</p>
         <div class="si-targets">
-          <div class="si-trow"><div class="si-dot" style="background:#4ade80"></div> <strong>Attendees</strong> — small revenue</div>
+          <div class="si-trow"><div class="si-dot" style="background:#f87171"></div> <strong>Attendees</strong> — small revenue</div>
           <div class="si-trow"><div class="si-dot" style="background:#c084fc"></div> <strong>Press</strong> — medium brand equity</div>
-          <div class="si-trow"><div class="si-dot" style="background:var(--amber)"></div> <strong>Influencers</strong> — high brand equity</div>
-          <div class="si-trow"><div class="si-dot" style="background:var(--red)"></div> <strong>${whaleLabel}</strong> — massive revenue</div>
+          <div class="si-trow"><div class="si-dot" style="background:#ffd700"></div> <strong>Influencers</strong> — high brand equity</div>
+          <div class="si-trow"><div class="si-dot" style="background:#4ade80"></div> <strong>${whaleLabel}</strong> — massive revenue</div>
         </div>
         <p>You have <strong>${totalTime} seconds</strong> and <strong>${totalAmmo} ${ammoWord}</strong>. But watch your back: <strong>Competitors</strong> will poach your leads... if you don't poach theirs first.</p>
       </div>
@@ -2628,6 +2626,14 @@ function renderSymposium() {
           </div>
           <div class="symp-sub" id="symp-end-wasted-msg" style="display:none;margin-top:10px;color:var(--amber);font-size:11px"></div>
           <button id="symp-end-btn">Continue</button>
+        </div>
+      </div>
+      <div id="symp-legend" style="display:none;width:100%;margin-top:8px">
+        <div class="symp-legend-row">
+          <span class="symp-legend-item"><span class="symp-legend-dot" style="background:#f87171"></span>Attendees</span>
+          <span class="symp-legend-item"><span class="symp-legend-dot" style="background:#c084fc"></span>Press</span>
+          <span class="symp-legend-item"><span class="symp-legend-dot" style="background:#ffd700"></span>Influencers</span>
+          <span class="symp-legend-item"><span class="symp-legend-dot" style="background:#4ade80"></span>${whaleLabel}</span>
         </div>
       </div>
     </div>
@@ -2748,15 +2754,16 @@ function initSymposium() {
   var GAME_TIME = 60, MAX_AMMO = 25 + eventsBonus, PROJ_SPEED = 300, COMP_PROJ_SPEED = 220, WALK_TO_BOOTH_SPEED = 130;
   var whaleLabel = sympGetWhaleLabel();
   var TARGET_TYPES = {
-    attendee:   { color: '#4ade80', speed: [50, 90],   spawnWeight: 55, size: [15, 15], rev: 50000,  brand: 0 },
+    attendee:   { color: '#f87171', speed: [50, 90],   spawnWeight: 55, size: [15, 15], rev: 50000,  brand: 0 },
     press:      { color: '#c084fc', speed: [65, 110],  spawnWeight: 25, size: [15, 15], rev: 30000,  brand: 1 },
     influencer: { color: '#ffd700', speed: [110, 170], spawnWeight: 14, size: [15, 15], rev: 60000,  brand: 2 },
-    whale:      { color: '#ff4757', speed: [25, 45],   spawnWeight: 6,  size: [19, 19], rev: 300000, brand: 0 },
+    whale:      { color: '#4ade80', speed: [25, 45],   spawnWeight: 6,  size: [19, 19], rev: 300000, brand: 0 },
   };
 
   var sState = 'intro', timer = GAME_TIME, ammo = MAX_AMMO;
   var totalRev = 0, totalBrand = 0, totalHits = 0, totalShots = 0, totalSteals = 0;
   var lastTime = 0, spawnTimer = 0, endDelayTimer = 0, cursorPos = null;
+  var lastActionTime = 0;
   var targets = [], projectiles = [], particles = [], popups = [];
 
   function sFmt(n) {
@@ -2785,11 +2792,6 @@ function initSymposium() {
     ctx.strokeStyle = color; ctx.lineWidth = isPlayer ? 2.5 : 1.5; ctx.strokeRect(x, y, bw, bh);
     var img = sImages[imgKey];
     if (img && img.complete && img.naturalWidth > 0) { var sz = isPlayer ? 28 : 20; ctx.drawImage(img, bx - sz / 2, by - sz / 2, sz, sz); }
-    if (isPlayer) {
-      ctx.fillStyle = '#ffd700'; ctx.font = 'bold 9px Courier New'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-      var display = G.productName.length > 12 ? G.productName.slice(0, 12) : G.productName;
-      ctx.fillText(display, bx, y - 3);
-    }
   }
 
   function drawFloor() {
@@ -2837,6 +2839,7 @@ function initSymposium() {
   function launchPlayerProjectile(tx, ty) {
     if (ammo <= 0 || sState !== 'playing') return;
     ammo--; totalShots++;
+    lastActionTime = performance.now() / 1000;
     var angle = Math.atan2(ty - PLAYER_BOOTH.y, tx - PLAYER_BOOTH.x);
     projectiles.push({ x: PLAYER_BOOTH.x, y: PLAYER_BOOTH.y, vx: Math.cos(angle) * PROJ_SPEED, vy: Math.sin(angle) * PROJ_SPEED, owner: 'player', imgKey: 'playerProduct', size: 24, alive: true });
     document.getElementById('symp-ammo').textContent = ammo;
@@ -2876,8 +2879,8 @@ function initSymposium() {
             totalRev += revGain; totalBrand += type.brand; totalHits++;
             if (isSteal) totalSteals++;
             t.state = 'goingToPlayer'; t.targetBoothX = PLAYER_BOOTH.x; t.targetBoothY = PLAYER_BOOTH.y;
-            spawnPopup(t.x, t.y - 10, '+' + sFmt(revGain) + (type.brand > 0 ? ' +' + type.brand + ' BE' : '') + (isSteal ? ' STEAL!' : ''), isSteal ? '#ff4757' : (type.brand > 0 ? '#58a6ff' : '#4ade80'));
-            spawnParticles(t.x, t.y, isSteal ? '#ff4757' : '#4ade80', 5);
+            spawnPopup(t.x, t.y - 10, '+' + sFmt(revGain) + (type.brand > 0 ? ' +' + type.brand + ' BE' : '') + (isSteal ? ' STEAL!' : ''), isSteal ? '#ff4757' : (type.brand > 0 ? '#58a6ff' : '#58a6ff'));
+            spawnParticles(t.x, t.y, isSteal ? '#ff4757' : t.color, 5);
             document.getElementById('symp-rev').textContent = sFmt(totalRev);
             document.getElementById('symp-brand').textContent = '+' + totalBrand;
           } else {
@@ -2916,7 +2919,7 @@ function initSymposium() {
       if (t.state === 'walking') { t.x += t.vx * dt; t.y += t.vy * dt; if (t.x < -40 || t.x > SW + 40 || t.y < -40 || t.y > SH + 40) t.alive = false; }
       else if (t.state === 'goingToPlayer' || t.state === 'goingToCompetitor') {
         var dx = t.targetBoothX - t.x, dy = t.targetBoothY - t.y, d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 8) { t.alive = false; spawnParticles(t.x, t.y, t.state === 'goingToPlayer' ? '#4ade80' : '#666', 4); }
+        if (d < 8) { t.alive = false; spawnParticles(t.x, t.y, t.state === 'goingToPlayer' ? '#00ff41' : '#666', 4); }
         else { t.x += (dx / d) * WALK_TO_BOOTH_SPEED * dt; t.y += (dy / d) * WALK_TO_BOOTH_SPEED * dt; }
       }
     }
@@ -2940,9 +2943,9 @@ function initSymposium() {
     for (var i = 0; i < sorted.length; i++) {
       var t = sorted[i];
       drawPerson(t.x, t.y, t.w, t.h, t.color, now + t.spawnTime, t.state);
-      if (t.type === 'whale') { ctx.font = '8px Courier New'; ctx.textAlign = 'center'; ctx.fillText('💎', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 4)); }
-      else if (t.type === 'influencer') { ctx.font = '7px Courier New'; ctx.textAlign = 'center'; ctx.fillText('⭐', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 3)); }
-      else if (t.type === 'press') { ctx.font = '7px Courier New'; ctx.textAlign = 'center'; ctx.fillText('📰', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 3)); }
+      if (t.type === 'whale') { ctx.font = '8px Courier New'; ctx.textAlign = 'center'; ctx.fillText('💸', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 4)); }
+      else if (t.type === 'influencer') { ctx.font = '7px Courier New'; ctx.textAlign = 'center'; ctx.fillText('🌟', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 3)); }
+      else if (t.type === 'press') { ctx.font = '7px Courier New'; ctx.textAlign = 'center'; ctx.fillText('📢', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 3)); }
     }
     for (var pi = 0; pi < projectiles.length; pi++) {
       var p = projectiles[pi]; if (!p.alive) continue;
@@ -2968,6 +2971,17 @@ function initSymposium() {
       ctx.font = 'bold 9px Courier New'; ctx.textAlign = 'center'; ctx.fillText(pu.text, Math.floor(pu.x), Math.floor(pu.y));
     }
     ctx.globalAlpha = 1;
+    // "Tap to launch" reminder after 10s inactivity
+    if (sState === 'playing' && ammo > 0) {
+      var idle = performance.now() / 1000 - lastActionTime;
+      if (idle >= 10) {
+        var pulse = Math.sin(performance.now() / 400) * 0.3 + 0.7;
+        ctx.globalAlpha = pulse;
+        ctx.fillStyle = '#ffd700'; ctx.font = 'bold 14px Courier New'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('TAP TO LAUNCH', SW / 2, SH / 2);
+        ctx.globalAlpha = 1;
+      }
+    }
   }
 
   function sEndGame() {
@@ -2986,14 +3000,15 @@ function initSymposium() {
         document.getElementById('symp-wasted-row').style.display = 'flex';
         document.getElementById('symp-end-wasted').textContent = leftover;
         var wastedMsg = document.getElementById('symp-end-wasted-msg');
-        if (leftover >= 15) wastedMsg.textContent = 'You barely touched your inventory. All those potential connections, just sitting in the booth gathering dust.';
-        else if (leftover >= 10) wastedMsg.textContent = 'That\'s a lot of opportunity left on the table. The CEO will notice the wasted budget.';
-        else if (leftover >= 5) wastedMsg.textContent = 'A few unused samples. Not terrible, but every one was a missed connection.';
+        if (leftover >= 15) wastedMsg.textContent = 'Most of your inventory is still sitting at the booth. All those potential connections, untouched.';
+        else if (leftover >= 10) wastedMsg.textContent = 'Lots of unused samples left at your booth. The CEO will notice.';
+        else if (leftover >= 5) wastedMsg.textContent = 'A few unused samples left at your booth. Every one was a missed connection.';
         else wastedMsg.textContent = 'Just a couple left over. Close to a clean run.';
         wastedMsg.style.display = 'block';
       }
       var subtitle = 'The conference is over. Here\'s how you did.';
-      if (accuracy >= 60 && totalHits >= 15) subtitle = 'Legendary booth presence. ' + G.productName + ' stole the show!';
+      if (accuracy >= 60 && totalHits >= 15 && leftover <= 3) subtitle = 'Legendary booth presence. ' + G.productName + ' stole the show!';
+      else if (accuracy >= 60 && totalHits >= 15) subtitle = 'Great accuracy, but you left samples on the table.';
       else if (accuracy >= 50 && totalHits >= 10) subtitle = 'Solid showing. ' + G.productName + ' made real connections.';
       else if (totalHits >= 10) subtitle = 'You got noticed, but left some on the table.';
       else if (totalHits >= 5) subtitle = 'A quiet showing. The competitors got most of the attention.';
@@ -3022,8 +3037,11 @@ function initSymposium() {
   document.getElementById('symp-start-btn').addEventListener('click', function() {
     document.getElementById('symp-intro').style.display = 'none';
     document.getElementById('symp-game').style.display = 'block';
+    var legend = document.getElementById('symp-legend');
+    if (legend) legend.style.display = 'block';
     targets.length = 0; projectiles.length = 0;
     sState = 'playing'; lastTime = 0;
+    lastActionTime = performance.now() / 1000;
     _sympRafId = requestAnimationFrame(gameLoop);
   });
 
