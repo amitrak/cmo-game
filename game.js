@@ -423,6 +423,7 @@ function initState() {
     lastConflictOutcome: null,
     bonusesReceived: 0,
     hasSave: false,
+    totalEventsSpend: 0,
     symposiumDone: false,
     symposiumResults: null,
     midYearReviewDone: false,
@@ -467,6 +468,7 @@ function loadGame() {
       if (G.achievements === undefined) G.achievements = [];
       if (G._luckyBreaks === undefined) G._luckyBreaks = 0;
       if (G._ceoVibesMinReached === undefined) G._ceoVibesMinReached = G.ceoPat || 75;
+      if (G.totalEventsSpend === undefined) G.totalEventsSpend = 0;
       if (G.symposiumDone === undefined) G.symposiumDone = false;
       if (G.symposiumResults === undefined) G.symposiumResults = null;
       render();
@@ -865,6 +867,9 @@ function processMonth() {
   G.brandMomentum += (alloc.brand / 30000) * 0.04;
   G.brandMomentum *= 1.12; // 12% compound growth per month
   G.brandMomentum = clamp(G.brandMomentum, 0, 5); // cap to prevent runaway
+
+  // Track events spend for symposium bonus
+  G.totalEventsSpend += alloc.events;
 
   // Deduct spend
   G.budget -= totalSpend;
@@ -1793,11 +1798,12 @@ function render() {
     case 'allocation': app.innerHTML = renderAllocation(); break;
     case 'monthResults': app.innerHTML = renderMonthResults(); break;
     case 'symposium':
-      if (!document.getElementById('symposium-frame')) {
+      if (!document.getElementById('symp-canvas')) {
         app.innerHTML = renderSymposium();
       }
       break;
     case 'promotionReview': app.innerHTML = renderPromotionReview(); break;
+    case 'midYearReview': app.innerHTML = renderMidYearReview(); break;
     case 'holiday': app.innerHTML = renderHoliday(); break;
     case 'holidayAllocation': app.innerHTML = renderHolidayAllocation(); break;
     case 'holidayResults': app.innerHTML = renderHolidayResults(); break;
@@ -1807,6 +1813,10 @@ function render() {
   }
 
   // Post-render effects (script tags don't execute via innerHTML)
+  if (G.screen === 'symposium' && document.getElementById('symp-canvas') && !window._sympInitialized) {
+    window._sympInitialized = true;
+    setTimeout(() => initSymposium(), 50);
+  }
   if (G._pendingConfetti) {
     const type = G._pendingConfetti;
     G._pendingConfetti = null;
@@ -2532,120 +2542,501 @@ function renderMidYearReview() {
   </div>`;
 }
 
+const SYMP_NAMES = { soda: 'Soda Symposium', sneakers: 'Shoe Symposium', skincare: 'Skincare Symposium', software: 'Software Symposium' };
+const SYMP_BANNERS = { soda: 'Media/Soda Symposium.png', sneakers: 'Media/Shoe Symposium.png', skincare: 'Media/Skincare Symposium.png', software: 'Media/Software Symposium.png' };
+const SYMP_COMP_GROUPS = {
+  premium: ['value', 'disruptor', 'lifestyle'], value: ['premium', 'disruptor', 'lifestyle'],
+  disruptor: ['premium', 'value', 'lifestyle'], lifestyle: ['premium', 'value', 'disruptor'],
+  enterprise: ['consumer', 'smb', 'government'], consumer: ['enterprise', 'smb', 'government'],
+  smb: ['enterprise', 'consumer', 'government'], government: ['enterprise', 'consumer', 'smb'],
+};
+let _sympRafId = null;
+
+function sympGetWhaleLabel() {
+  if (G.product !== 'software') return 'Distributors';
+  if (G.positioning === 'enterprise' || G.positioning === 'government') return 'IT Procurement';
+  return 'Partners';
+}
+
 function renderSymposium() {
-  const SYMP_NAMES = { soda: 'Soda Symposium', sneakers: 'Shoe Symposium', skincare: 'Skincare Symposium', software: 'Software Symposium' };
   const expoName = SYMP_NAMES[G.product] || 'The Symposium';
-  const params = new URLSearchParams({
-    product: G.product,
-    positioning: G.positioning,
-    name: G.productName,
-    be: Math.round(G.brandEquity)
-  });
-  return `<div class="screen">
-    ${renderStatsBar()}
-    <div class="section-title" style="margin-bottom:10px">🏛️ Month 6: ${expoName}</div>
-    <div style="display:flex;justify-content:center">
-      <iframe id="symposium-frame"
-        src="symposium.html?${params}"
-        style="width:100%;max-width:420px;aspect-ratio:1;border:1px solid var(--border);border-radius:8px;display:block"
-        allow="autoplay"
-        scrolling="no">
-      </iframe>
+  const isSW = G.product === 'software';
+  const ammoWord = isSW ? 'demos' : 'samples';
+  const ammoLabel = isSW ? 'Demos' : 'Samples';
+  const eventsBonus = Math.floor(G.totalEventsSpend / 10000);
+  const totalAmmo = 25 + eventsBonus;
+  const totalTime = 60;
+  const whaleLabel = sympGetWhaleLabel();
+  return `<div class="screen symp-screen">
+    <div class="symp-header">
+      <div class="symp-header-label">Midway Mini Game</div>
+      <div class="symp-header-title">${expoName}</div>
+      <div class="symp-header-booth">${G.productName} — Booth #42</div>
+    </div>
+
+    <div id="symp-intro">
+      <img class="si-banner" src="${SYMP_BANNERS[G.product] || ''}" alt="">
+      <div class="si-rules">
+        <p>You've got a booth at the industry's biggest event.</p>
+        <p><strong>Tap to launch</strong> ${ammoWord} and reel in leads.</p>
+        <div class="si-targets">
+          <div class="si-trow"><div class="si-dot" style="background:#4ade80"></div> <strong>Attendees</strong> — small revenue</div>
+          <div class="si-trow"><div class="si-dot" style="background:#c084fc"></div> <strong>Press</strong> — medium brand equity</div>
+          <div class="si-trow"><div class="si-dot" style="background:var(--amber)"></div> <strong>Influencers</strong> — high brand equity</div>
+          <div class="si-trow"><div class="si-dot" style="background:var(--red)"></div> <strong>${whaleLabel}</strong> — massive revenue</div>
+        </div>
+        <p>You have <strong>${totalTime} seconds</strong> and <strong>${totalAmmo} ${ammoWord}</strong>. But watch your back: <strong>Competitors</strong> will poach your leads... if you don't poach theirs first.</p>
+      </div>
+      <button id="symp-start-btn" class="btn primary">Start Expo</button>
+      ${eventsBonus > 0 ? `<div class="outcome-box good" style="margin-top:24px;padding:14px 18px;font-size:.85rem">Your Events &amp; Experiences spending earned you <strong>+${eventsBonus} bonus ${ammoWord}</strong>!</div>` : ''}
+    </div>
+
+    <div id="symp-game" style="display:none">
+      <div id="symp-hud">
+        <div class="sb"><div class="sl">Time</div><div class="sv" id="symp-timer" style="color:var(--amber)">${totalTime}</div></div>
+        <div class="sb" style="text-align:center"><div style="display:flex;gap:14px">
+          <div><div class="sv" id="symp-rev" style="color:var(--green)">$0</div><div class="sl">Revenue</div></div>
+          <div><div class="sv" id="symp-brand" style="color:var(--blue)">+0</div><div class="sl">Brand</div></div>
+        </div></div>
+        <div class="sb" style="text-align:right"><div class="sl">${ammoLabel}</div><div class="sv" id="symp-ammo" style="color:var(--blue)">${totalAmmo}</div></div>
+      </div>
+      <div id="symp-wrapper">
+        <canvas id="symp-canvas"></canvas>
+        <div id="symp-end">
+          <h1>Expo Results</h1>
+          <div class="symp-sub" id="symp-end-sub"></div>
+          <div class="symp-rcard">
+            <div class="symp-rrow"><span class="srl">Revenue</span><span class="srv" id="symp-end-rev" style="color:var(--green)">$0</span></div>
+            <div class="symp-rrow"><span class="srl">Brand Equity</span><span class="srv" id="symp-end-brand" style="color:var(--blue)">+0</span></div>
+            <div class="symp-rrow"><span class="srl">Product Demos</span><span class="srv" id="symp-end-demos" style="color:var(--amber)">0 / ${totalAmmo}</span></div>
+            <div class="symp-rrow"><span class="srl">Accuracy</span><span class="srv" id="symp-end-acc" style="color:#c084fc">0%</span></div>
+            <div class="symp-rrow" id="symp-steals-row" style="display:none"><span class="srl">Steals</span><span class="srv" id="symp-end-steals" style="color:var(--red)">0</span></div>
+            <div class="symp-rrow" id="symp-wasted-row" style="display:none"><span class="srl">Unused ${ammoLabel}</span><span class="srv" id="symp-end-wasted" style="color:var(--muted)">0</span></div>
+          </div>
+          <div class="symp-sub" id="symp-end-wasted-msg" style="display:none;margin-top:10px;color:var(--amber);font-size:11px"></div>
+          <button id="symp-end-btn">Continue</button>
+        </div>
+      </div>
     </div>
   </div>`;
 }
 
-// Listen for symposium mini-game results
-window.addEventListener('message', function(e) {
-  if (e.data && e.data.type === 'symposiumResults' && G.screen === 'symposium' && !G.symposiumDone) {
-    G.symposiumDone = true;
-    G.symposiumResults = {
-      revenue: e.data.revenue || 0,
-      brandEquity: e.data.brandEquity || 0,
-      hits: e.data.hits || 0,
-      shots: e.data.shots || 0,
-      steals: e.data.steals || 0,
-      accuracy: e.data.accuracy || 0
-    };
+function finishSymposium(results) {
+  // Stop animation
+  if (_sympRafId) { cancelAnimationFrame(_sympRafId); _sympRafId = null; }
+  window._sympInitialized = false;
 
-    // Process month 6 manually (symposium replaces conflict + allocation)
-    // Deduct team costs
-    G.budget -= G.teamCostPerMonth;
+  G.symposiumDone = true;
+  G.symposiumResults = results;
 
-    // Brand momentum still compounds
-    G.brandMomentum *= 1.12;
-    G.brandMomentum = clamp(G.brandMomentum, 0, 5);
+  // Process month 6 (symposium replaces conflict + allocation)
+  G.budget -= G.teamCostPerMonth;
+  G.brandMomentum *= 1.12;
+  G.brandMomentum = clamp(G.brandMomentum, 0, 5);
 
-    // Symposium IS the revenue for this month
-    const rev = G.symposiumResults.revenue;
-    G.monthlyRevenue.push(rev);
-    G.totalRevenue += rev;
-    G._lastBrandRev = rev;
-    G._lastPerfRev = 0;
+  const rev = results.revenue;
+  G.monthlyRevenue.push(rev);
+  G.totalRevenue += rev;
+  G._lastBrandRev = rev;
+  G._lastPerfRev = 0;
 
-    // Brand equity from symposium
-    const beChange = G.symposiumResults.brandEquity;
-    G.brandEquity = clamp(G.brandEquity + beChange, 0, 100);
+  const beChange = results.brandEquity;
+  G.brandEquity = clamp(G.brandEquity + beChange, 0, 100);
 
-    // CEO patience based on revenue trend
-    if (G.monthlyRevenue.length >= 2) {
-      const prev = G.monthlyRevenue[G.monthlyRevenue.length - 2];
-      if (rev > prev * 1.1) G.ceoPat = clamp(G.ceoPat + 5, 0, 100);
-      else if (rev < prev * 0.85) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
-    }
-
-    // CEO vibes drain based on annualized pacing
-    if (G.monthlyRevenue.length >= 2) {
-      const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
-      if (annualized < 15000000) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
-      else if (annualized < 25000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
-      else if (annualized < 40000000) G.ceoPat = clamp(G.ceoPat - 2, 0, 100);
-      let ceoMax = 100;
-      if (annualized < 15000000) ceoMax = 50;
-      else if (annualized < 25000000) ceoMax = 70;
-      else if (annualized < 40000000) ceoMax = 85;
-      G.ceoPat = Math.min(G.ceoPat, ceoMax);
-    }
-
-    // Expo performance CEO bonus
-    if (G.symposiumResults.accuracy >= 50 && G.symposiumResults.hits >= 10) {
-      G.ceoPat = clamp(G.ceoPat + 5, 0, 100);
-    } else if (G.symposiumResults.hits >= 5) {
-      G.ceoPat = clamp(G.ceoPat + 2, 0, 100);
-    }
-
-    // Fire-everyone penalty still applies
-    if (G.allFiredPenalty) {
-      G.ceoPat = clamp(G.ceoPat - 3, 0, 100);
-    }
-
-    // Reset zero-spend counter (expo counts as activity)
-    G.consecutiveZeroSpend = 0;
-
-    // Track CEO vibes min for comeback achievement
-    if (G.ceoPat < (G._ceoVibesMinReached || 75)) G._ceoVibesMinReached = G.ceoPat;
-    checkAchievements();
-
-    // Create month result for display
-    G._monthResult = { rev: rev, totalSpend: G.teamCostPerMonth, beChange: beChange, bonus: 0 };
-
-    // Game over checks
-    if (G.budget < 0) {
-      G.gameOver = true;
-      G.gameOverReason = 'The CFO cut up your corporate card in front of the entire marketing team. Security escorted you past the promotional banner you\'d just approved. It hadn\'t even shipped yet.';
-      G.screen = 'gameOver';
-    } else if (G.ceoPat <= 0) {
-      G.gameOver = true;
-      G.gameOverReason = 'The CEO\'s last Slack message to you was a single emoji: \uD83E\uDEA6. HR filled in the rest. Your access was revoked before you finished reading the termination email.';
-      G.screen = 'gameOver';
-    } else {
-      G.screen = 'monthResults';
-    }
-
-    saveGame();
-    render();
+  if (G.monthlyRevenue.length >= 2) {
+    const prev = G.monthlyRevenue[G.monthlyRevenue.length - 2];
+    if (rev > prev * 1.1) G.ceoPat = clamp(G.ceoPat + 5, 0, 100);
+    else if (rev < prev * 0.85) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
   }
-});
+  if (G.monthlyRevenue.length >= 2) {
+    const annualized = (G.totalRevenue / G.monthlyRevenue.length) * 12;
+    if (annualized < 15000000) G.ceoPat = clamp(G.ceoPat - 8, 0, 100);
+    else if (annualized < 25000000) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+    else if (annualized < 40000000) G.ceoPat = clamp(G.ceoPat - 2, 0, 100);
+    let ceoMax = 100;
+    if (annualized < 15000000) ceoMax = 50;
+    else if (annualized < 25000000) ceoMax = 70;
+    else if (annualized < 40000000) ceoMax = 85;
+    G.ceoPat = Math.min(G.ceoPat, ceoMax);
+  }
+  if (results.accuracy >= 50 && results.hits >= 10) G.ceoPat = clamp(G.ceoPat + 5, 0, 100);
+  else if (results.hits >= 5) G.ceoPat = clamp(G.ceoPat + 2, 0, 100);
+  if (G.allFiredPenalty) G.ceoPat = clamp(G.ceoPat - 3, 0, 100);
+  G.consecutiveZeroSpend = 0;
+  if (G.ceoPat < (G._ceoVibesMinReached || 75)) G._ceoVibesMinReached = G.ceoPat;
+  checkAchievements();
+
+  G._monthResult = { rev: rev, totalSpend: G.teamCostPerMonth, beChange: beChange, bonus: 0 };
+
+  if (G.budget < 0) {
+    G.gameOver = true;
+    G.gameOverReason = 'The CFO cut up your corporate card in front of the entire marketing team. Security escorted you past the promotional banner you\'d just approved. It hadn\'t even shipped yet.';
+    G.screen = 'gameOver';
+  } else if (G.ceoPat <= 0) {
+    G.gameOver = true;
+    G.gameOverReason = 'The CEO\'s last Slack message to you was a single emoji: \uD83E\uDEA6. HR filled in the rest. Your access was revoked before you finished reading the termination email.';
+    G.screen = 'gameOver';
+  } else {
+    G.screen = 'monthResults';
+  }
+  saveGame();
+  render();
+}
+
+function initSymposium() {
+  if (_sympRafId) { cancelAnimationFrame(_sympRafId); _sympRafId = null; }
+
+  const canvas = document.getElementById('symp-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const SW = 400, SH = 400;
+  canvas.width = SW; canvas.height = SH;
+  ctx.imageSmoothingEnabled = false;
+
+  // Image loading
+  const sImages = {};
+  function sLoadImg(key, src) { const img = new Image(); img.src = src; sImages[key] = img; }
+
+  function sGetProductImg(pos) {
+    const map = PRODUCT_IMAGES[G.product];
+    return map ? (map[pos] || map.main) : '';
+  }
+
+  sLoadImg('banner', SYMP_BANNERS[G.product]);
+  sLoadImg('playerProduct', sGetProductImg(G.positioning));
+
+  const POS_COLORS_S = { premium: '#f5c842', value: '#4ade80', disruptor: '#58a6ff', lifestyle: '#ff69b4', enterprise: '#3a7bd5', smb: '#9b59b6', consumer: '#ff8c00', government: '#7f8c8d' };
+  const POS_NAMES_S = { premium: 'Premium', value: 'Value', disruptor: 'Disruptor', lifestyle: 'Lifestyle', enterprise: 'Enterprise', smb: 'Startup', consumer: 'Consumer', government: 'Government' };
+
+  const compPositionings = SYMP_COMP_GROUPS[G.positioning] || [];
+  const competitors = [];
+  compPositionings.forEach(function(pos, i) { sLoadImg('comp' + i, sGetProductImg(pos)); });
+
+  const FLOOR_TOP = 58, FLOOR_BOTTOM = 348;
+  const PLAYER_BOOTH = { x: SW / 2, y: SH - 28, w: 96, h: 34, color: '#00ff41', imgKey: 'playerProduct' };
+  const COMP_POSITIONS = [
+    { x: 18, y: 206, w: 24, h: 42 },
+    { x: SW - 18, y: 206, w: 24, h: 42 },
+    { x: SW / 2, y: 46, w: 48, h: 20 },
+  ];
+  const ATTENDEE_FOCUSED = ['value', 'consumer'];
+
+  compPositionings.forEach(function(pos, i) {
+    var bp = COMP_POSITIONS[i];
+    competitors.push({
+      positioning: pos, name: POS_NAMES_S[pos] || pos, color: POS_COLORS_S[pos] || '#888',
+      boothX: bp.x, boothY: bp.y, boothW: bp.w, boothH: bp.h,
+      imgKey: 'comp' + i, shotsLeft: 10, shotTimer: 2 + Math.random() * 3,
+      targetsAttendees: ATTENDEE_FOCUSED.includes(pos),
+    });
+  });
+
+  var eventsBonus = Math.floor(G.totalEventsSpend / 10000);
+  var GAME_TIME = 60, MAX_AMMO = 25 + eventsBonus, PROJ_SPEED = 300, COMP_PROJ_SPEED = 220, WALK_TO_BOOTH_SPEED = 130;
+  var whaleLabel = sympGetWhaleLabel();
+  var TARGET_TYPES = {
+    attendee:   { color: '#4ade80', speed: [50, 90],   spawnWeight: 55, size: [12, 18], rev: 50000,  brand: 0 },
+    press:      { color: '#c084fc', speed: [65, 110],  spawnWeight: 25, size: [12, 18], rev: 30000,  brand: 1 },
+    influencer: { color: '#ffd700', speed: [110, 170], spawnWeight: 14, size: [12, 18], rev: 60000,  brand: 2 },
+    whale:      { color: '#ff4757', speed: [25, 45],   spawnWeight: 6,  size: [16, 22], rev: 300000, brand: 0 },
+  };
+
+  var sState = 'intro', timer = GAME_TIME, ammo = MAX_AMMO;
+  var totalRev = 0, totalBrand = 0, totalHits = 0, totalShots = 0, totalSteals = 0;
+  var lastTime = 0, spawnTimer = 0, endDelayTimer = 0, cursorPos = null;
+  var targets = [], projectiles = [], particles = [], popups = [];
+
+  function sFmt(n) {
+    if (n >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return '$' + (n / 1000).toFixed(0) + 'k';
+    return '$' + n;
+  }
+  function sRand(a, b) { return a + Math.random() * (b - a); }
+
+  function drawPerson(x, y, w, h, color, t, state) {
+    var bob = Math.sin(t * 8) * 1.5, headR = Math.max(w * 0.22, 3), bodyW = Math.max(w * 0.5, 6), bodyH = h * 0.45;
+    if (state === 'goingToPlayer') { ctx.fillStyle = 'rgba(74,222,128,0.25)'; ctx.beginPath(); ctx.arc(Math.floor(x), Math.floor(y), w * 0.9, 0, Math.PI * 2); ctx.fill(); }
+    else if (state === 'goingToCompetitor') { ctx.fillStyle = 'rgba(255,71,87,0.25)'; ctx.beginPath(); ctx.arc(Math.floor(x), Math.floor(y), w * 0.9, 0, Math.PI * 2); ctx.fill(); }
+    ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(Math.floor(x - w / 2 - 1), Math.floor(y + h / 2 - 2), Math.ceil(w + 2), 3);
+    ctx.fillStyle = '#f0d0a0'; ctx.fillRect(Math.floor(x - headR), Math.floor(y - h * 0.5 + bob), Math.ceil(headR * 2), Math.ceil(headR * 2));
+    ctx.fillStyle = color; ctx.fillRect(Math.floor(x - bodyW / 2), Math.floor(y - h * 0.15 + bob), Math.ceil(bodyW), Math.ceil(bodyH));
+    ctx.fillStyle = '#334'; var legOff = Math.sin(t * 10) * 2;
+    ctx.fillRect(Math.floor(x - 3), Math.floor(y + bodyH * 0.65 + bob), 2, Math.ceil(h * 0.2));
+    ctx.fillRect(Math.floor(x + 1), Math.floor(y + bodyH * 0.65 + bob - legOff), 2, Math.ceil(h * 0.2));
+  }
+
+  function drawBooth(bx, by, bw, bh, color, imgKey, isPlayer) {
+    var x = bx - bw / 2, y = by - bh / 2;
+    ctx.fillStyle = isPlayer ? '#1c2333' : '#161b22'; ctx.fillRect(x, y, bw, bh);
+    ctx.fillStyle = color; ctx.fillRect(x, y, bw, isPlayer ? 4 : 2);
+    ctx.strokeStyle = color; ctx.lineWidth = isPlayer ? 2.5 : 1.5; ctx.strokeRect(x, y, bw, bh);
+    var img = sImages[imgKey];
+    if (img && img.complete && img.naturalWidth > 0) { var sz = isPlayer ? 28 : 20; ctx.drawImage(img, bx - sz / 2, by - sz / 2, sz, sz); }
+    if (isPlayer) {
+      ctx.fillStyle = '#ffd700'; ctx.font = 'bold 9px Courier New'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      var display = G.productName.length > 12 ? G.productName.slice(0, 12) : G.productName;
+      ctx.fillText(display, bx, y - 3);
+    }
+  }
+
+  function drawFloor() {
+    ctx.fillStyle = '#161b22'; ctx.fillRect(0, 0, SW, SH);
+    ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
+    for (var x = 0; x <= SW; x += 32) { ctx.beginPath(); ctx.moveTo(x, FLOOR_TOP); ctx.lineTo(x, FLOOR_BOTTOM); ctx.stroke(); }
+    for (var y = FLOOR_TOP; y <= FLOOR_BOTTOM; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(SW, y); ctx.stroke(); }
+    ctx.fillStyle = '#0d1117'; ctx.fillRect(0, 0, SW, FLOOR_TOP);
+    ctx.fillStyle = '#0d1117'; ctx.fillRect(0, FLOOR_BOTTOM + 4, SW, SH - FLOOR_BOTTOM - 4);
+    ctx.fillStyle = '#30363d';
+    ctx.fillRect(0, FLOOR_TOP + 50, SW, 1); ctx.fillRect(0, (FLOOR_TOP + FLOOR_BOTTOM) / 2, SW, 1); ctx.fillRect(0, FLOOR_BOTTOM - 40, SW, 1);
+  }
+
+  function pickTargetType() {
+    var total = Object.values(TARGET_TYPES).reduce(function(s, t) { return s + t.spawnWeight; }, 0);
+    var r = Math.random() * total;
+    for (var key in TARGET_TYPES) { r -= TARGET_TYPES[key].spawnWeight; if (r <= 0) return key; }
+    return 'attendee';
+  }
+  function pickSpawnEdge(typeKey) {
+    if (typeKey === 'whale') { var r = Math.random(); if (r < 0.5) return 0; if (r < 0.75) return 3; return 1; }
+    return Math.floor(Math.random() * 4);
+  }
+  function spawnTarget() {
+    var typeKey = pickTargetType(), type = TARGET_TYPES[typeKey];
+    var w = type.size[0] + Math.random() * (type.size[1] - type.size[0]), h = w * 1.4;
+    var speed = type.speed[0] + Math.random() * (type.speed[1] - type.speed[0]), pad = 30;
+    var edge = pickSpawnEdge(typeKey), sx, sy;
+    switch (edge) {
+      case 0: sx = sRand(pad, SW - pad); sy = -h; break;
+      case 1: sx = SW + w; sy = sRand(FLOOR_TOP + pad, FLOOR_BOTTOM - pad); break;
+      case 2: sx = sRand(pad, SW - pad); sy = SH + h; break;
+      case 3: sx = -w; sy = sRand(FLOOR_TOP + pad, FLOOR_BOTTOM - pad); break;
+    }
+    var destEdge = (edge + 1 + Math.floor(Math.random() * 3)) % 4, dx, dy;
+    switch (destEdge) {
+      case 0: dx = sRand(pad, SW - pad); dy = -h; break;
+      case 1: dx = SW + w; dy = sRand(FLOOR_TOP + pad, FLOOR_BOTTOM - pad); break;
+      case 2: dx = sRand(pad, SW - pad); dy = SH + h; break;
+      case 3: dx = -w; dy = sRand(FLOOR_TOP + pad, FLOOR_BOTTOM - pad); break;
+    }
+    var angle = Math.atan2(dy - sy, dx - sx);
+    targets.push({ type: typeKey, x: sx, y: sy, w: w, h: h, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, color: type.color, state: 'walking', targetBoothX: 0, targetBoothY: 0, compIdx: -1, spawnTime: performance.now() / 1000, alive: true });
+  }
+
+  function launchPlayerProjectile(tx, ty) {
+    if (ammo <= 0 || sState !== 'playing') return;
+    ammo--; totalShots++;
+    var angle = Math.atan2(ty - PLAYER_BOOTH.y, tx - PLAYER_BOOTH.x);
+    projectiles.push({ x: PLAYER_BOOTH.x, y: PLAYER_BOOTH.y, vx: Math.cos(angle) * PROJ_SPEED, vy: Math.sin(angle) * PROJ_SPEED, owner: 'player', imgKey: 'playerProduct', size: 24, alive: true });
+    document.getElementById('symp-ammo').textContent = ammo;
+    if (ammo <= 5) document.getElementById('symp-ammo').style.color = '#ff4757';
+    if (ammo <= 0) endDelayTimer = 1.5;
+  }
+  function launchCompProjectile(comp, compIdx) {
+    var candidates = targets.filter(function(t) { return t.alive && t.state === 'walking'; });
+    if (candidates.length === 0) return;
+    var target;
+    if (comp.targetsAttendees) {
+      var attendees = candidates.filter(function(t) { return t.type === 'attendee'; });
+      target = attendees.length > 0 ? attendees[Math.floor(Math.random() * attendees.length)] : candidates[Math.floor(Math.random() * candidates.length)];
+    } else {
+      var highValue = candidates.filter(function(t) { return t.type !== 'attendee'; });
+      target = (highValue.length > 0 && Math.random() < 0.7) ? highValue[Math.floor(Math.random() * highValue.length)] : candidates[Math.floor(Math.random() * candidates.length)];
+    }
+    var angle = Math.atan2(target.y - comp.boothY, target.x - comp.boothX);
+    projectiles.push({ x: comp.boothX, y: comp.boothY, vx: Math.cos(angle) * COMP_PROJ_SPEED, vy: Math.sin(angle) * COMP_PROJ_SPEED, owner: compIdx, imgKey: comp.imgKey, size: 18, alive: true });
+    comp.shotsLeft--;
+  }
+
+  function checkCollisions() {
+    for (var pi = 0; pi < projectiles.length; pi++) {
+      var proj = projectiles[pi]; if (!proj.alive) continue;
+      for (var ti = 0; ti < targets.length; ti++) {
+        var t = targets[ti]; if (!t.alive) continue;
+        if (proj.owner === 'player') { if (t.state !== 'walking' && t.state !== 'goingToCompetitor') continue; }
+        else { if (t.state !== 'walking') continue; }
+        var pad = 7, pH = proj.size / 2;
+        if (proj.x - pH < t.x + t.w / 2 + pad && proj.x + pH > t.x - t.w / 2 - pad && proj.y - pH < t.y + t.h / 2 + pad && proj.y + pH > t.y - t.h / 2 - pad) {
+          proj.alive = false;
+          if (proj.owner === 'player') {
+            var isSteal = t.state === 'goingToCompetitor';
+            var type = TARGET_TYPES[t.type];
+            var revGain = isSteal ? Math.round(type.rev * 1.5) : type.rev;
+            totalRev += revGain; totalBrand += type.brand; totalHits++;
+            if (isSteal) totalSteals++;
+            t.state = 'goingToPlayer'; t.targetBoothX = PLAYER_BOOTH.x; t.targetBoothY = PLAYER_BOOTH.y;
+            spawnPopup(t.x, t.y - 10, '+' + sFmt(revGain) + (type.brand > 0 ? ' +' + type.brand + ' BE' : '') + (isSteal ? ' STEAL!' : ''), isSteal ? '#ff4757' : (type.brand > 0 ? '#58a6ff' : '#4ade80'));
+            spawnParticles(t.x, t.y, isSteal ? '#ff4757' : '#4ade80', 5);
+            document.getElementById('symp-rev').textContent = sFmt(totalRev);
+            document.getElementById('symp-brand').textContent = '+' + totalBrand;
+          } else {
+            var comp = competitors[proj.owner];
+            t.state = 'goingToCompetitor'; t.targetBoothX = comp.boothX; t.targetBoothY = comp.boothY; t.compIdx = proj.owner;
+            spawnParticles(t.x, t.y, comp.color, 3);
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  function spawnParticles(x, y, color, count) {
+    for (var i = 0; i < count; i++) {
+      var a = Math.random() * Math.PI * 2, sp = 30 + Math.random() * 60;
+      particles.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 0.35, maxLife: 0.35, color: color, size: 2 + Math.random() * 2 });
+    }
+  }
+  function spawnPopup(x, y, text, color) { popups.push({ x: x, y: y, text: text, color: color, life: 0.9 }); }
+
+  function sUpdate(dt) {
+    if (sState !== 'playing') return;
+    timer -= dt;
+    if (timer <= 0) { timer = 0; sEndGame(); return; }
+    if (ammo <= 0 && endDelayTimer > 0) { endDelayTimer -= dt; if (endDelayTimer <= 0) { sEndGame(); return; } }
+    spawnTimer -= dt;
+    if (spawnTimer <= 0) { spawnTarget(); var elapsed = GAME_TIME - timer; spawnTimer = 0.35 - Math.min(elapsed / GAME_TIME, 1) * 0.15 + Math.random() * 0.25; }
+    for (var i = 0; i < competitors.length; i++) {
+      var comp = competitors[i]; if (comp.shotsLeft <= 0) continue;
+      comp.shotTimer -= dt;
+      if (comp.shotTimer <= 0) { launchCompProjectile(comp, i); comp.shotTimer = 3.5 + Math.random() * 3; }
+    }
+    for (var ti = 0; ti < targets.length; ti++) {
+      var t = targets[ti]; if (!t.alive) continue;
+      if (t.state === 'walking') { t.x += t.vx * dt; t.y += t.vy * dt; if (t.x < -40 || t.x > SW + 40 || t.y < -40 || t.y > SH + 40) t.alive = false; }
+      else if (t.state === 'goingToPlayer' || t.state === 'goingToCompetitor') {
+        var dx = t.targetBoothX - t.x, dy = t.targetBoothY - t.y, d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 8) { t.alive = false; spawnParticles(t.x, t.y, t.state === 'goingToPlayer' ? '#4ade80' : '#666', 4); }
+        else { t.x += (dx / d) * WALK_TO_BOOTH_SPEED * dt; t.y += (dy / d) * WALK_TO_BOOTH_SPEED * dt; }
+      }
+    }
+    for (var pi = 0; pi < projectiles.length; pi++) { var p = projectiles[pi]; if (!p.alive) continue; p.x += p.vx * dt; p.y += p.vy * dt; if (p.x < -20 || p.x > SW + 20 || p.y < -20 || p.y > SH + 20) p.alive = false; }
+    for (var pi2 = 0; pi2 < particles.length; pi2++) { var pp = particles[pi2]; pp.x += pp.vx * dt; pp.y += pp.vy * dt; pp.life -= dt; }
+    for (var pi3 = 0; pi3 < popups.length; pi3++) { popups[pi3].life -= dt; popups[pi3].y -= 28 * dt; }
+    checkCollisions();
+    for (var i = targets.length - 1; i >= 0; i--) if (!targets[i].alive) targets.splice(i, 1);
+    for (var i = projectiles.length - 1; i >= 0; i--) if (!projectiles[i].alive) projectiles.splice(i, 1);
+    for (var i = particles.length - 1; i >= 0; i--) if (particles[i].life <= 0) particles.splice(i, 1);
+    for (var i = popups.length - 1; i >= 0; i--) if (popups[i].life <= 0) popups.splice(i, 1);
+    document.getElementById('symp-timer').textContent = Math.ceil(timer);
+    if (timer <= 10) document.getElementById('symp-timer').style.color = '#ff4757';
+  }
+
+  function sRender() {
+    ctx.clearRect(0, 0, SW, SH); ctx.imageSmoothingEnabled = false;
+    drawFloor();
+    var now = performance.now() / 1000;
+    var sorted = targets.filter(function(t) { return t.alive; }).sort(function(a, b) { return a.y - b.y; });
+    for (var i = 0; i < sorted.length; i++) {
+      var t = sorted[i];
+      drawPerson(t.x, t.y, t.w, t.h, t.color, now + t.spawnTime, t.state);
+      if (t.type === 'whale') { ctx.font = '8px Courier New'; ctx.textAlign = 'center'; ctx.fillText('💎', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 4)); }
+      else if (t.type === 'influencer') { ctx.font = '7px Courier New'; ctx.textAlign = 'center'; ctx.fillText('⭐', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 3)); }
+      else if (t.type === 'press') { ctx.font = '7px Courier New'; ctx.textAlign = 'center'; ctx.fillText('📰', Math.floor(t.x), Math.floor(t.y - t.h / 2 - 3)); }
+    }
+    for (var pi = 0; pi < projectiles.length; pi++) {
+      var p = projectiles[pi]; if (!p.alive) continue;
+      var img = sImages[p.imgKey];
+      if (img && img.complete && img.naturalWidth > 0) { ctx.drawImage(img, Math.floor(p.x - p.size / 2), Math.floor(p.y - p.size / 2), p.size, p.size); }
+      else { ctx.fillStyle = p.owner === 'player' ? '#ffd700' : '#ff4757'; ctx.fillRect(Math.floor(p.x - p.size / 2), Math.floor(p.y - p.size / 2), p.size, p.size); }
+      ctx.fillStyle = p.owner === 'player' ? 'rgba(255,215,0,0.25)' : 'rgba(255,71,87,0.2)';
+      ctx.fillRect(Math.floor(p.x - p.vx * 0.015 - 2), Math.floor(p.y - p.vy * 0.015 - 2), 4, 4);
+    }
+    for (var pi2 = 0; pi2 < particles.length; pi2++) {
+      var pp = particles[pi2]; ctx.globalAlpha = Math.max(0, pp.life / pp.maxLife); ctx.fillStyle = pp.color;
+      ctx.fillRect(Math.floor(pp.x - pp.size / 2), Math.floor(pp.y - pp.size / 2), Math.ceil(pp.size), Math.ceil(pp.size));
+    }
+    ctx.globalAlpha = 1;
+    for (var ci = 0; ci < competitors.length; ci++) { var c = competitors[ci]; drawBooth(c.boothX, c.boothY, c.boothW, c.boothH, c.color, c.imgKey, false); }
+    drawBooth(PLAYER_BOOTH.x, PLAYER_BOOTH.y, PLAYER_BOOTH.w, PLAYER_BOOTH.h, PLAYER_BOOTH.color, PLAYER_BOOTH.imgKey, true);
+    if (sState === 'playing' && ammo > 0 && cursorPos) {
+      ctx.strokeStyle = 'rgba(0,255,65,0.12)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(PLAYER_BOOTH.x, PLAYER_BOOTH.y); ctx.lineTo(cursorPos.x, cursorPos.y); ctx.stroke(); ctx.setLineDash([]);
+    }
+    for (var pi3 = 0; pi3 < popups.length; pi3++) {
+      var pu = popups[pi3]; ctx.globalAlpha = Math.max(0, pu.life / 0.9); ctx.fillStyle = pu.color;
+      ctx.font = 'bold 9px Courier New'; ctx.textAlign = 'center'; ctx.fillText(pu.text, Math.floor(pu.x), Math.floor(pu.y));
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function sEndGame() {
+    if (sState === 'done' || sState === 'ending') return;
+    sState = 'ending';
+    setTimeout(function() {
+      sState = 'done';
+      var accuracy = totalShots > 0 ? Math.round((totalHits / totalShots) * 100) : 0;
+      document.getElementById('symp-end-rev').textContent = sFmt(totalRev);
+      document.getElementById('symp-end-brand').textContent = '+' + totalBrand;
+      document.getElementById('symp-end-demos').textContent = totalHits + ' / ' + totalShots;
+      document.getElementById('symp-end-acc').textContent = accuracy + '%';
+      if (totalSteals > 0) { document.getElementById('symp-steals-row').style.display = 'flex'; document.getElementById('symp-end-steals').textContent = totalSteals; }
+      var leftover = ammo;
+      if (leftover > 0) {
+        document.getElementById('symp-wasted-row').style.display = 'flex';
+        document.getElementById('symp-end-wasted').textContent = leftover;
+        var wastedMsg = document.getElementById('symp-end-wasted-msg');
+        if (leftover >= 15) wastedMsg.textContent = 'You barely touched your inventory. All those potential connections, just sitting in the booth gathering dust.';
+        else if (leftover >= 10) wastedMsg.textContent = 'That\'s a lot of opportunity left on the table. The CEO will notice the wasted budget.';
+        else if (leftover >= 5) wastedMsg.textContent = 'A few unused samples. Not terrible, but every one was a missed connection.';
+        else wastedMsg.textContent = 'Just a couple left over. Close to a clean run.';
+        wastedMsg.style.display = 'block';
+      }
+      var subtitle = 'The conference is over. Here\'s how you did.';
+      if (accuracy >= 60 && totalHits >= 15) subtitle = 'Legendary booth presence. ' + G.productName + ' stole the show!';
+      else if (accuracy >= 50 && totalHits >= 10) subtitle = 'Solid showing. ' + G.productName + ' made real connections.';
+      else if (totalHits >= 10) subtitle = 'You got noticed, but left some on the table.';
+      else if (totalHits >= 5) subtitle = 'A quiet showing. The competitors got most of the attention.';
+      else subtitle = 'Most attendees walked right past your booth. The competitors cleaned up.';
+      document.getElementById('symp-end-sub').textContent = subtitle;
+      document.getElementById('symp-end').classList.add('visible');
+    }, 600);
+  }
+
+  function getCanvasCoords(cx, cy) {
+    var r = canvas.getBoundingClientRect();
+    return { x: (cx - r.left) * (SW / r.width), y: (cy - r.top) * (SH / r.height) };
+  }
+
+  canvas.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    if (sState !== 'playing') return;
+    var pos = getCanvasCoords(e.clientX, e.clientY);
+    launchPlayerProjectile(pos.x, pos.y);
+  });
+  canvas.addEventListener('pointermove', function(e) { cursorPos = getCanvasCoords(e.clientX, e.clientY); });
+  canvas.addEventListener('pointerleave', function() { cursorPos = null; });
+  canvas.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+
+  // Start button
+  document.getElementById('symp-start-btn').addEventListener('click', function() {
+    document.getElementById('symp-intro').style.display = 'none';
+    document.getElementById('symp-game').style.display = 'block';
+    targets.length = 0; projectiles.length = 0;
+    sState = 'playing'; lastTime = 0;
+    _sympRafId = requestAnimationFrame(gameLoop);
+  });
+
+  // End/continue button
+  document.getElementById('symp-end-btn').addEventListener('click', function() {
+    finishSymposium({
+      revenue: totalRev, brandEquity: totalBrand,
+      hits: totalHits, shots: totalShots, steals: totalSteals,
+      accuracy: totalShots > 0 ? Math.round((totalHits / totalShots) * 100) : 0
+    });
+  });
+
+  function gameLoop(timestamp) {
+    if (sState === 'done' && document.getElementById('symp-end').classList.contains('visible')) {
+      // Keep rendering behind end screen
+    }
+    if (!lastTime) lastTime = timestamp;
+    var dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+    lastTime = timestamp;
+    sUpdate(dt);
+    sRender();
+    if (sState !== 'done' || !G.symposiumDone) _sympRafId = requestAnimationFrame(gameLoop);
+  }
+
+}
 
 function renderMonthResults() {
   const r = G._monthResult;
@@ -2655,11 +3046,6 @@ function renderMonthResults() {
   const growth = lastRev === 0 ? 0 : Math.round(((rev - lastRev) / lastRev) * 100);
   const growthColor = rev > lastRev ? 'text-green' : rev < lastRev ? 'text-red' : 'text-amber';
   const isLaunchMonth = G.turn === 1;
-
-  // Month 6 Special Review
-  if (G.turn === 6 && !G.midYearReviewDone) {
-    return renderMidYearReview();
-  }
 
   // Show crisis narrative after firing everyone
   if (G._allFiredCrisis) {
@@ -3530,15 +3916,25 @@ document.getElementById('app').addEventListener('click', function (e) {
         G.allFiredPenalty = true;
         G.ceoPat = clamp(G.ceoPat - 15, 0, 100);
         G.brandEquity = clamp(G.brandEquity - 10, 0, 100);
-        // Show crisis narrative
         G._allFiredCrisis = true;
+        // Show crisis narrative before advancing
+        G.screen = 'monthResults';
+      } else {
+        // Advance to month 7
+        G.turn++;
+        G.screen = 'conflict';
       }
-
+      saveGame();
       render();
       break;
     }
     case 'dismissCrisisNarrative':
-      // Just re-render the normal month results
+      if (G.midYearReviewDone && G.turn === 6) {
+        // After mid-year review crisis, advance to month 7
+        G.turn++;
+        G.screen = 'conflict';
+        saveGame();
+      }
       render();
       return;
     case 'setBrand':
@@ -3710,8 +4106,8 @@ document.getElementById('app').addEventListener('click', function (e) {
     }
     case 'continueAfterPromotion':
       if (G.turn === 6 && !G.midYearReviewDone) {
-        // After month 6 promotion, go to mid-year team review
-        G.screen = 'monthResults'; // triggers renderMidYearReview inside renderMonthResults
+        // After month 6 promotion review, go to mid-year team adjustments
+        G.screen = 'midYearReview';
       } else {
         // Continue to next month
         G.turn++;
@@ -3855,12 +4251,14 @@ document.getElementById('app').addEventListener('click', function (e) {
       G.brandMomentum = 1.2;
       G.allocation = { brand: 50000, performance: 75000, pr: 40000, events: 25000 };
       G._lastAllocation = { ...G.allocation };
+      G.totalEventsSpend = 125000; // 5 months × $25K events = +12 bonus
       G.teamCostPerMonth = 0;
       calcTeamCost();
       shuffleConflicts();
       // Jump straight to month 6 symposium
       G.turn = 6;
       G.screen = 'symposium';
+      window._sympInitialized = false;
       break;
     }
   }

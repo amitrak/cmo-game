@@ -1268,9 +1268,59 @@
       color: var(--red)
     }
 
-    #symposium-frame {
-      background: #0d1117;
+    /* ---- Symposium Mini-Game ---- */
+    .symp-screen { display: flex; flex-direction: column; align-items: center; }
+    .symp-header { text-align: center; margin-bottom: 16px; max-width: 500px; width: 100%; }
+    .symp-header-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+    .symp-header-title { font-family: 'Press Start 2P', monospace; font-size: 1rem; color: var(--green); text-shadow: 2px 2px 0 #000; text-transform: uppercase; margin-bottom: 6px; }
+    .symp-header-booth { font-size: .85rem; color: var(--amber); }
+
+    /* Intro — normal page content */
+    #symp-intro { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
+    #symp-intro .si-banner { width: 100%; max-width: 440px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 18px; image-rendering: pixelated; image-rendering: crisp-edges; }
+    #symp-intro .si-rules { max-width: 480px; text-align: left; font-size: .85rem; line-height: 1.7; color: var(--text); margin-bottom: 20px; }
+    #symp-intro .si-rules p { margin-bottom: 10px; }
+    #symp-intro .si-rules strong { color: var(--amber); }
+    #symp-intro .si-targets { margin: 12px 0; }
+    #symp-intro .si-trow { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+    #symp-intro .si-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+    #symp-intro button { animation: symp-pulse 1.5s ease-in-out infinite; }
+
+    /* Game area — shown after Start Expo */
+    #symp-game { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    #symp-hud {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; max-width: 500px; margin-bottom: 10px;
+      font-family: 'Roboto Mono', monospace; font-size: 14px; color: var(--text);
     }
+    #symp-hud .sb { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 6px 14px; }
+    #symp-hud .sl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    #symp-hud .sv { font-size: 22px; font-weight: bold; }
+    #symp-wrapper {
+      position: relative; width: 100%; max-width: 500px;
+      aspect-ratio: 1; overflow: hidden; background: #0d1117;
+    }
+    #symp-wrapper canvas {
+      display: block; width: 100%; height: 100%;
+      image-rendering: pixelated; image-rendering: crisp-edges; cursor: crosshair;
+    }
+    #symp-end {
+      display: none; position: absolute; inset: 0; z-index: 100;
+      background: rgba(13,17,23,.92);
+      flex-direction: column; align-items: center; justify-content: center;
+      font-family: 'Roboto Mono', monospace; color: var(--text); padding: 20px;
+    }
+    #symp-end.visible { display: flex; }
+    #symp-end h1 { font-family: 'Press Start 2P', monospace; font-size: 16px; color: var(--green); margin-bottom: 8px; text-shadow: 2px 2px 0 #000; text-transform: uppercase; letter-spacing: 2px; }
+    #symp-end .symp-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; text-align: center; max-width: 340px; }
+    .symp-rcard { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px 28px; text-align: center; min-width: 260px; max-width: 340px; }
+    .symp-rrow { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .symp-rrow:last-child { border-bottom: none; }
+    .symp-rrow .srl { color: var(--muted); }
+    .symp-rrow .srv { font-weight: bold; font-size: 17px; }
+    #symp-end button { margin-top: 18px; padding: 12px 32px; background: var(--green); color: var(--bg); border: none; font-family: 'Roboto Mono', monospace; font-size: 15px; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; letter-spacing: 2px; }
+    #symp-end button:hover { background: #33ff66; }
+    @keyframes symp-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
     .flash {
       animation: flash .5s ease
@@ -1439,6 +1489,14 @@
         width: 120px;
         height: 120px
       }
+
+      .symp-header { margin-bottom: 10px; }
+      .symp-header-title { font-size: .85rem; }
+      #symp-intro .si-banner { margin-bottom: 12px; }
+      #symp-intro .si-rules { font-size: .8rem; line-height: 1.5; margin-bottom: 14px; }
+      #symp-intro .si-rules p { margin-bottom: 8px; }
+      #symp-hud .sb { padding: 4px 10px; }
+      #symp-hud .sv { font-size: 18px; }
     }
 
     @media(max-width:380px) {
