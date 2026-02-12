@@ -2588,7 +2588,7 @@ function renderSymposium() {
         <p>You have <strong>${totalTime} seconds</strong> and <strong>${totalAmmo} ${ammoWord}</strong>. But watch your back: <strong>Competitors</strong> will poach your leads... if you don't poach theirs first.</p>
       </div>
       <button id="symp-start-btn" class="btn primary">Start Expo</button>
-      ${eventsBonus > 0 ? `<div class="outcome-box good" style="margin-top:24px;padding:14px 18px;font-size:.85rem">Your Events &amp; Experiences spending earned you <strong>+${eventsBonus} bonus ${ammoWord}</strong>!</div>` : ''}
+      ${eventsBonus > 0 ? `<p style="color:var(--muted);font-style:italic;font-size:.8rem;margin-top:24px">Your spending on Events &amp; Experiences earned you +${eventsBonus} bonus ${ammoWord}!</p>` : ''}
     </div>
 
     <div id="symp-game" style="display:none">
@@ -2712,12 +2712,12 @@ function initSymposium() {
   const competitors = [];
   compPositionings.forEach(function(pos, i) { sLoadImg('comp' + i, sGetProductImg(pos)); });
 
-  const FLOOR_TOP = 58, FLOOR_BOTTOM = 348;
+  const FLOOR_TOP = 0, FLOOR_BOTTOM = 348;
   const PLAYER_BOOTH = { x: SW / 2, y: SH - 28, w: 96, h: 34, color: '#00ff41', imgKey: 'playerProduct' };
   const COMP_POSITIONS = [
-    { x: 18, y: 206, w: 24, h: 42 },
-    { x: SW - 18, y: 206, w: 24, h: 42 },
-    { x: SW / 2, y: 46, w: 48, h: 20 },
+    { x: 12, y: 200, w: 24, h: 42 },
+    { x: SW - 12, y: 200, w: 24, h: 42 },
+    { x: SW / 2, y: 10, w: 48, h: 20 },
   ];
   const ATTENDEE_FOCUSED = ['value', 'consumer'];
 
@@ -2782,12 +2782,11 @@ function initSymposium() {
   function drawFloor() {
     ctx.fillStyle = '#161b22'; ctx.fillRect(0, 0, SW, SH);
     ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
-    for (var x = 0; x <= SW; x += 32) { ctx.beginPath(); ctx.moveTo(x, FLOOR_TOP); ctx.lineTo(x, FLOOR_BOTTOM); ctx.stroke(); }
-    for (var y = FLOOR_TOP; y <= FLOOR_BOTTOM; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(SW, y); ctx.stroke(); }
-    ctx.fillStyle = '#0d1117'; ctx.fillRect(0, 0, SW, FLOOR_TOP);
+    for (var x = 0; x <= SW; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, FLOOR_BOTTOM); ctx.stroke(); }
+    for (var y = 0; y <= FLOOR_BOTTOM; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(SW, y); ctx.stroke(); }
     ctx.fillStyle = '#0d1117'; ctx.fillRect(0, FLOOR_BOTTOM + 4, SW, SH - FLOOR_BOTTOM - 4);
     ctx.fillStyle = '#30363d';
-    ctx.fillRect(0, FLOOR_TOP + 50, SW, 1); ctx.fillRect(0, (FLOOR_TOP + FLOOR_BOTTOM) / 2, SW, 1); ctx.fillRect(0, FLOOR_BOTTOM - 40, SW, 1);
+    ctx.fillRect(0, 80, SW, 1); ctx.fillRect(0, (FLOOR_BOTTOM) / 2, SW, 1); ctx.fillRect(0, FLOOR_BOTTOM - 40, SW, 1);
   }
 
   function pickTargetType() {
