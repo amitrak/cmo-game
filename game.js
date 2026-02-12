@@ -282,6 +282,7 @@ const CONFLICTS = [
   },
   {
     id: 'press_feature', type: 'positive', title: '📰 Glowing Press Coverage',
+    condition: (g) => g.team.pr !== 'skip' || g.allocation.pr > 0,
     text: 'A major newspaper just published a feature: "How {product} Is Changing the {industry}." The article is overwhelmingly positive. Your PR team is popping champagne at 10am (acceptable in PR).',
     choices: [
       { text: 'Maximize it: social amplification + email blast + landing page ($8k)', cost: 8000, brandEquity: 9, revMult: 1.2, ceoPat: 15, outcome: 'You squeeze every drop of value. "As Featured In..." becomes your email signature, website banner, and conversation starter. Marketing lesson: Earned media has a multiplier effect when amplified.' },
@@ -717,6 +718,14 @@ function shuffleConflicts() {
   if (selected[0].type === 'positive') {
     const swapIdx = selected.findIndex(c => c.type !== 'positive');
     [selected[0], selected[swapIdx]] = [selected[swapIdx], selected[0]];
+  }
+
+  // Don't allow rebrand_tempt in the first 3 months (indices 0-1, which map to months 2-3)
+  for (let i = 0; i < 2; i++) {
+    if (selected[i] && selected[i].id === 'rebrand_tempt') {
+      const swapIdx = selected.findIndex((c, idx) => idx >= 2 && c.id !== 'rebrand_tempt');
+      if (swapIdx !== -1) [selected[i], selected[swapIdx]] = [selected[swapIdx], selected[i]];
+    }
   }
 
   G.conflictOrder = selected;
@@ -1489,7 +1498,6 @@ function getConflictCallback(conflictId, isGood) {
   // Performance/ad-related conflicts
   if (['ad_apocalypse', 'algorithm_change'].includes(conflictId)) {
     if (G.team.growth === 'skip') lines.push("With no Growth / Performance hire, you had no one to pivot your channel strategy when things broke.");
-    if (G.allocation.performance > 40000) lines.push("Your heavy reliance on performance marketing made you especially vulnerable to platform changes.");
     if (G.allocation.brand > 30000 && isGood) lines.push("Your brand investments gave you a cushion — customers found you even without paid channels.");
   }
 
@@ -1734,6 +1742,11 @@ function generateConflictInsights(conflictResult) {
   }
   if (r.effects.futureRevBonus) {
     lines.push(`This decision provides a permanent ${Math.round(r.effects.futureRevBonus * 100)}% revenue bonus for all remaining months — a compounding benefit.`);
+  }
+
+  // Performance marketing vulnerability
+  if (['ad_apocalypse', 'algorithm_change'].includes(r.conflict.id) && G.allocation.performance > 40000) {
+    lines.push('Your heavy reliance on performance marketing made you especially vulnerable to platform changes.');
   }
 
   // In-house: strategic context
@@ -2689,7 +2702,7 @@ function initSymposium() {
   const canvas = document.getElementById('symp-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const SW = 400, SH = 400;
+  const SW = 300, SH = 400;
   canvas.width = SW; canvas.height = SH;
   ctx.imageSmoothingEnabled = false;
 
@@ -2712,8 +2725,8 @@ function initSymposium() {
   const competitors = [];
   compPositionings.forEach(function(pos, i) { sLoadImg('comp' + i, sGetProductImg(pos)); });
 
-  const FLOOR_TOP = 0, FLOOR_BOTTOM = 348;
-  const PLAYER_BOOTH = { x: SW / 2, y: SH - 28, w: 96, h: 34, color: '#00ff41', imgKey: 'playerProduct' };
+  const FLOOR_TOP = 0, FLOOR_BOTTOM = 360;
+  const PLAYER_BOOTH = { x: SW / 2, y: SH - 24, w: 80, h: 30, color: '#00ff41', imgKey: 'playerProduct' };
   const COMP_POSITIONS = [
     { x: 12, y: 200, w: 24, h: 42 },
     { x: SW - 12, y: 200, w: 24, h: 42 },
@@ -2735,10 +2748,10 @@ function initSymposium() {
   var GAME_TIME = 60, MAX_AMMO = 25 + eventsBonus, PROJ_SPEED = 300, COMP_PROJ_SPEED = 220, WALK_TO_BOOTH_SPEED = 130;
   var whaleLabel = sympGetWhaleLabel();
   var TARGET_TYPES = {
-    attendee:   { color: '#4ade80', speed: [50, 90],   spawnWeight: 55, size: [12, 18], rev: 50000,  brand: 0 },
-    press:      { color: '#c084fc', speed: [65, 110],  spawnWeight: 25, size: [12, 18], rev: 30000,  brand: 1 },
-    influencer: { color: '#ffd700', speed: [110, 170], spawnWeight: 14, size: [12, 18], rev: 60000,  brand: 2 },
-    whale:      { color: '#ff4757', speed: [25, 45],   spawnWeight: 6,  size: [16, 22], rev: 300000, brand: 0 },
+    attendee:   { color: '#4ade80', speed: [50, 90],   spawnWeight: 55, size: [15, 15], rev: 50000,  brand: 0 },
+    press:      { color: '#c084fc', speed: [65, 110],  spawnWeight: 25, size: [15, 15], rev: 30000,  brand: 1 },
+    influencer: { color: '#ffd700', speed: [110, 170], spawnWeight: 14, size: [15, 15], rev: 60000,  brand: 2 },
+    whale:      { color: '#ff4757', speed: [25, 45],   spawnWeight: 6,  size: [19, 19], rev: 300000, brand: 0 },
   };
 
   var sState = 'intro', timer = GAME_TIME, ammo = MAX_AMMO;
@@ -2782,11 +2795,11 @@ function initSymposium() {
   function drawFloor() {
     ctx.fillStyle = '#161b22'; ctx.fillRect(0, 0, SW, SH);
     ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1;
-    for (var x = 0; x <= SW; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, FLOOR_BOTTOM); ctx.stroke(); }
-    for (var y = 0; y <= FLOOR_BOTTOM; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(SW, y); ctx.stroke(); }
+    for (var x = 0; x <= SW; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, FLOOR_BOTTOM); ctx.stroke(); }
+    for (var y = 0; y <= FLOOR_BOTTOM; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(SW, y); ctx.stroke(); }
     ctx.fillStyle = '#0d1117'; ctx.fillRect(0, FLOOR_BOTTOM + 4, SW, SH - FLOOR_BOTTOM - 4);
     ctx.fillStyle = '#30363d';
-    ctx.fillRect(0, 80, SW, 1); ctx.fillRect(0, (FLOOR_BOTTOM) / 2, SW, 1); ctx.fillRect(0, FLOOR_BOTTOM - 40, SW, 1);
+    ctx.fillRect(0, 90, SW, 1); ctx.fillRect(0, FLOOR_BOTTOM / 2, SW, 1); ctx.fillRect(0, FLOOR_BOTTOM - 40, SW, 1);
   }
 
   function pickTargetType() {
