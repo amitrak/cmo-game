@@ -91,7 +91,7 @@ const SOFTWARE_POSITIONINGS = {
   enterprise: { name: 'Enterprise', icon: '🏢', brandBonus: 1.5, revMult: 1.2, desc: 'Whale hunting. Prepare for 12-month sales cycles, security audits, and procurement hell. But one signed contract makes your year.' },
   smb: { name: 'Startup', icon: '🦄', brandBonus: 1.0, revMult: 0.9, desc: 'They want enterprise features on a shoestring budget. Expect high volume, high churn, and support tickets written in ALL CAPS.' },
   consumer: { name: 'Consumer', icon: '📱', brandBonus: 2.5, revMult: 1.0, desc: 'The B2C lottery. You\'re at the mercy of the App Store gods and Gen Z\'s attention span. You\'re either viral or you\'re invisible.' },
-  government: { name: 'Government', icon: '🏛️', brandBonus: 2.0, revMult: 1.1, desc: 'The long game. Navigate red tape and 100-page RFPs. It takes two years to close a deal, but once you\'re in, the taxpayer funds you forever.' }
+  government: { name: 'Government', icon: '🏛️', brandBonus: 2.0, revMult: 1.1, desc: 'Navigate red tape and 100-page RFPs. It takes two years to close a deal. But once you\'re in, the taxpayer funds you forever.' }
 };
 
 const ROLES = [
@@ -2062,8 +2062,8 @@ function renderPositioning() {
     <div class="section-sub">${subtitle}</div>
     ${rows}
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="goToNaming" ${G.positioning ? '' : 'disabled'}>Confirm ${isSoftware ? 'Target Market' : 'Positioning'}</button>
       <button class="btn" data-action="backToProductSelect">← Back</button>
+      <button class="btn primary" data-action="goToNaming" ${G.positioning ? '' : 'disabled'}>Confirm ${isSoftware ? 'Target Market' : 'Positioning'}</button>
     </div>
   </div>`;
 }
@@ -2142,8 +2142,8 @@ function renderTeamBuilding() {
     ${rows}
     ${bottomMessage}
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="confirmTeam" ${allSet ? '' : 'disabled'}>Lock In Team${allSet ? '' : ' (select all roles)'}</button>
       <button class="btn" data-action="backToNaming">← Back</button>
+      <button class="btn primary" data-action="confirmTeam" ${allSet ? '' : 'disabled'}>Lock In Team${allSet ? '' : ' (select all roles)'}</button>
     </div>
   </div>`;
 }
@@ -2286,8 +2286,8 @@ function renderPreLaunchSummary() {
     ${renderStatsBar()}
 
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="beginJourney">🚀 Launch Campaign</button>
       <button class="btn" data-action="backToPreLaunch">← Back</button>
+      <button class="btn primary" data-action="beginJourney">🚀 Launch Campaign</button>
     </div>
   </div>`;
 }
@@ -3880,8 +3880,8 @@ function renderLeaderboard() {
       </table>
     </div>
     <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="playAgain">🔄 Play ${G.gameOver || G.turn >= 12 ? 'Again' : ''}</button>
       ${G.turn === 0 ? '<button class="btn" data-action="backToTitle">← Back</button>' : ''}
+      <button class="btn primary" data-action="playAgain">🔄 Play ${G.gameOver || G.turn >= 12 ? 'Again' : ''}</button>
     </div>
   </div>`;
 }
