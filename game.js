@@ -1981,9 +1981,6 @@ function renderTitle() {
     <div class="btn-group">
       <button class="btn" style="font-size:.7rem;padding:8px 16px" data-action="showLeaderboard">🏆 Hall of Fame</button>
     </div>
-    <div class="btn-group">
-      <button class="btn" style="font-size:.6rem;padding:6px 12px;opacity:.4" data-action="debugMonth6">⚙ Jump to Month 6</button>
-    </div>
   </div>
   <div style="margin-top:auto;padding:20px 0;text-align:center;color:var(--muted);font-size:.75rem">
     Created by <a href="https://andrewmitrak.com" target="_blank" style="color:var(--muted);text-decoration:underline">Andrew Mitrak</a>
@@ -2660,7 +2657,7 @@ function renderSymposium() {
           <div class="si-trow"><div class="si-dot" style="background:#ffd700"></div> <strong>Influencers</strong> — high brand equity</div>
           <div class="si-trow"><div class="si-dot" style="background:#4ade80"></div> <strong>${whaleLabel}</strong> — massive revenue</div>
         </div>
-        <p>You have <strong>${totalTime} seconds</strong> and <strong>${totalAmmo} ${ammoWord}</strong>. But watch your back: <strong>Competitors</strong> will poach your leads... if you don't poach theirs first.</p>
+        <p>You have <strong>${totalTime} seconds</strong> and <strong>${totalAmmo} ${ammoWord}</strong>. <strong>Competitors</strong> are targeting the same crowd. Steal their leads for a bonus.</p>
       </div>
       <button id="symp-start-btn" class="btn primary">Start Expo</button>
       ${eventsBonus > 0 ? `<p style="color:var(--muted);font-style:italic;font-size:.8rem;margin-top:24px">Your spending on Events &amp; Experiences earned you +${eventsBonus} bonus ${ammoWord}!</p>` : ''}
@@ -2808,7 +2805,7 @@ function initSymposium() {
     competitors.push({
       positioning: pos, name: POS_NAMES_S[pos] || pos, color: POS_COLORS_S[pos] || '#888',
       boothX: bp.x, boothY: bp.y, boothW: bp.w, boothH: bp.h,
-      imgKey: 'comp' + i, shotsLeft: 10, shotTimer: 2 + Math.random() * 3,
+      imgKey: 'comp' + i, shotsLeft: 12, shotTimer: 2 + Math.random() * 3,
       targetsAttendees: ATTENDEE_FOCUSED.includes(pos),
     });
   });
@@ -4360,39 +4357,6 @@ document.getElementById('app').addEventListener('click', function (e) {
       initState();
       G.screen = 'title';
       break;
-    case 'debugMonth6': {
-      clearSave();
-      initState();
-      G.playerName = 'Debug';
-      G.product = 'soda';
-      G.productName = 'FizzCo';
-      G.positioning = 'premium';
-      G.team = { brand: 'ft', content: 'agency', growth: 'ft', pr: 'agency', data: 'skip' };
-      G.brandTier = 'boutique';
-      G.siteTier = 'custom';
-      G.researchTier = 'panel';
-      G.budget = 3200000;
-      G.startingBudget = 5000000;
-      G.totalRevenue = 8500000;
-      G.monthlyRevenue = [800000, 1200000, 1600000, 2100000, 2800000];
-      G.brandEquity = 35;
-      G.ceoPat = 60;
-      G.turn = 5;
-      G.rank = 2;
-      G.title = 'Senior Director of Marketing';
-      G.brandMomentum = 1.2;
-      G.allocation = { brand: 50000, performance: 75000, pr: 40000, events: 25000 };
-      G._lastAllocation = { ...G.allocation };
-      G.totalEventsSpend = 125000; // 5 months × $25K events = +12 bonus
-      G.teamCostPerMonth = 0;
-      calcTeamCost();
-      shuffleConflicts();
-      // Jump straight to month 6 symposium
-      G.turn = 6;
-      G.screen = 'symposium';
-      window._sympInitialized = false;
-      break;
-    }
   }
 
   render();
