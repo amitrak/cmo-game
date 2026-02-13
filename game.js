@@ -69,14 +69,10 @@ const GENERATED_NAMES = {
     disruptor: ['Mocca Sins','Cobbler Gobbler','Hard Pivot','Sole Crusher','Boot Licker','Carbon Footprint','Kick Back','Rough Tread','Rogue Runner','Cold Feet','Burn Rubber','Lead Foot','Bare Bones','Curb Crushers','Killer Kickz','Sidewalk Slayers','Street Steppers','Dead Stock','Dark Horse','Trojan Kicks','No Brakes','Scorched Sole','Rebel Runner','Renegade Run','Deviant Dash','Savage Sole','Brazen Boots','Maverick Mocs','Outlaw Oxfords','Havoc Heels','Hostile Hoppers','Chaos Kicks','Mutiny Mules','Ruckus Runner','Defiant Dash','Volatile Vans','Radical Runner','Menace Mocs','Wicked Walkers','Sinister Stride','Venom Vibe','Coup Kicks','Sabotage Soles','Blitz Boots','Dissident Dash','Insurrection Inch'],
   },
   software: {
-    premium: ['Cloud Nine','Suite Life','Platinum Pipeline','Crown Cloud','Summit SaaS','Elite Engine','Gilded Gate','Prestige Logic','Apex Suite','Sterling Stack','Pinnacle','Paragon Cloud','Grand Central','Gold Standard','Prime Protocol','Polished Platform','Pristine Pipeline','Refined Runtime','Dignified Deploy','Regal Registry','Proper Protocol','Noble Node','Exquisite Engine','Majestic Mesh','Stately Stack','Opulent Ops','Upper Echelon','Velvet Vault','Sovereign Suite','Ivory Index','Patrician Platform','Pedigree Pipeline','Silk Suite','Lustrous Logic','Bespoke Build','Immaculate Infra','Curated Cloud','Artisan API'],
-    lifestyle: ['Vibe.io','Flow State','Chill Code','Mood Board','Life Hack','Daily Drive','Side Hustle','Sunday Mode','Daylight','Coast','Breezy','Campfire','Treehouse','Hammock','Sunset Suite','Slow Code','Horizon','Cabin','Golden Hour','Driftwood','Daydream','Almanac','Calm Cloud','Drift','Meadow','Wander','Ember','Still Water','Breathe','Solstice','Canopy','Lantern Light','Porch Swing','Stargazer','Firefly','Moonrise','Cobblestone','Paper Trail','Wildflower','Morning Fog','Quiet Launch','Gentle Build','Warm Start','Soft Ship','Easy Bake','Bloom','Field Guide','Compass Code'],
-    value: ['Budget Bytes','Thrift Stack','Basic Build','Lean Launch','No Frills SaaS','Starter Kit','Bare Metal','Light Stack','Simple Suite','Ship It','Minimum Viable','Plain Text','Good Enough','Lite Mode','Free Tier','Boilerplate','Draft Mode','Quick & Dirty','Hot Fix','Band-Aid','Duct Tape Dev','Patch Work','Zip File','Freeware','Shareware','Open Source-ish','Copy Paste','Bargain Bin','Clearance Code','Dollar Deploy','Markdown','Shortcut','Rough Cut','Stub Hub','Placeholder Pro','MVP Mode','Wireframe','Napkin Code','Shoestring SaaS','Ramen Stack','Close Enough Cloud'],
-    disruptor: ['Kill Switch','Dark Mode','Root Access','Zero Day','Brute Force','Null Pointer','Core Dump','Fork Bomb','Dead Code','Logic Bomb','Payload','Memory Leak','Race Condition','Breaking Change','Hard Fork','Rogue Process','Shadow IT','Dark Launch','Chaos Monkey','Red Team','Flash Crash','Circuit Breaker','Fail Fast','Burn Down','Fatal Error','Bad Gateway','Runaway Thread','Seg Fault','Blue Screen','Black Hat','Trojan Build','Worm Hole','Hostile Merge','Panic Mode','Override','Deadlock','Scorched Stack','Rogue Deploy','Rebel Runtime','Mutiny Mode','Coup Cloud','Volatile Variable'],
-    enterprise: ['Iron Gate','Vault Logic','Shield Suite','Sentinel','Bastion','Citadel','Fortress','Keystone','Bedrock','Monolith','Bulwark','Rampart','Stronghold','Aegis','Phalanx','Mainframe','Backbone','Foundation','Pillar','Anvil','Forge','Bunker Build','Granite Grid','Steel Stack','Titanium Tier','Armored API','Concrete Cloud','Fortified Flow','Ironclad Infra','Bombproof Build','Garrison Grid','Watchtower','Command Deck','Mission Control','Central Command','Hardened Hub','Battle Bridge','Classified Cloud','Secure Sector','Lockdown Logic'],
-    smb: ['Spark Plug','Hustle Hub','Lean Machine','Quick Start','Boost Box','Nimble','Swift Suite','Scrappy Stack','Underdog','Bootstrap','Ramen Mode','Launchpad','Catapult','Springboard','Slingshot','Rocket Fuel','Day One','Ground Floor','Garage Code','Dorm Room Deploy','Whiteboard','Napkin Plan','Pitch Deck','Seed Round','Pre-Revenue','Pivot Point','Venture Build','Cap Table','Runway','Hockey Stick','Growth Hack','Scale Up','Moonshot Mode','Hypergrowth','Blitzscale','Angel Fund','Demo Day','Incubator','Accelerator','Stealth Mode','Beta Build','Ship Fast','Move Fast','Break Things','Disrupt This'],
-    consumer: ['Click Bait','Easy Mode','One Tap','No Brainer','Plug & Play','Smart Start','Quick Fix','Snap Stack','Swipe Right','Scroll Stop','Double Tap','Screen Time','Binge Mode','Refresh','Bookmark','One Click','Add to Cart','Trending','Share Link','Push Alert','Feed Me','Doom Scroll','Like & Subscribe','Infinite Scroll','Pop Up','Toast Note','Dark Pattern','Rage Click','Thumb Trap','Sticky App','Hook & Loop','Habit Hack','Daily Active','Dopamine Drop','Retention Ring','Churn Burn','Viral Loop','Growth Loop','Flywheel','Engagement Engine','Attention Span','Thumb Stopper'],
-    government: ['Red Tape','Clearance Level','Protocol','Mandate','Compliance Cloud','Audit Trail','Due Process','Chain of Command','Oversight','Bureau Suite','Rubber Stamp','Form 404','Regulation','Classified','Redacted','Top Secret','Need to Know','Public Record','Case File','Docket','Gavel','Tribunal','Filibuster','Quorum','Bipartisan Build','Bicameral','Subcommittee SaaS','Lobbyist Logic','Veto Vector','Executive Order','Policy Platform','Statute Stack','Amendment App','Ratified Runtime','Legislate','Bureaucratic Build','Notarized Node','Sworn Stack','Civic Code','Census Suite','Ballot Box','Permit Portal'],
+    enterprise: ['Iron Gate','Vault Logic','Shield Suite','Bunker Build','Granite Grid','Steel Stack','Titanium Tier','Armored API','Concrete Cloud','Fortified Flow','Ironclad Infra','Bombproof Build','Garrison Grid','Command Deck','Mission Control','Central Command','Hardened Hub','Battle Bridge','Classified Cloud','Secure Sector','Lockdown Logic','Compass Code','Pinstripe Pipeline','Corner Office Cloud','Stakeholder Stack','Server & Protect','Suit & Suite','Compliance Crunch','Due Diligence Deploy','Perimeter Protocol','Boardroom Bandwidth','War Room Ware','Bulletproof Build','Vendor Vault'],
+    smb: ['Spark Plug','Hustle Hub','Lean Machine','Quick Start','Boost Box','Swift Suite','Scrappy Stack','Ramen Mode','Rocket Fuel','Day One','Ground Floor','Garage Code','Dorm Room Deploy','Napkin Plan','Pitch Deck','Seed Round','Pre-Revenue','Pivot Point','Venture Build','Cap Table','Hockey Stick','Growth Hack','Scale Up','Moonshot Mode','Angel Fund','Demo Day','Stealth Mode','Beta Build','Ship Fast','Break Things','Disrupt This','Side Hustle','Ship It','Minimum Viable','Open Source-ish','Placeholder Pro','Kill Switch','Dark Mode','Fail Fast','Panic Mode','Scorched Stack','Mutiny Mode'],
+    consumer: ['Click Bait','Easy Mode','One Tap','No Brainer','Plug & Play','Smart Start','Quick Fix','Snap Stack','Swipe Right','Scroll Stop','Double Tap','Screen Time','Binge Mode','One Click','Add to Cart','Share Link','Push Alert','Feed Me','Doom Scroll','Like & Subscribe','Infinite Scroll','Pop Up','Toast Note','Dark Pattern','Rage Click','Thumb Trap','Sticky App','Hook & Loop','Habit Hack','Daily Active','Dopamine Drop','Retention Ring','Churn Burn','Viral Loop','Growth Loop','Engagement Engine','Attention Span','Thumb Stopper','Mood Board','Life Hack','Daily Drive'],
+    government: ['Red Tape','Clearance Level','Compliance Cloud','Audit Trail','Due Process','Chain of Command','Bureau Suite','Rubber Stamp','Form 404','Top Secret','Need to Know','Public Record','Case File','Bipartisan Build','Subcommittee SaaS','Lobbyist Logic','Veto Vector','Executive Order','Policy Platform','Statute Stack','Amendment App','Ratified Runtime','Bureaucratic Build','Notarized Node','Sworn Stack','Civic Code','Census Suite','Ballot Box','Permit Portal','Capitol Cloud','Beltway Build','Federal Firewall','Municipal Mesh','Precinct Pipeline','District Deploy','Gridlock Grid','Earmark Engine','Pork Barrel Build','Constituent Cloud'],
   },
 };
 
@@ -2623,7 +2619,8 @@ function renderMidYearReview() {
 }
 
 const SYMP_NAMES = { soda: 'Soda Symposium', sneakers: 'Shoe Symposium', skincare: 'Skincare Symposium', software: 'Software Symposium' };
-const SYMP_BANNERS = { soda: 'Media/Soda Symposium.png', sneakers: 'Media/Shoe Symposium.png', skincare: 'Media/Skincare Symposium.png', software: 'Media/Software Symposium.png' };
+const SYMP_BANNERS = { soda: 'Media/Soda Symposium.webm', sneakers: 'Media/Shoe Symposium.webm', skincare: 'Media/Skincare Symposium.webm', software: 'Media/Software Symposium.webm' };
+const SYMP_POSTERS = { soda: 'Media/Soda Symposium.png', sneakers: 'Media/Shoe Symposium.png', skincare: 'Media/Skincare Symposium.png', software: 'Media/Software Symposium.png' };
 const SYMP_COMP_GROUPS = {
   premium: ['value', 'disruptor', 'lifestyle'], value: ['premium', 'disruptor', 'lifestyle'],
   disruptor: ['premium', 'value', 'lifestyle'], lifestyle: ['premium', 'value', 'disruptor'],
@@ -2653,7 +2650,7 @@ function renderSymposium() {
     </div>
 
     <div id="symp-intro">
-      <img class="si-banner" src="${SYMP_BANNERS[G.product] || ''}" alt="">
+      <video class="si-banner" src="${SYMP_BANNERS[G.product] || ''}" poster="${SYMP_POSTERS[G.product] || ''}" autoplay loop muted playsinline></video>
       <div class="si-rules">
         <p>You've got a booth at the industry's biggest event.</p>
         <p><strong>Tap to launch</strong> ${ammoWord} and reel in leads.</p>
@@ -2788,7 +2785,6 @@ function initSymposium() {
     return map ? (map[pos] || map.main) : '';
   }
 
-  sLoadImg('banner', SYMP_BANNERS[G.product]);
   sLoadImg('playerProduct', sGetProductImg(G.positioning));
 
   const POS_COLORS_S = { premium: '#f5c842', value: '#4ade80', disruptor: '#58a6ff', lifestyle: '#ff69b4', enterprise: '#3a7bd5', smb: '#9b59b6', consumer: '#ff8c00', government: '#7f8c8d' };
@@ -3906,6 +3902,12 @@ document.getElementById('app').addEventListener('click', function (e) {
       G.product = value;
       G.positioning = null; // reset positioning when changing product
       G.screen = 'positioning';
+      // Preload symposium video early so it's cached by month 6
+      if (SYMP_BANNERS[value]) {
+        const link = document.createElement('link');
+        link.rel = 'preload'; link.as = 'video'; link.href = SYMP_BANNERS[value];
+        document.head.appendChild(link);
+      }
       break;
     case 'generateName': {
       const names = GENERATED_NAMES[G.product] && GENERATED_NAMES[G.product][G.positioning];
