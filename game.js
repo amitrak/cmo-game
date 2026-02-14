@@ -14,8 +14,8 @@ const PROFANITY_RESPONSES = [
   'Think of the shareholders.'
 ];
 function containsProfanity(text) {
-  const lower = text.toLowerCase().replace(/[^a-z]/g, '');
-  return BLOCKED_WORDS.some(w => lower.includes(w));
+  const lower = text.toLowerCase();
+  return BLOCKED_WORDS.some(w => new RegExp('\\b' + w + '\\b').test(lower));
 }
 function getProfanityResponse() {
   return PROFANITY_RESPONSES[Math.floor(Math.random() * PROFANITY_RESPONSES.length)];
@@ -79,7 +79,7 @@ const GENERATED_NAMES = {
 const POSITIONINGS = {
   premium: { name: 'Premium', icon: '👑', brandBonus: 2.5, revMult: 1.2, desc: 'High margins, high expectations. Your customers pay more and complain louder.' },
   lifestyle: { name: 'Lifestyle', icon: '🌟', brandBonus: 3.0, revMult: 1.1, desc: 'You\'re not selling a product, you\'re selling a vibe. Hope Gen Z agrees.' },
-  value: { name: 'Value', icon: '🏷️', brandBonus: 0.5, revMult: 0.85, desc: 'Race to the bottom? More like sprint to volume. Hope your margins survive.' },
+  value: { name: 'Value', icon: '🏷️', brandBonus: 0.5, revMult: 0.9, desc: 'Race to the bottom? More like sprint to volume. Hope your margins survive.' },
   disruptor: { name: 'Disruptor', icon: '⚡', brandBonus: 1.5, revMult: 1.0, desc: 'Move fast and break things - including possibly your career. High risk, high reward.' }
 };
 
@@ -152,7 +152,7 @@ const RANKS = [
 
 const EVENT_EFFICACY = {
   premium: 1.5, lifestyle: 1.5, enterprise: 1.5, government: 1.5,
-  value: 0.0, disruptor: 0.5, smb: 0.75, consumer: 0.75
+  value: 0.25, disruptor: 0.5, smb: 0.75, consumer: 0.75
 };
 
 // ===== CONFLICTS =====
@@ -222,7 +222,7 @@ const CONFLICTS = [
     text: 'BREAKING: A-list celebrity was photographed using your {product} at Soho House! Paparazzi photos are everywhere. Your social mentions just 10x\'d. The phone is ringing off the hook.',
     choices: [
       { text: 'Reach out for a paid endorsement deal ($80k)', cost: 80000, brandEquity: 10, revMult: 1.3, ceoPat: 15, outcome: 'They sign! Revenue soars, brand equity skyrockets. The contract is expensive, but the halo effect is worth it. Marketing lesson: Strike while the iron is hot — authenticity has a short shelf life.' },
-      { text: 'Amplify organically - repost, engage, ride the wave', cost: 0, brandEquity: 6, revMult: 1.15, ceoPat: 10, outcome: 'Free publicity! You repost, the comments section explodes, and your social team works overtime. The buzz lasts about 2 weeks. Marketing lesson: Organic moments are precious - and temporary.' },
+      { text: 'Amplify organically - repost, engage, ride the wave', cost: 0, brandEquity: 3, revMult: 1.07, ceoPat: 5, outcome: 'Free publicity! You repost, the comments section explodes, and your social team works overtime. The buzz lasts about 2 weeks. Marketing lesson: Organic moments are precious - and temporary.' },
       { text: 'Create an entire UGC campaign around it ($35k)', cost: 35000, brandEquity: 8, revMult: 1.2, ceoPat: 10, outcome: 'Your "Spotted In The Wild" campaign features real customers alongside the celeb sighting. Organic and aspirational. Marketing lesson: Campaigns that make customers feel like participants earn deeper loyalty.' },
       { text: 'Play it cool - don\'t acknowledge it', cost: 0, brandEquity: -5, revMult: 1.05, ceoPat: -5, outcome: 'By not acknowledging it, you seem too cool to care. Some love the subtlety. Others wonder why you\'re ignoring your biggest moment. Marketing lesson: Playing it cool works for luxury. Not great for mass market.' }
     ]
@@ -233,7 +233,7 @@ const CONFLICTS = [
     choices: [
       { text: 'Collab on a follow-up video + offer them a micro-influencer deal ($5k)', cost: 5000, brandEquity: 7, revMult: 1.25, ceoPat: 15, outcome: 'They\'re thrilled! Your brand collab gets another 3 million views. Authentic, scrappy, and exactly what social media rewards. Marketing lesson: Micro-influencer authenticity beats macro-influencer reach.' },
       { text: 'Launch a viral challenge campaign ($20k)', cost: 20000, brandEquity: 8, revMult: 1.1, ceoPat: 10, luck: [0.6, { brandEquity: 12, revMult: 1.4, ceoPat: 20, override: 'The challenge EXPLODES. 50 million views across all participants. You\'re the #1 trending brand on social media. Your intern cries tears of joy. This is the moment.' }], outcome: 'The challenge gets moderate participation. It\'s fine, but it feels like a brand trying too hard to be cool. "How do you do, fellow kids?" energy. Marketing lesson: You can\'t manufacture virality.' },
-      { text: 'Send free product + personal note, hope for more content', cost: 2000, brandEquity: 6, revMult: 1.1, ceoPat: 5, outcome: 'They post an unboxing! "OMG {product} actually sent me free stuff!" Another 2 million views. Marketing lesson: Generosity is a surprisingly effective form of marketing.' },
+      { text: 'Send free product + personal note, hope for more content', cost: 2000, brandEquity: 3, revMult: 1.05, ceoPat: 3, outcome: 'They post an unboxing! "OMG {product} actually sent me free stuff!" Another 2 million views. Marketing lesson: Generosity is a surprisingly effective form of marketing.' },
       { text: 'Boost the original video with paid media ($10k)', cost: 10000, brandEquity: 4, revMult: 1.2, ceoPat: 10, outcome: 'Smart move. You amplify authentic content rather than creating fake authenticity. The boosted video drives real conversions. Marketing lesson: Amplify what works. Don\'t reinvent it.' }
     ]
   },
@@ -324,8 +324,8 @@ const CONFLICTS = [
     choices: [
       { text: 'Nurture it: dedicate resources to community management ($12k)', cost: 12000, brandEquity: 9, revMult: 1.15, ceoPat: 10, outcome: 'You hire a community manager who Gets It. Authentic engagement, insider content, and the community grows 3x in a month. Marketing lesson: Building and nurturing a community pays dividends.' },
       { text: 'Monetize it: launch an ambassador/referral program ($8k)', cost: 8000, brandEquity: 5, revMult: 1.2, ceoPat: 15, outcome: 'The referral program converts community love into revenue. Some purists grumble about "selling out," but most people appreciate the discount codes. Marketing lesson: There\'s a thin line between empowering a community and exploiting it.' },
-      { text: 'Join it as the brand - post directly in the community', cost: 0, brandEquity: 8, revMult: 1.05, ceoPat: 5, luck: [0.5, { brandEquity: 7, revMult: 1.15, ceoPat: 10, override: 'The community welcomes you with open arms. They love that you\'re "one of them." Direct feedback improves both product and marketing.' }], outcome: 'Mixed feelings about the brand showing up in "their" space. Some welcome it, others feel the cool indie thing just got corporate. Marketing lesson: Brands entering organic communities should listen 10x more than they speak.' },
-      { text: 'Leave it alone - organic is organic, don\'t ruin it', cost: 0, brandEquity: 5, revMult: 1.05, ceoPat: -5, outcome: 'The community grows naturally. Authentic and pure. The CEO wanted you to monetize it, but some things are better left untouched. Marketing lesson: Sometimes the right move is no move at all.' }
+      { text: 'Join it as the brand - post directly in the community', cost: 0, brandEquity: 4, revMult: 1.02, ceoPat: 3, luck: [0.5, { brandEquity: 4, revMult: 1.08, ceoPat: 5, override: 'The community welcomes you with open arms. They love that you\'re "one of them." Direct feedback improves both product and marketing.' }], outcome: 'Mixed feelings about the brand showing up in "their" space. Some welcome it, others feel the cool indie thing just got corporate. Marketing lesson: Brands entering organic communities should listen 10x more than they speak.' },
+      { text: 'Leave it alone - organic is organic, don\'t ruin it', cost: 0, brandEquity: 2, revMult: 1.02, ceoPat: -5, outcome: 'The community grows naturally. Authentic and pure. The CEO wanted you to monetize it, but some things are better left untouched. Marketing lesson: Sometimes the right move is no move at all.' }
     ]
   },
   {
@@ -404,10 +404,10 @@ const HOLIDAY_EVENT = {
   title: '🎄 Holiday Season: The Final Push',
   text: 'It\'s November. The holiday season has arrived - the Super Bowl of commerce. Every decision you\'ve made leads to this moment. Your brand equity score will determine your holiday multiplier. This is where fortunes are made... or lost.',
   strategies: [
-    { name: 'Brand-Led Holiday Campaign', cost: 40000, brandMult: 1.0, perfMult: 0.3, desc: 'Emotional storytelling. "The holidays are about..." You know the type. Coca-Cola polar bears energy.', icon: '🎅' },
-    { name: 'Black Friday Blitz', cost: 30000, brandMult: 0.2, perfMult: 1.0, desc: '50% OFF EVERYTHING. DOORBUSTER DEALS. LOWEST PRICES OF THE YEAR. Your brand equity weeps quietly.', icon: '🏷️' },
-    { name: 'Influencer Gift Guide Push', cost: 50000, brandMult: 0.8, perfMult: 0.7, desc: 'Get into every "Gift Guide" and "Holiday Haul" video. Expensive but effective.', icon: '🎁' },
-    { name: 'Charity Tie-In', cost: 5000, brandMult: 0.3, perfMult: 0.1, desc: 'Donate a portion of holiday sales to a cause. Low cost, good vibes, and a feel-good press angle.', icon: '❤️' }
+    { name: 'Brand-Led Holiday Campaign', cost: 50000, brandMult: 1.0, perfMult: 0.3, desc: 'Emotional storytelling. "The holidays are about..." You know the type. Coca-Cola polar bears energy.', icon: '🎅' },
+    { name: 'Black Friday Blitz', cost: 40000, brandMult: 0.1, perfMult: 1.0, brandEquityHit: true, desc: 'Deep discounts drive volume but train customers to wait for sales. Premium brands beware.', icon: '🏷️' },
+    { name: 'Influencer Gift Guide Push', cost: 45000, brandMult: 0.8, perfMult: 0.7, desc: 'Get into every "Gift Guide" and "Holiday Haul" video. Expensive but effective.', icon: '🎁' },
+    { name: 'Charity Tie-In', cost: 15000, brandMult: 0.2, perfMult: 0.05, desc: 'Donate a portion of holiday sales to a cause. Good vibes and a feel-good press angle.', icon: '❤️' }
   ]
 };
 
@@ -616,7 +616,7 @@ function getPositioning() { return getPositionings()[G.positioning]; }
 const PRODUCT_IMAGES = {
   soda: { main: 'Media/Soda Main.png', premium: 'Media/Soda Premium.png', value: 'Media/Soda Value.png', disruptor: 'Media/Soda Disruptor.png', lifestyle: 'Media/Soda Lifestyle.png' },
   sneakers: { main: 'Media/Shoes Main.png', premium: 'Media/Shoes Premium.png', value: 'Media/Shoes Value.png', disruptor: 'Media/Shoes Disruptor.png', lifestyle: 'Media/Shoes Lifestyle.png' },
-  skincare: { main: 'Media/Skin Value.png', premium: 'Media/Skin Premium.png', value: 'Media/Skin Value.png', disruptor: 'Media/Skin Disruptor.png', lifestyle: 'Media/Skin Lifestyle.png' },
+  skincare: { main: 'Media/Skin Main.png', premium: 'Media/Skin Premium.png', value: 'Media/Skin Value.png', disruptor: 'Media/Skin Disruptor.png', lifestyle: 'Media/Skin Lifestyle.png' },
   software: { main: 'Media/Software Main.png', enterprise: 'Media/Software Enterprise.png', government: 'Media/Software Government.png', consumer: 'Media/Software Consumer Smartphone.png', smb: 'Media/Software Startup Unicorn.png' }
 };
 
@@ -649,9 +649,9 @@ function getCompetitorImage() {
   if (!imgs) return '';
   if (G.product === 'software') {
     if (G.positioning === 'enterprise') return 'Media/Software Startup Unicorn.png';
-    if (G.positioning === 'government') return 'Media/Software Consumer Smartphone.png';
-    if (G.positioning === 'smb') return 'Media/Software Enterprise.png';
-    if (G.positioning === 'consumer') return 'Media/Software Enterprise.png';
+    if (G.positioning === 'government') return 'Media/Software Enterprise.png';
+    if (G.positioning === 'smb') return 'Media/Software Consumer Smartphone.png';
+    if (G.positioning === 'consumer') return 'Media/Software Startup Unicorn.png';
     return imgs.main;
   }
   const rivalMap = { premium: 'value', value: 'premium', disruptor: 'lifestyle', lifestyle: 'disruptor' };
@@ -843,7 +843,10 @@ function calcMonthlyRevenue(month, allocOverride, forecast) {
 
   // --- PERFORMANCE ENGINE: linear, additive, no compound ---
   // $1 in → ~$1.5 out this month only, doesn't multiply with brand
-  let perfRev = alloc.performance * 1.5;
+  // Value positioning gets a performance boost (digital ads reward low-cost products)
+  let perfMultiplier = 1.5;
+  if (G.positioning === 'value') perfMultiplier = 2.0;
+  let perfRev = alloc.performance * perfMultiplier;
 
   // Total revenue = brand engine + performance engine
   let rev = brandRev + perfRev;
@@ -945,6 +948,13 @@ function processMonth() {
   // Calculate revenue
   let revResult = calcMonthlyRevenue(G.turn);
   let rev = revResult.total;
+  // Apply conflict revenue multiplier (affects revenue only, not budget)
+  if (G._tempRevMult && G._tempRevMult !== 1) {
+    rev = Math.round(rev * G._tempRevMult);
+    revResult.total = rev;
+    revResult.brandRev = Math.round(revResult.brandRev * G._tempRevMult);
+    revResult.perfRev = Math.round(revResult.perfRev * G._tempRevMult);
+  }
   G._lastBrandRev = revResult.brandRev;
   G._lastPerfRev = revResult.perfRev;
   // Apply one-time launch boost to first month
@@ -1262,42 +1272,6 @@ function checkPromotion(quarter) {
   return { promoted, skipped, message, quarter, rank: G.rank, rankInfo: getRankTitle(G.rank) };
 }
 
-function processHoliday(tacticIndices) {
-  const strats = tacticIndices.map(i => HOLIDAY_EVENT.strategies[i]);
-  let totalCost = 0;
-  let totalBrandMult = 0;
-  let totalPerfMult = 0;
-
-  strats.forEach(s => {
-    totalCost += s.cost;
-    totalBrandMult += s.brandMult;
-    totalPerfMult += s.perfMult;
-  });
-
-  G.budget -= totalCost;
-
-  // Holiday multiplier based on brand equity
-  const baseHolidayMult = 1.3;
-  const brandBonus = (G.brandEquity / 100) * 1.2;
-  const holidayMult = baseHolidayMult + brandBonus;
-
-  // Combined strategies affect how much of the multiplier you capture
-  // Diminishing returns: each additional strategy adds less
-  const avgBrand = strats.length > 0 ? totalBrandMult / strats.length : 0;
-  const avgPerf = strats.length > 0 ? totalPerfMult / strats.length : 0;
-  const countBonus = 1 + (strats.length - 1) * 0.15; // 15% bonus per extra strategy
-  const effectiveMult = holidayMult * (0.5 + avgBrand * 0.3 + avgPerf * 0.2) * Math.min(countBonus, 1.6);
-
-  const baseRev = calcMonthlyRevenue(12).total;
-  const holidayRev = Math.round(baseRev * effectiveMult);
-
-  G.monthlyRevenue.push(holidayRev);
-  G.totalRevenue += holidayRev;
-  G.turn = 12;
-
-  const stratNames = strats.map(s => s.icon + ' ' + s.name);
-  return { holidayRev, holidayMult: effectiveMult, strategies: strats, stratNames, totalCost };
-}
 
 function applyConflictChoice(conflictIdx, choiceIdx) {
   const conflict = G.conflictOrder[conflictIdx];
@@ -1878,7 +1852,6 @@ function render() {
       break;
     case 'promotionReview': app.innerHTML = renderPromotionReview(); break;
     case 'midYearReview': app.innerHTML = renderMidYearReview(); break;
-    case 'holiday': app.innerHTML = renderHoliday(); break;
     case 'holidayAllocation': app.innerHTML = renderHolidayAllocation(); break;
     case 'holidayResults': app.innerHTML = renderHolidayResults(); break;
     case 'finalResults': app.innerHTML = renderFinalResults(); break;
@@ -2547,7 +2520,7 @@ function renderMidYearReview() {
       <p><strong>Total Revenue:</strong> ${fmtFull(totalRevenue)}<br>
       <strong>Average Monthly Revenue:</strong> ${fmtFull(avgMonthlyRev)}<br>
       <strong>Brand Equity:</strong> ${Math.round(G.brandEquity)}/100<br>
-      <strong>Budget ROI:</strong> <span class="${parseInt(roi) > 0 ? 'money' : 'danger'}">${roi}%</span></p>
+      <strong>Budget ROI:</strong> <span style="color:${parseInt(roi) > 0 ? 'var(--amber)' : 'var(--red)'}">${roi}%</span></p>
     </div>
 
     <div style="margin:20px 0">
@@ -3107,6 +3080,8 @@ function initSymposium() {
 
   // End/continue button
   document.getElementById('symp-end-btn').addEventListener('click', function() {
+    if (this.disabled) return;
+    this.disabled = true;
     finishSymposium({
       revenue: totalRev, brandEquity: totalBrand,
       hits: totalHits, shots: totalShots, steals: totalSteals,
@@ -3343,45 +3318,6 @@ function renderPromotionReview() {
   </div>`;
 }
 
-function renderHoliday() {
-  const brandMult = (1.3 + (G.brandEquity / 100) * 1.2).toFixed(1);
-
-  let holidayTotal = 0;
-  G.holidayTactics.forEach(i => { holidayTotal += HOLIDAY_EVENT.strategies[i].cost; });
-  const canAfford = (idx) => G.holidayTactics.includes(idx) || (G.budget - holidayTotal) >= HOLIDAY_EVENT.strategies[idx].cost;
-
-  const choices = HOLIDAY_EVENT.strategies.map((s, i) => {
-    const selected = G.holidayTactics.includes(i);
-    const affordable = canAfford(i);
-    return `<div class="launch-option ${selected ? 'checked' : ''} ${!affordable && !selected ? 'disabled' : ''}" data-action="toggleHoliday" data-value="${i}" ${!affordable && !selected ? 'style="opacity:.4;pointer-events:none"' : ''}>
-      <div class="checkbox">${selected ? '✓' : ''}</div>
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:.9rem">${s.icon} ${s.name} <span class="text-amber">${fmtFull(s.cost)}</span></div>
-        <div style="font-size:.75rem;color:var(--muted)">${s.desc}</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const budgetAfter = G.budget - holidayTotal;
-
-  return `<div class="screen">
-    ${renderStatsBar()}
-    <div class="narrative">
-      <div class="event-title">${HOLIDAY_EVENT.title}</div>
-      <img src="${getProductImage()}" alt="${G.productName}" class="product-icon product-icon-md" style="float:right;margin:0 0 10px 15px">
-      <p>${HOLIDAY_EVENT.text}</p>
-      <p style="margin-top:10px">Your brand equity of <strong class="text-green">${Math.round(G.brandEquity)}</strong> gives you a holiday multiplier of <strong class="text-amber">${brandMult}x</strong>. ${G.brandEquity >= 60 ? 'All those brand investments are about to pay off BIG.' : G.brandEquity >= 30 ? 'A decent multiplier. Those brand investments helped.' : 'Ouch. Low brand equity means a weak holiday showing. Should\'ve invested in brand earlier.'}</p>
-    </div>
-    <div class="section-sub">Select your holiday tactics <span style="color:var(--muted)">(select multiple, or skip them all)</span>:</div>
-    ${choices}
-    <div class="card" style="margin-top:15px;text-align:center">
-      <div style="font-size:.85rem;color:var(--muted)">Holiday spend: <strong class="text-amber">${fmtFull(holidayTotal)}</strong> | Budget after: <strong class="${budgetAfter < 0 ? 'text-red' : 'text-amber'}">${fmtFull(budgetAfter)}</strong></div>
-    </div>
-    <div class="btn-group" style="margin-top:20px">
-      <button class="btn primary" data-action="confirmHoliday">🎄 Launch Holiday Push</button>
-    </div>
-  </div>`;
-}
 
 function renderHolidayAllocation() {
   const a = G.allocation;
@@ -3538,6 +3474,20 @@ function processMonth12Combined(tacticIndices) {
   });
   G.budget -= totalTacticCost;
 
+  // 5b. Black Friday brand equity penalty for premium/lifestyle positioning
+  const hasBlackFriday = strats.some(s => s.brandEquityHit);
+  if (hasBlackFriday) {
+    const pos = G.positioning;
+    if (pos === 'premium' || pos === 'enterprise') {
+      G.brandEquity = clamp(G.brandEquity - 8, 0, 100);
+    } else if (pos === 'lifestyle') {
+      G.brandEquity = clamp(G.brandEquity - 5, 0, 100);
+    } else if (pos === 'disruptor' || pos === 'smb' || pos === 'consumer' || pos === 'government') {
+      G.brandEquity = clamp(G.brandEquity - 2, 0, 100);
+    }
+    // value positioning: no brand equity hit (discounting is on-brand)
+  }
+
   // 6. Calculate base revenue via calcMonthlyRevenue(12)
   let baseRev = calcMonthlyRevenue(12).total;
   if (G.allFiredPenalty) {
@@ -3648,7 +3598,6 @@ function generateStoryRecap() {
   }
 
   // Brand equity arc
-  const peakBE = Math.max(...(G.monthlyRevenue.map((_, i) => G.brandEquity)), G.brandEquity);
   if (G.brandEquity >= 60) {
     story += `Your brand equity peaked at ${Math.round(G.brandEquity)} — a marketing powerhouse. `;
   } else if (G.brandEquity >= 30) {
@@ -3874,7 +3823,7 @@ function renderLeaderboard() {
     </div>
     <div class="btn-group" style="margin-top:20px">
       ${G.turn === 0 ? '<button class="btn" data-action="backToTitle">← Back</button>' : ''}
-      <button class="btn primary" data-action="playAgain">🔄 Play ${G.gameOver || G.turn >= 12 ? 'Again' : ''}</button>
+      <button class="btn primary" data-action="playAgain">🔄 Play Again</button>
     </div>
   </div>`;
 }
@@ -4197,18 +4146,9 @@ document.getElementById('app').addEventListener('click', function (e) {
     case 'confirmAllocation': {
       // Store allocation for "Same as Last Month" preset
       G._lastAllocation = { ...G.allocation };
-      // Apply temp revenue multiplier from conflict
-      if (G._tempRevMult && G._tempRevMult !== 1) {
-        // Modify allocation effectiveness temporarily
-        const origPerf = G.allocation.performance;
-        G.allocation.performance = Math.round(origPerf * G._tempRevMult);
-      }
       const monthResult = processMonth();
       G._monthResult = monthResult;
-      if (G._tempRevMult) {
-        // Restore
-        G._tempRevMult = null;
-      }
+      G._tempRevMult = null;
       if (G.budget < 0) {
         G.gameOver = true;
         G.gameOverReason = 'The CFO cut up your corporate card in front of the entire marketing team. Security escorted you past the promotional banner you\'d just approved. It hadn\'t even shipped yet.';
@@ -4263,12 +4203,6 @@ document.getElementById('app').addEventListener('click', function (e) {
       if (pos >= 0) G.holidayTactics.splice(pos, 1);
       else G.holidayTactics.push(idx);
       // Preserve current screen (works for both 'holiday' and 'holidayAllocation')
-      break;
-    }
-    case 'confirmHoliday': {
-      const result = processHoliday(G.holidayTactics);
-      G._holidayResult = result;
-      G.screen = 'holidayResults';
       break;
     }
     case 'confirmHolidayAllocation': {
