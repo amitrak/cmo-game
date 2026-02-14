@@ -102,26 +102,26 @@ const BRAND_TIERS = [
   { id: 'diy', name: 'DIY', cost: 2500, equity: 2, revBonus: -0.05, impact: 1, desc: '"My cousin knows Photoshop"' },
   { id: 'boutique', name: 'Boutique Agency', cost: 125000, equity: 5, revBonus: 0, impact: 2, desc: 'Clean, professional, forgettable' },
   { id: 'topTier', name: 'Top Agency', cost: 250000, equity: 10, revBonus: 0.05, impact: 3, desc: '<strong>Award-worthy. People notice.</strong>' },
-  { id: 'worldClass', name: 'World-Class', cost: 500000, equity: 18, revBonus: 0.10, impact: 4, desc: '<strong>A world-class design firm called.</strong> They\'re interested.' }
+  { id: 'worldClass', name: 'World-Class', cost: 500000, equity: 18, revBonus: 0.10, impact: 4, desc: 'The best branding money can buy.' }
 ];
 
 const SITE_TIERS = [
-  { id: 'template', name: 'Template Site', cost: 2500, revBonus: -0.10, impact: 1, desc: 'Off-the-shelf template #47. Your competitor has #46.' },
+  { id: 'template', name: 'Template Site', cost: 2500, revBonus: -0.10, impact: 1, desc: 'Off-the-shelf design #47. Your competitor has #46.' },
   { id: 'custom', name: 'Custom Build', cost: 150000, revBonus: 0, impact: 2, desc: '<strong>Leading platform with custom theme.</strong> Solid.' },
-  { id: 'premium', name: 'Premium Build', cost: 325000, revBonus: 0.08, impact: 3, desc: '<strong>Fully custom, buttery smooth, converts like crazy.</strong>' },
-  { id: 'enterprise', name: 'Enterprise', cost: 600000, revBonus: 0.14, impact: 4, desc: '<strong>The Goliath of ecommerce.</strong> Overkill? Maybe. Beautiful? Absolutely.' }
+  { id: 'premium', name: 'Premium Build', cost: 325000, revBonus: 0.08, impact: 3, desc: 'Buttery smooth. Converts like crazy.' },
+  { id: 'enterprise', name: 'Enterprise', cost: 600000, revBonus: 0.14, impact: 4, desc: 'Overkill? Maybe. Optimized? Absolutely.' }
 ];
 
 const RESEARCH_TIERS = [
   { id: 'none', name: 'Wing It', cost: 0, bonus: -0.05, impact: 0, desc: '"I AM the focus group" - You, to your CEO' },
   { id: 'basic', name: 'Survey + Focus Group', cost: 75000, bonus: 0.05, impact: 2, desc: 'You asked 200 people. <strong>3 of them were honest.</strong>' },
-  { id: 'full', name: 'Full Research', cost: 175000, bonus: 0.12, impact: 4, desc: '<strong>Quant, qual, competitive analysis.</strong> You actually know your customer.' }
+  { id: 'full', name: 'Full Research', cost: 175000, bonus: 0.12, impact: 4, desc: '<strong>Quant, qual, competitive analysis.</strong> The works.' }
 ];
 
 const LAUNCH_TACTICS = [
   { id: 'organic', name: 'Organic / Word of Mouth', cost: 0, revBoost: 0.02, brandBoost: 1, desc: 'Free but slow as molasses.' },
   { id: 'press', name: 'Press Release', cost: 5000, revBoost: 0.05, brandBoost: 2, desc: 'Spray and pray to the media gods.' },
-  { id: 'influencer', name: 'Influencer Seeding', cost: 150000, revBoost: 0.15, brandBoost: 3, desc: 'Send samples to influencers and let them do the talking.' },
+  { id: 'influencer', name: 'Influencer Seeding', cost: 150000, revBoost: 0.15, brandBoost: 3, desc: 'Send samples to people with ring lights.' },
   { id: 'event', name: 'Launch Event', cost: 275000, revBoost: 0.12, brandBoost: 5, desc: 'Open bar = open wallets. Usually.' },
   { id: 'tv', name: 'TV Commercial', cost: 750000, revBoost: 0.25, brandBoost: 6, desc: 'Super Bowl dreams on a mid-market budget.' },
   { id: 'social', name: 'Social Media Blitz', cost: 125000, revBoost: 0.13, brandBoost: 3, desc: 'Every platform, all at once. Everywhere.' }
@@ -407,7 +407,8 @@ const HOLIDAY_EVENT = {
     { name: 'Brand-Led Holiday Campaign', cost: 50000, brandMult: 1.0, perfMult: 0.3, desc: 'Emotional storytelling. "The holidays are about..." You know the type. Coca-Cola polar bears energy.', icon: '🎅' },
     { name: 'Black Friday Blitz', cost: 40000, brandMult: 0.1, perfMult: 1.0, brandEquityHit: true, desc: 'Deep discounts drive volume but train customers to wait for sales. Premium brands beware.', icon: '🏷️' },
     { name: 'Influencer Gift Guide Push', cost: 45000, brandMult: 0.8, perfMult: 0.7, desc: 'Get into every "Gift Guide" and "Holiday Haul" video. Expensive but effective.', icon: '🎁' },
-    { name: 'Charity Tie-In', cost: 15000, brandMult: 0.2, perfMult: 0.05, desc: 'Donate a portion of holiday sales to a cause. Good vibes and a feel-good press angle.', icon: '❤️' }
+    { name: 'Charity Tie-In', cost: 5000, brandMult: 0.2, perfMult: 0.05, desc: 'Donate a portion of holiday sales to a cause. Good vibes and a feel-good press angle.', icon: '❤️' },
+    { name: 'Holiday TV Commercial', cost: 750000, brandMult: 1.5, perfMult: 1.5, desc: 'A primetime holiday ad. Massive reach, massive cost. The kind of bet that makes or breaks a CMO.', icon: '📺' }
   ]
 };
 
@@ -1025,7 +1026,7 @@ function processMonth() {
   // Revenue bonus: if great month, CEO gives bonus budget
   const avgRev = G.totalRevenue / G.monthlyRevenue.length;
   if (rev > avgRev * 1.3 && Math.random() > 0.5) {
-    const bonus = Math.round(rand(30000, 80000));
+    const bonus = Math.round(rand(30000, 80000) / 1000) * 1000;
     G.budget += bonus;
     G.budget = Math.min(G.budget, 5000000);
     G.bonusesReceived += bonus;
@@ -1249,7 +1250,7 @@ function checkPromotion(quarter) {
     if (rev >= 8000000 && G.rank < 4) {
       G.rank++;
       promoted = true;
-      message = rev >= 10000000 ? 'Exceptional H1 numbers. The board is deeply impressed.' : 'H1 numbers are strong. The board is impressed. "You\'re on the right track."';
+      message = rev >= 10000000 ? 'Exceptional H1 numbers. The board is deeply impressed.' : 'H1 numbers are strong. C-Suite is impressed. "You\'re on the right track."';
     } else {
       message = 'Growth is lagging behind targets. The board exchanged glances. Not a good sign.';
     }
@@ -2177,7 +2178,7 @@ function renderPreLaunch() {
       <button class="help-btn ${helpActive ? 'active' : ''}" data-action="toggleHelp" data-value="preLaunch">?</button>
     </div>
     ${helpActive ? `<div class="help-overlay">${getPreLaunchHelp()}</div>` : ''}
-    <div class="section-sub" style="text-align:center">Build your marketing engine before you hit the gas.</div>
+    <div class="section-sub" style="text-align:center">Prepare to unveil ${G.productName} to the world.</div>
 
     <h3 style="margin-top:20px;margin-bottom:8px">🎨 Brand Identity</h3>
     <div class="tier-group">${brandCards}</div>
@@ -2230,7 +2231,7 @@ function renderPreLaunchSummary() {
       <div class="event-title">🚀 ${G.productName} is ready to launch!</div>
       <img src="${getProductImage()}" alt="${G.productName}" class="product-icon product-icon-md" style="margin:10px auto">
       <p><strong>${G.playerName}</strong>, ${G.title}, launching <strong>${G.productName}</strong> — ${'aeiou'.includes(getPositioning().name[0].toLowerCase()) ? 'an' : 'a'} ${getPositioning().name.toLowerCase()} ${p.name.toLowerCase()} play.</p>
-      <p style="margin-top:10px">One year to make CMO. Face monthly challenges, managing your budget and brand. Grow revenue and keep the CEO happy to climb the ladder... or get replaced.</p>
+      <p style="margin-top:10px">One year to make CMO. Face monthly challenges, managing your budget & brand. Grow sales to earn promos. Your CEO has big goals. Don't get fired.</p>
     </div>
 
     <div class="card">
@@ -2474,17 +2475,6 @@ function renderMidYearReview() {
   const spent = G.startingBudget - G.budget;
   const roi = spent > 0 ? ((totalRevenue - spent) / spent * 100).toFixed(0) : 0;
 
-  let ceoCommentary = '';
-  if (totalRevenue >= 10000000) {
-    ceoCommentary = 'The CEO is ecstatic! "This is exceeding all expectations. Keep up the incredible work!"';
-  } else if (totalRevenue >= 5000000) {
-    ceoCommentary = 'The CEO is pleased. "Solid performance. We\'re on track, but there\'s always room to grow."';
-  } else if (totalRevenue >= 2000000) {
-    ceoCommentary = 'The CEO is concerned. "We need to see more traction. What\'s the plan to accelerate growth?"';
-  } else {
-    ceoCommentary = 'The CEO is furious. "These numbers are unacceptable. We need a drastic change, or heads will roll!"';
-  }
-
   // Initialize adjustments from current state if not set
   const adj = G._reviewAdjustments || {};
   ROLES.forEach(r => {
@@ -2509,11 +2499,6 @@ function renderMidYearReview() {
   return `<div class="screen">
     ${renderStatsBar()}
     <div class="section-title">🗓️ Mid-Year Review (Month 6)</div>
-    <div class="narrative">
-      <div class="event-title">Performance Check-in</div>
-      <p>It's been six months since ${G.productName} launched. The CEO has called you in for a mid-year performance review.</p>
-      <p style="margin-top:10px"><strong>CEO's Feedback:</strong> "${ceoCommentary}"</p>
-    </div>
 
     <div class="card">
       <h3>📈 Your Performance So Far</h3>
@@ -3160,7 +3145,7 @@ function renderMonthResults() {
 
   let bonusText = '';
   if (r.bonus > 0) {
-    bonusText = `<div class="outcome-box good"><strong>🎉 Bonus!</strong> The CEO was impressed with your performance. "+${fmtFull(r.bonus)} added to your budget."(They phrased it as "investing in what's working." Don't get used to it.)</div>`;
+    bonusText = `<div class="outcome-box good"><strong>🎉 Bonus!</strong> The CEO was impressed with your performance. Adding ${fmtFull(r.bonus)} to your budget. Investing in what's working... Don't get used to it.</div>`;
   }
 
   const isLastMonth = G.turn >= 11;
@@ -3856,9 +3841,24 @@ document.getElementById('app').addEventListener('click', function (e) {
       }
       break;
     case 'generateName': {
-      const names = GENERATED_NAMES[G.product] && GENERATED_NAMES[G.product][G.positioning];
-      if (names && names.length > 0) {
-        const pick = names[Math.floor(Math.random() * names.length)];
+      const productNames = GENERATED_NAMES[G.product];
+      if (!productNames) return;
+      const key = G.product + '_' + G.positioning;
+      if (!G._nameQueue || G._nameQueueKey !== key || G._nameQueue.length === 0) {
+        // Build queue: current positioning first, then cycle through the rest
+        const allPos = Object.keys(productNames);
+        const ordered = [G.positioning, ...allPos.filter(p => p !== G.positioning)];
+        G._nameQueue = [];
+        for (const pos of ordered) {
+          const batch = [...productNames[pos]];
+          for (let i = batch.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [batch[i], batch[j]] = [batch[j], batch[i]]; }
+          G._nameQueue.push(...batch);
+        }
+        G._nameQueue.reverse(); // reverse so we pop from the end starting with current positioning
+        G._nameQueueKey = key;
+      }
+      const pick = G._nameQueue.pop();
+      if (pick) {
         const input = document.getElementById('productName');
         if (input) { input.value = pick; input.style.borderColor = ''; }
       }
