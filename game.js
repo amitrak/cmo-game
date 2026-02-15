@@ -846,7 +846,7 @@ function calcMonthlyRevenue(month, allocOverride, forecast) {
   // $1 in → ~$1.5 out this month only, doesn't multiply with brand
   // Value positioning gets a performance boost (digital ads reward low-cost products)
   let perfMultiplier = 1.5;
-  if (G.positioning === 'value') perfMultiplier = 2.0;
+  if (G.positioning === 'value') perfMultiplier = 1.7;
   let perfRev = alloc.performance * perfMultiplier;
 
   // Total revenue = brand engine + performance engine
@@ -854,7 +854,7 @@ function calcMonthlyRevenue(month, allocOverride, forecast) {
 
   // Randomness: +/- 25% (higher variance for "blowout quarters") — skip for forecasts
   if (!forecast) {
-    let variance = rand(0.75, 1.25);
+    let variance = rand(0.82, 1.18);
     rev *= variance;
     brandRev *= variance;
     perfRev *= variance;
@@ -1247,7 +1247,7 @@ function checkPromotion(quarter) {
       message = 'Q1 was below expectations. The board is watching. You need to pick it up.';
     }
   } else if (quarter === 2) { // Month 6 — Growth check
-    if (rev >= 8000000 && G.rank < 4) {
+    if (rev >= 9500000 && G.rank < 4) {
       G.rank++;
       promoted = true;
       message = rev >= 10000000 ? 'Exceptional H1 numbers. The board is deeply impressed.' : 'H1 numbers are strong. C-Suite is impressed. "You\'re on the right track."';
