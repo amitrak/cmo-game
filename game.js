@@ -25,24 +25,24 @@ function getProfanityResponse() {
 const PRODUCTS = {
   soda: {
     name: 'Soda', namingLabel: 'soda brand', icon: '🥤', baseRevenue: 300000, growth: 0.07,
-    desc: 'Fizzy margins, popping competition. If growth goes flat, you\'ll get canned.',
+    desc: 'Fizzy margins, popping competition. If growth is flat, you get canned.',
     flavor: 'beverage', unitPrice: 5, unitName: 'bottles sold',
     namingExamples: ['Sip Happens', 'Fizzness Casual', 'LiquidLife']
   },
   sneakers: {
     name: 'Shoes', namingLabel: 'shoe brand', icon: '👟', baseRevenue: 250000, growth: 0.09,
-    desc: 'It\'s a marathon, not a sprint. One misstep, and you\'re on the clearance rack.',
+    desc: 'It\'s a marathon, not a sprint. One misstep and you\'re on clearance.',
     flavor: 'fashion', unitPrice: 200, unitName: 'pairs on feet',
     namingExamples: ['SoleMate', 'Kicks & Giggles', 'Shoe La La']
   },
   skincare: {
-    name: 'Skincare', namingLabel: 'skincare product', icon: '✨', baseRevenue: 200000, growth: 0.11,
-    desc: 'Pore over data for a breakout hit. Don\'t be rash or your brand won\'t age well.',
+    name: 'Skincare', namingLabel: 'skincare product', icon: '✨', baseRevenue: 250000, growth: 0.11,
+    desc: 'Pore over data for a breakout. But if you\'re rash you won\'t age well.',
     flavor: 'beauty', unitPrice: 40, unitName: 'jars shipped',
     namingExamples: ['Zit Happens', 'Pore Decisions', 'Unwrinkle in Time']
   },
   software: {
-    name: 'Software', namingLabel: 'software product', icon: '💾', baseRevenue: 150000, growth: 0.15,
+    name: 'Software', namingLabel: 'software product', icon: '💾', baseRevenue: 225000, growth: 0.15,
     desc: 'Time to get SaaSy. Launch to the moon... or at least the cloud.',
     flavor: 'tech', unitPrice: 1000, unitName: 'subscriptions',
     namingExamples: ['Glitch Please', 'Byte Club', 'SaaS-quatch']
@@ -77,17 +77,17 @@ const GENERATED_NAMES = {
 };
 
 const POSITIONINGS = {
-  premium: { name: 'Premium', icon: '👑', brandBonus: 2.5, revMult: 1.2, desc: 'High margins, high expectations. Your customers pay more and complain louder.' },
-  lifestyle: { name: 'Lifestyle', icon: '🌟', brandBonus: 3.0, revMult: 1.1, desc: 'You\'re not selling a product, you\'re selling a vibe. Hope Gen Z agrees.' },
-  value: { name: 'Value', icon: '🏷️', brandBonus: 0.5, revMult: 0.9, desc: 'Race to the bottom? More like sprint to volume. Hope your margins survive.' },
-  disruptor: { name: 'Disruptor', icon: '⚡', brandBonus: 1.5, revMult: 1.0, desc: 'Move fast and break things - including possibly your career. High risk, high reward.' }
+  premium: { name: 'Premium', icon: '👑', brandBonus: 2.5, revMult: 1.2, desc: 'High margins, high expectations. They pay more but complain louder.' },
+  lifestyle: { name: 'Lifestyle', icon: '🌟', brandBonus: 3.0, revMult: 1.1, desc: 'You\'re selling a vibe, not a product. Hope Gen Z agrees.' },
+  value: { name: 'Value', icon: '🏷️', brandBonus: 1.0, revMult: 1.0, desc: 'Sprint to volume. Thin margins, massive scale.' },
+  disruptor: { name: 'Disruptor', icon: '⚡', brandBonus: 2.0, revMult: 1.1, desc: 'Move fast and break things. High risk, high reward.' }
 };
 
 const SOFTWARE_POSITIONINGS = {
-  enterprise: { name: 'Enterprise', icon: '🏢', brandBonus: 1.5, revMult: 1.2, desc: 'Whale hunting. Prepare for 12-month sales cycles, security audits, and procurement hell. But one signed contract makes your year.' },
-  smb: { name: 'Startup', icon: '🦄', brandBonus: 1.0, revMult: 0.9, desc: 'They want enterprise features on a shoestring budget. Expect high volume, high churn, and support tickets written in ALL CAPS.' },
-  consumer: { name: 'Consumer', icon: '📱', brandBonus: 2.5, revMult: 1.0, desc: 'The B2C lottery. You\'re at the mercy of the App Store gods and Gen Z\'s attention span. You\'re either viral or you\'re invisible.' },
-  government: { name: 'Government', icon: '🏛️', brandBonus: 2.0, revMult: 1.1, desc: 'Navigate red tape and 100-page RFPs. It takes two years to close a deal. But once you\'re in, the taxpayer funds you forever.' }
+  enterprise: { name: 'Enterprise', icon: '🏢', brandBonus: 1.5, revMult: 1.2, desc: 'Long sales cycles, SOC 2 audits, and procurement hell. But one deal can make your quarter.' },
+  smb: { name: 'Startup', icon: '🦄', brandBonus: 1.5, revMult: 1.0, desc: 'Enterprise expectations on a seed-stage budget. Pray your customers close their Series A.' },
+  consumer: { name: 'Consumer', icon: '📱', brandBonus: 2.5, revMult: 1.0, desc: 'You\'re at the mercy of the App Store and Gen Z\'s attention span. You\'re either viral or invisible.' },
+  government: { name: 'Government', icon: '🏛️', brandBonus: 2.0, revMult: 1.1, desc: 'Red tape. 100-page RFPs. Deals take years. But if you win, taxpayers fund you forever.' }
 };
 
 const ROLES = [
@@ -152,7 +152,7 @@ const RANKS = [
 
 const EVENT_EFFICACY = {
   premium: 1.5, lifestyle: 1.5, enterprise: 1.5, government: 1.5,
-  value: 0.25, disruptor: 0.5, smb: 0.75, consumer: 0.75
+  value: 0.5, disruptor: 0.75, smb: 0.75, consumer: 0.75
 };
 
 // ===== CONFLICTS =====
@@ -209,7 +209,7 @@ const CONFLICTS = [
   },
   {
     id: 'review_bomb', type: 'crisis', title: '⭐ The Review Bomb',
-    text: 'Someone posted "I tried {product} and here\'s what ACTUALLY happened" - a scathing (and somewhat unfair) review. It went viral. Now your rating has dropped from 4.5 to 2.3 stars. Sales are in freefall.',
+    text: '"I tried {product} and here\'s what ACTUALLY happened" — a scathing, profane review — is now your most-upvoted. Rating: 4.5 → 2.7. Sales are down.',
     choices: [
       { text: 'Launch review generation campaign with happy customers ($15k)', cost: 15000, brandEquity: 0, revMult: 0.9, ceoPat: 5, outcome: 'Real reviews from real customers slowly push the rating back up. Authenticity wins. Rating recovers to 3.8. Marketing lesson: Authentic customer voices beat any PR response.' },
       { text: 'Respond personally to every negative review', cost: 0, brandEquity: 2, revMult: 0.85, ceoPat: 0, outcome: 'It takes 60 hours, but people notice. Screenshots of your thoughtful responses go viral. "This brand actually cares" becomes the narrative. Marketing lesson: The unsexy work often has the highest ROI.' },
@@ -299,7 +299,7 @@ const CONFLICTS = [
   },
   {
     id: 'recession', type: 'market', title: '📉 Recession Vibes',
-    text: 'The economy is shaking. Consumer confidence is down. Your category is seeing 15% declines across the board. The board wants to know: do you cut marketing or lean in while competitors retreat?',
+    text: 'The economy is shaky. Consumer confidence is low. Your category is dropping 15% QoQ. The CEO wants to know: do you cut spending or lean in while others retreat?',
     choices: [
       { text: 'Cut marketing spend 30% to preserve runway', cost: -30000, brandEquity: -8, revMult: 0.8, ceoPat: 3, outcome: 'You survive but shrink. Every textbook says this is wrong, but the CFO\'s relief is palpable. You\'ll spend months rebuilding. Marketing lesson: Brands that cut during recessions lose share they never recover.' },
       { text: 'Maintain spending - grab market share while competitors hide', cost: 0, brandEquity: 8, revMult: 0.9, ceoPat: -10, outcome: 'Revenue dips and the CFO is furious. Share of voice is up, but that doesn\'t pay bills today. If the recovery comes soon, this looks like genius. If not, recklessness. Marketing lesson: Spending through a downturn is a trade: short-term pain for long-term gain.' },
@@ -390,11 +390,11 @@ const CONFLICTS = [
   },
   {
     id: 'ai_pivot', type: 'pressure', title: '🤖 The Cross-Functional Alignment Meeting',
-    text: 'The CFO pulls up your {product} marketing budget on the projector during a cross-functional sync. "I\'ve been reading about Generative AI. Why are we paying six copywriters when AI can do this for free?" Every head turns to you.',
+    text: 'The CFO pulls up the marketing budget during an executive review. "Why are we paying for copywriters when AI can write for free?" Every head turns to you.',
     choices: [
       { text: '"AI is a tool, not a replacement." (The Defense)', cost: 0, brandEquity: 2, revMult: 1.0, ceoPat: -5, luck: [0.3, { ceoPat: 15, brandEquity: 5, override: 'The CFO pauses, then nods. "Fair enough. But I want a pilot program with metrics by next quarter." You get approved for an AI integration budget ON your terms. Marketing lesson: Defending your team with data earns respect.' }], outcome: 'The CFO sighs. The meeting notes read: "Marketing to revisit AI integration timeline." They trim your contractor budget by 10% anyway. Marketing lesson: You stood by your principles, but sometimes being principled has a cost.' },
       { text: '"Already on it. Let me fire the writers." (Malicious Compliance)', cost: 0, brandEquity: -6, revMult: 1.0, ceoPat: 10, luck: [0.8, { brandEquity: 3, revMult: 1.1, ceoPat: 20, cost: -15000, override: 'The AI copy is... actually fine? Content production triples. You save $15k/month. Your creative team hates you, but the CFO calls you "forward-thinking" in the next all-hands. Marketing lesson: Sometimes the expedient answer is the right answer.' }], outcome: 'The AI writes a press release announcing a {product} feature that doesn\'t exist. Legal has a panic attack. You rehire the writers at a 20% premium. Marketing lesson: You can outsource the work to AI, but you can\'t outsource the responsibility.' },
-      { text: '"We\'re deploying LLM-driven semantic optimization layers." (Buzzword Salad)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, luck: [0.6, { ceoPat: 15, override: 'The CFO nods slowly. Nobody wants to admit they don\'t know what "semantic optimization" means. Meeting adjourns early. You survived another quarter. Marketing lesson: Sometimes the meta-strategy is managing the room, not the work.' }], outcome: 'The CTO is in the room. "Which LLM are you fine-tuning and what\'s your attribution model?" You don\'t have answers. The silence says everything. Marketing lesson: If you can\'t explain it simply, someone WILL call your bluff.' }
+      { text: '"I\'m piloting LLM-driven semantic optimization layers." (Buzzword Salad)', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -10, luck: [0.6, { ceoPat: 11, override: 'The CFO nods. Nobody wants to admit they don\'t know what "semantic optimization" means. Meeting adjourns. You survived another quarter. Marketing lesson: Sometimes the meta-strategy is managing the room, not the work.' }], outcome: 'The CTO is in the room. "Which LLM are you fine-tuning and what\'s your attribution model?" You don\'t have answers. The silence says everything. Marketing lesson: If you can\'t explain it simply, someone WILL call your bluff.' }
     ]
   }
 ];
@@ -854,7 +854,7 @@ function calcMonthlyRevenue(month, allocOverride, forecast) {
 
   // Randomness: +/- 25% (higher variance for "blowout quarters") — skip for forecasts
   if (!forecast) {
-    let variance = rand(0.82, 1.18);
+    let variance = (G.positioning === 'disruptor' || G.positioning === 'smb') ? rand(0.70, 1.30) : rand(0.82, 1.18);
     rev *= variance;
     brandRev *= variance;
     perfRev *= variance;
@@ -1944,7 +1944,7 @@ function renderTitle() {
       <source src="Media/Opening Video.webm" type="video/webm">
     </video>
     <div class="subtitle pixel">MARKETING SIMULATOR</div>
-    <div class="tagline">12 months to climb from Director to CMO... or end up #OpenToWork.</div>
+    <div class="tagline">12 months to climb from Director to the C-suite.</div>
     <div class="card" style="max-width:500px;margin:20px auto;text-align:center">
       <input type="text" id="playerName" placeholder="Enter Your Name" maxlength="20" style="display:block;margin:0 auto" autofocus>
     </div>
