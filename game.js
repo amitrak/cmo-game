@@ -283,7 +283,7 @@ const CONFLICTS = [
     weight: (g) => g.siteTier === 'template' ? 3 : g.siteTier === 'custom' ? 1.5 : g.siteTier === 'premium' ? 0.5 : 0.3,
     choices: [
       { text: 'Full transparency: notify everyone, offer credit monitoring ($40k)', cost: 40000, brandEquity: 3, revMult: 0.85, ceoPat: -5, outcome: 'Revenue takes a hit and the CEO is furious, but customers TRUST you now. Privacy-conscious consumers become loyal advocates. Marketing lesson: Transparency is expensive short-term and invaluable long-term.' },
-      { text: 'Minimal disclosure: notify only confirmed affected users ($15k)', cost: 15000, brandEquity: -2, revMult: 0.92, ceoPat: 5, luck: [0.4, { neutral: true, brandEquity: -15, revMult: 0.7, ceoPat: -15, override: 'A journalist discovers you under-reported the breach. Now it\'s not just a data incident - it\'s a COVER-UP. Regulators are involved. This is a nightmare.' }], outcome: 'You thread the legal needle. Technically compliant, ethically questionable. Most customers never notice. Marketing lesson: Minimum compliance is a strategy - until it isn\'t.' },
+      { text: 'Minimal disclosure: notify only confirmed affected users ($15k)', cost: 15000, brandEquity: -2, revMult: 0.92, ceoPat: 5, luck: [0.4, { neutral: true, brandEquity: -15, revMult: 0.7, ceoPat: -15, override: 'A journalist discovers you under-reported the breach. Now this scandal went from data incident to COVER-UP. Legal is involved. This is a nightmare.' }], outcome: 'You thread the legal needle. Technically compliant, ethically questionable. Most customers never notice. Marketing lesson: Minimum compliance is a strategy - until it isn\'t.' },
       { text: 'Spin it: "We proactively identified a security concern" ($10k)', cost: 10000, brandEquity: -8, revMult: 0.95, ceoPat: 5, outcome: 'The spin works on boomers. Gen Z sees right through it and drags you on social media. "Proactively identified" becomes a meme. Marketing lesson: Corporate euphemisms are a language nobody trusts.' },
       { text: 'Say nothing. Hope it goes away.', cost: 0, brandEquity: -14, revMult: 0.9, ceoPat: 0, luck: [0.3, { brandEquity: 0, revMult: 1.0, ceoPat: 5, override: 'By some miracle, the story gets buried under bigger news. You got away with it this time. Start looking for a better payment processor.' }], outcome: 'The journalist publishes without your comment. "Company refused to respond" is never a good look. The narrative is written without you. Marketing lesson: Silence is not a communications strategy.' }
     ]
@@ -3843,6 +3843,7 @@ function renderLeaderboard() {
     </div>
     <div class="btn-group" style="margin-top:20px">
       ${G.turn === 0 ? '<button class="btn" data-action="backToTitle">← Back</button>' : ''}
+      ${G._prevScreen === 'finalResults' || G._prevScreen === 'gameOver' ? '<button class="btn" data-action="backFromLeaderboard">← Back</button>' : ''}
       <button class="btn primary" data-action="playAgain">🔄 Play Again</button>
     </div>
   </div>`;
@@ -4255,6 +4256,7 @@ document.getElementById('app').addEventListener('click', function (e) {
       G.screen = 'finalResults';
       break;
     case 'showLeaderboard':
+      G._prevScreen = G.screen;
       loadLeaderboard(() => {
         G.screen = 'leaderboard';
         render();
@@ -4280,6 +4282,9 @@ document.getElementById('app').addEventListener('click', function (e) {
     }
     case 'backToTitle':
       G.screen = 'title';
+      break;
+    case 'backFromLeaderboard':
+      G.screen = G._prevScreen || 'title';
       break;
     case 'copyShare': {
       const text = getShareText();
