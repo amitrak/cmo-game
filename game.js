@@ -171,7 +171,7 @@ const CONFLICTS = [
     id: 'ceo_nephew', type: 'pressure', title: '👔 The CEO\'s Nephew Has "Ideas"',
     text: 'The CEO\'s nephew (a first-year MBA) has been "assigned" as your intern. His first proposal: pivot your entire social strategy to the metaverse. He already bought an NFT billboard in a virtual world where 12 people visit daily.',
     choices: [
-      { text: 'Give him a harmless side project ("Head of Innovation")', cost: 10000, brandEquity: 0, revMult: 1.0, ceoPat: 10, luck: [0.5, { neutral: true, brandEquity: -3, ceoPat: -5, override: 'Your creative director closes the door. "You gave the CEO\'s nephew a title and a budget? I\'ve been pitching an innovation lab for two years." She updates her LinkedIn that afternoon. Morale drops. Marketing lesson: Creative containment works until your best people feel passed over.' }], outcome: 'He spends 3 months building a "Web3 loyalty program" nobody uses, but he\'s out of your hair. The CEO is happy his nephew is "learning." Marketing lesson: A side project can protect your core strategy without burning political capital.' },
+      { text: 'Give him a harmless side project ("Head of Innovation")', cost: 10000, brandEquity: 0, revMult: 1.0, ceoPat: 10, luck: [0.5, { neutral: true, brandEquity: -3, ceoPat: -5, override: 'Your creative director closes the door. "You gave the CEO\'s nephew a title and a budget? I\'ve been pitching an innovation lab for two years." She updates her resume that afternoon. Morale drops. Marketing lesson: Creative containment works until your best people feel passed over.' }], outcome: 'He spends 3 months building a "Web3 loyalty program" nobody uses, but he\'s out of your hair. The CEO is happy his nephew is "learning." Marketing lesson: A side project can protect your core strategy without burning political capital.' },
       { text: 'Actually try his metaverse idea', cost: 50000, brandEquity: -3, revMult: 0.95, ceoPat: 15, luck: [0.15, { brandEquity: 7, revMult: 1.15, ceoPat: 20, override: 'A gaming streamer discovers your metaverse presence. 2 million views. The nephew is insufferable, but it worked.' }], outcome: 'You just spent $50k on a metaverse presence that got 47 visitors. The nephew calls it a "soft launch." Your team calls it something else. Marketing lesson: Don\'t let politics override strategy.' },
       { text: 'Go to HR: "This is a conflict of interest"', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: -20, luck: [0.5, { ceoPat: 10, brandEquity: 3, override: 'The CEO is quiet for a week, then calls you in. "You were right. He wasn\'t ready." The nephew is reassigned to Operations. Your team\'s respect skyrockets. Marketing lesson: Standing firm earns trust — even from the people you stand up to.' }], outcome: 'HR agrees with you technically, but the CEO is FURIOUS. "I was just trying to give the kid experience!" Your next budget review is going to be... interesting. Marketing lesson: Being right and being politically smart are different skills.' },
       { text: 'Make him "Chief Vibes Officer" with a chat channel nobody reads', cost: 0, brandEquity: 0, revMult: 1.0, ceoPat: 5, outcome: 'He posts daily "vibe checks" to a channel with 2 members (him and the bot). Everyone wins. He feels important, you keep control. Marketing lesson: The org chart is a suggestion, not a prison.' }
@@ -459,6 +459,7 @@ function initState() {
     midYearReviewDone: false,
     midYearAdjustments: {},
     allFiredPenalty: false,
+    noTeamPenalty: false,
     holidayTactics: [],
     consecutiveZeroSpend: 0,
     _helpOpen: null,
@@ -778,9 +779,52 @@ function shuffleConflicts() {
   G.conflictOrder = selected;
 }
 
+// ===== GAME OVER REASONS =====
+function getGameOverReason(trigger) {
+  const noTeam = G.noTeamPenalty && ROLES.every(r => G.team[r.id] === 'skip');
+  const firedAll = G.allFiredPenalty;
+  const lowBrand = G.brandEquity < 15;
+  const zeroSpend = G.consecutiveZeroSpend >= 3;
+
+  if (trigger === 'budget') {
+    if (noTeam) return 'You ran a marketing department with no marketing team. The budget evaporated on ads no one optimized.';
+    if (firedAll) return 'You fired your entire team and tried to do it all yourself. The budget bled out while you were stuck making a logo in a free design tool.';
+    if (G.turn <= 4) return 'You burned through $5M in ' + G.turn + ' months. The CFO pulled up your expense report at the board meeting. Security was already waiting outside.';
+    return 'The CFO cut up your corporate card in front of the entire marketing team. Security escorted you out past the promotional banner you\'d just approved.';
+  }
+
+  if (trigger === 'ceo_vibes') {
+    if (noTeam) return '"So the marketing department is just you? With no team? And these are the results?" The CEO asked to see your org chart. You showed him a selfie.';
+    if (firedAll) return '"You fired everyone and the numbers got worse?" The CEO stared at the empty desks. "I gave you a team. You gave me a ghost town."';
+    if (zeroSpend) return 'The CEO asked what the marketing department actually does. You said "strategy." He asked to see the plan. There was no plan.';
+    if (lowBrand) return 'The CEO showed you a focus group video. "What do you think of ' + G.productName + '?" Blank stares. Twelve people. Not one recognized the brand.';
+    if (G.consecutiveBad >= 4) return 'The board held an emergency meeting. You weren\'t invited. Monday morning, your badge didn\'t work.';
+    return 'The CEO\'s last message to you was a single emoji: \uD83E\uDEA6. HR filled in the rest.';
+  }
+
+  if (trigger === 'consecutive_bad') {
+    if (firedAll) return 'Four consecutive disasters with no team to help you recover. The board forwarded your termination paperwork with a one-word email: "Finally."';
+    return 'The board held an emergency meeting. You weren\'t invited. Monday morning, your badge didn\'t work.';
+  }
+
+  if (trigger === 'zero_spend') {
+    return 'Three months of zero marketing spend with ' + fmtFull(G.budget) + ' still in the bank. "Why did we hire a head of marketing who doesn\'t believe in marketing?" The intern was promoted to your role.';
+  }
+
+  if (trigger === 'conflict') {
+    return 'You pushed too hard and got pushed out. The announcement email said "pursuing other opportunities." Your social profile says #OpenToWork.';
+  }
+
+  if (trigger === 'holiday_ceo') {
+    return 'The CEO fired you at the holiday party. In front of everyone. The DJ played "Another One Bites the Dust." The VP of Sales laughed.';
+  }
+
+  return 'The CEO didn\'t give a reason. HR said it was "mutual." It wasn\'t.';
+}
+
 // ===== REVENUE CALCULATION =====
 function calcTeamMultiplier() {
-  let mult = 0.7; // base with no team
+  let mult = G.noTeamPenalty ? 0.55 : 0.7; // harsh base if never hired anyone
   const t = G.team;
   const adj = G.midYearAdjustments || {};
   let cutPenalty = 0;
@@ -984,7 +1028,7 @@ function processMonth() {
   }
   // Apply fire-everyone penalty
   if (G.allFiredPenalty) {
-    const penaltyMult = rand(0.6, 0.85);
+    const penaltyMult = rand(0.45, 0.70);
     rev = Math.round(rev * penaltyMult);
   }
   G.monthlyRevenue.push(rev);
@@ -1025,9 +1069,12 @@ function processMonth() {
     G.ceoPat = Math.min(G.ceoPat, ceoMax);
   }
 
-  // Fire-everyone extra CEO patience drain
+  // No-team / fire-everyone extra CEO patience drain
   if (G.allFiredPenalty) {
-    G.ceoPat = clamp(G.ceoPat - 3, 0, 100);
+    G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+  }
+  if (G.noTeamPenalty && ROLES.every(r => G.team[r.id] === 'skip')) {
+    G.ceoPat = clamp(G.ceoPat - 4, 0, 100);
   }
 
   // Track consecutive months of zero marketing spend
@@ -1036,7 +1083,7 @@ function processMonth() {
     G.consecutiveZeroSpend++;
     if (G.consecutiveZeroSpend >= 3) {
       G.gameOver = true;
-      G.gameOverReason = 'Three months of zero marketing spend with ' + fmtFull(G.budget) + ' still in the bank. The CEO asked, "Why did we hire a head of marketing who doesn\'t believe in marketing?" Nobody had an answer. Including you. The intern who managed the social media account was promoted to your role. They\'re doing fine.';
+      G.gameOverReason = getGameOverReason('zero_spend');
     }
   } else {
     G.consecutiveZeroSpend = 0;
@@ -1049,6 +1096,7 @@ function processMonth() {
     G.budget += bonus;
     G.budget = Math.min(G.budget, 5000000);
     G.bonusesReceived += bonus;
+    G.ceoPat = clamp(G.ceoPat + 10, 0, 100);
     // Auto-save
     saveGame();
     return { rev, totalSpend, beChange, bonus };
@@ -1386,16 +1434,16 @@ function applyConflictChoice(conflictIdx, choiceIdx) {
   // Check game over conditions
   if (effects.gameOver) {
     G.gameOver = true;
-    G.gameOverReason = 'You pushed too hard and got pushed out. The CEO accepted your "resignation" before you even offered it. The press release said "pursuing other opportunities." Your LinkedIn says #OpenToWork.';
+    G.gameOverReason = getGameOverReason('conflict');
   } else if (G.budget < 0) {
     G.gameOver = true;
-    G.gameOverReason = 'The CFO cut up your corporate card in front of the entire marketing team. Security escorted you past the promotional banner you\'d just approved. It hadn\'t even shipped yet.';
+    G.gameOverReason = getGameOverReason('budget');
   } else if (G.ceoPat <= 0) {
     G.gameOver = true;
-    G.gameOverReason = 'The CEO\'s last Slack message to you was a single emoji: \uD83E\uDEA6. HR filled in the rest. Your access was revoked before you finished reading the termination email.';
+    G.gameOverReason = getGameOverReason('ceo_vibes');
   } else if (G.consecutiveBad >= 4) {
     G.gameOver = true;
-    G.gameOverReason = 'The board held an emergency meeting. You weren\'t invited. When you arrived Monday, your badge didn\'t work. The security guard recognized you but pretended not to.';
+    G.gameOverReason = getGameOverReason('consecutive_bad');
   }
 
   // Track lucky breaks for achievement
@@ -2734,7 +2782,8 @@ function finishSymposium(results) {
   }
   if (results.accuracy >= 50 && results.hits >= 10) G.ceoPat = clamp(G.ceoPat + 5, 0, 100);
   else if (results.hits >= 5) G.ceoPat = clamp(G.ceoPat + 2, 0, 100);
-  if (G.allFiredPenalty) G.ceoPat = clamp(G.ceoPat - 3, 0, 100);
+  if (G.allFiredPenalty) G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+  if (G.noTeamPenalty && ROLES.every(r => G.team[r.id] === 'skip')) G.ceoPat = clamp(G.ceoPat - 4, 0, 100);
   G.consecutiveZeroSpend = 0;
   if (G.ceoPat < (G._ceoVibesMinReached || 75)) G._ceoVibesMinReached = G.ceoPat;
   checkAchievements();
@@ -2743,11 +2792,11 @@ function finishSymposium(results) {
 
   if (G.budget < 0) {
     G.gameOver = true;
-    G.gameOverReason = 'The CFO cut up your corporate card in front of the entire marketing team. Security escorted you past the promotional banner you\'d just approved. It hadn\'t even shipped yet.';
+    G.gameOverReason = getGameOverReason('budget');
     G.screen = 'gameOver';
   } else if (G.ceoPat <= 0) {
     G.gameOver = true;
-    G.gameOverReason = 'The CEO\'s last Slack message to you was a single emoji: \uD83E\uDEA6. HR filled in the rest. Your access was revoked before you finished reading the termination email.';
+    G.gameOverReason = getGameOverReason('ceo_vibes');
     G.screen = 'gameOver';
   } else {
     G.screen = 'monthResults';
@@ -3479,7 +3528,10 @@ function processMonth12Combined(tacticIndices) {
     G.ceoPat = Math.min(G.ceoPat, ceoMax);
   }
   if (G.allFiredPenalty) {
-    G.ceoPat = clamp(G.ceoPat - 3, 0, 100);
+    G.ceoPat = clamp(G.ceoPat - 5, 0, 100);
+  }
+  if (G.noTeamPenalty && ROLES.every(r => G.team[r.id] === 'skip')) {
+    G.ceoPat = clamp(G.ceoPat - 4, 0, 100);
   }
 
   // 5. Holiday tactics: deduct costs
@@ -3511,7 +3563,7 @@ function processMonth12Combined(tacticIndices) {
   // 6. Calculate base revenue via calcMonthlyRevenue(12)
   let baseRev = calcMonthlyRevenue(12).total;
   if (G.allFiredPenalty) {
-    baseRev = Math.round(baseRev * rand(0.6, 0.85));
+    baseRev = Math.round(baseRev * rand(0.45, 0.70));
   }
 
   // 7. Apply holiday multiplier
@@ -3538,12 +3590,9 @@ function processMonth12Combined(tacticIndices) {
   }
 
   // 9. Check game over conditions
-  if (G.budget < 0) {
+  if (G.ceoPat <= 0) {
     G.gameOver = true;
-    G.gameOverReason = 'You went bankrupt during the holiday push. The CFO sent a company-wide email: "Effective immediately, marketing reports to Finance." Your desk was cleared by lunch.';
-  } else if (G.ceoPat <= 0) {
-    G.gameOver = true;
-    G.gameOverReason = 'The CEO fired you during the holiday party. In front of everyone. The DJ played "Another One Bites the Dust." Nobody laughed. Okay, the VP of Sales laughed.';
+    G.gameOverReason = getGameOverReason('holiday_ceo');
   }
 
   const stratNames = strats.map(s => s.icon + ' ' + s.name);
@@ -3959,6 +4008,7 @@ document.getElementById('app').addEventListener('click', function (e) {
       return;
     case 'confirmTeam':
       if (!ROLES.every(r => G.team[r.id])) return;
+      if (ROLES.every(r => G.team[r.id] === 'skip')) G.noTeamPenalty = true;
       G.screen = 'preLaunch';
       break;
     case 'fireRole':
@@ -4013,8 +4063,8 @@ document.getElementById('app').addEventListener('click', function (e) {
 
       if (allCutOrSkipped) {
         G.allFiredPenalty = true;
-        G.ceoPat = clamp(G.ceoPat - 15, 0, 100);
-        G.brandEquity = clamp(G.brandEquity - 10, 0, 100);
+        G.ceoPat = clamp(G.ceoPat - 20, 0, 100);
+        G.brandEquity = clamp(G.brandEquity - 15, 0, 100);
         G._allFiredCrisis = true;
         // Show crisis narrative before advancing
         G.screen = 'monthResults';
@@ -4121,11 +4171,11 @@ document.getElementById('app').addEventListener('click', function (e) {
       G._month1Findings = findings;
       if (G.budget < 0) {
         G.gameOver = true;
-        G.gameOverReason = 'You ran out of money before month one ended. The CFO is speechless.';
+        G.gameOverReason = getGameOverReason('budget');
         G.screen = 'gameOver';
       } else if (G.ceoPat <= 0) {
         G.gameOver = true;
-        G.gameOverReason = 'The CEO lost all confidence on launch day. That\'s a new record.';
+        G.gameOverReason = getGameOverReason('ceo_vibes');
         G.screen = 'gameOver';
       } else {
         G.screen = 'monthResults';
@@ -4187,11 +4237,11 @@ document.getElementById('app').addEventListener('click', function (e) {
       G._tempRevMult = null;
       if (G.budget < 0) {
         G.gameOver = true;
-        G.gameOverReason = 'The CFO cut up your corporate card in front of the entire marketing team. Security escorted you past the promotional banner you\'d just approved. It hadn\'t even shipped yet.';
+        G.gameOverReason = getGameOverReason('budget');
         G.screen = 'gameOver';
       } else if (G.ceoPat <= 0) {
         G.gameOver = true;
-        G.gameOverReason = 'The CEO\'s last Slack message to you was a single emoji: \uD83E\uDEA6. HR filled in the rest. Your access was revoked before you finished reading the termination email.';
+        G.gameOverReason = getGameOverReason('ceo_vibes');
         G.screen = 'gameOver';
       } else if (G.gameOver) {
         // Caught by processMonth (e.g. zero spend streak)
