@@ -51,22 +51,22 @@ const PRODUCTS = {
 
 const GENERATED_NAMES = {
   soda: {
-    premium: ['Populence','Fizzness Class','Perri-Yay','Haute Cola','Sprite-Geist','Faux Cola','Fizz Khalifa','Fizzy Cent','Bougie Bubbles','Bel-Air Bubbles','Fizzante','Peps-CMO','Fizzness Casual','Liquid Asset','Nepo Baby Brew','Top Tier Tonic','Mint Condition','Stock Pop','Boardroom Brew','Sparkling Résumé','Trust Fund Fizz','Velvet Pour','Champagne Problems','Private Reserve','First Class Fizz','Penthouse Pour','Platinum Sip','Black Tie Bubbles','Caviar Cola','Posh Pop','Pour Favor','Proper Pour','Refined Refreshment','Gilt & Guzzle','Regal Ripple','Prestige Punch','Bubbly Broker','Tasteful Tonic','Opulent Orange','Classy Carbonation','Ritzy Refresher','Dignified Dew','Pristine Pop','Noble Nectar','Affluent Ale','Swanky Spritz','Debonair Dew','Pedigree Pop','Mink & Mango'],
-    lifestyle: ['Vibe Check','Yoga Cola','Matcha Dew','Pilates Pop','Aura Ale','Hustle Juice','Flex Fizz','Status Quench','Zen Tonic','Mount Do','Slay Soda','Fit Fizz','Hype Water','Adulting Ale','Avo Cola','Brunch Brew','Golden Hour','Sunset Sip','Core Memory','Main Character','Gratitude Gulp','Ritual Fizz','Self Care Soda','Cold Pressed Cola','Oat Milk Pop','Wanderlust Water','Capsule Cola','Slow Living Soda','Mood Boost','Mantra Mango','Karma Cola','Chakra Cherry','Namaste Nectar','Peaceful Peach','Serene Sip','Bliss Brew','Soulful Spritz','Dreamy Dew','Mellow Melon','Mindful Mango','Tranquil Tonic','Radiant Raspberry','Soothing Spritz','Balanced Brew','Wholesome Water','Cozy Cola','Grateful Grape','Centered Citrus','Present Pop'],
-    value: ['Budget Bubbles','Penny Pop','Thrift Sip','Generic Juice','Discount Dew','Coupon Cola','Bottom Shelf','No Frills','Wallet Water','Generic Fizz','Cheap Thrill','Bulk Brew','Basic Batch','Humble Soda','Frugal Fizz','Dollar Dew','Dr Cheaper','Mr Cheap','Passable Pop','Bargain Brew','Clearance Cola','Sale Soda','Nickel Nectar','Adequate Ale','Thrifty Tonic','Rain Check','Price Match','Almost Name Brand','Knockoff Cola','Dupe Dew','B-Side Bubbles','Plan B Pop','Fine I Guess','Broke Brew','Lean Lemon','Meager Melon','Modest Mango','Sensible Sip','Stingy Spritz','Practical Pop','Reasonable Root','Corner Cut Cola','Half Off','Leftovers Lime','Rock Bottom Root','Sparse Spritz','Dime a Dozen Dew','Slim Pickings Pop','Flatline Fizz','Last Pick Lemon','Whatever Works'],
+    premium: ['Populence','Fizzness Class','Perri-Yay','Haute Cola','Gilt & Fizz','Faux Cola','Fizz Khalifa','Fizzy Cent','Bougie Bubbles','Bel-Air Bubbles','Fizzante','Pep-CMO','Fizzness Casual','Liquid Asset','Nepo Baby Brew','Top Tier Tonic','Mint Condition','Stock Pop','Boardroom Brew','Sparkling Résumé','Trust Fund Fizz','Velvet Pour','Champagne Problems','Private Reserve','First Class Fizz','Penthouse Pour','Platinum Sip','Black Tie Bubbles','Caviar Cola','Posh Pop','Pour Favor','Proper Pour','Refined Refreshment','Gilt & Guzzle','Regal Ripple','Prestige Punch','Bubbly Broker','Tasteful Tonic','Opulent Orange','Classy Carbonation','Ritzy Refresher','Dignified Dew','Pristine Pop','Noble Nectar','Affluent Ale','Swanky Spritz','Debonair Dew','Pedigree Pop','Mink & Mango'],
+    lifestyle: ['Vibe Check','Yoga Cola','Matcha Dew','Pilates Pop','Aura Ale','Hustle Juice','Flex Fizz','Status Quench','Zen Tonic','Summit Sip','Slay Soda','Fit Fizz','Hype Water','Adulting Ale','Avo Cola','Brunch Brew','Golden Hour','Sunset Sip','Core Memory','Main Character','Gratitude Gulp','Ritual Fizz','Self Care Soda','Cold Pressed Cola','Oat Milk Pop','Wanderlust Water','Capsule Cola','Slow Living Soda','Mood Boost','Mantra Mango','Dharma Cola','Chakra Cherry','Namaste Nectar','Peaceful Peach','Serene Sip','Bliss Brew','Soulful Spritz','Dreamy Dew','Mellow Melon','Mindful Mango','Tranquil Tonic','Radiant Raspberry','Soothing Spritz','Balanced Brew','Wholesome Water','Cozy Cola','Grateful Grape','Centered Citrus','Present Pop'],
+    value: ['Budget Bubbles','Penny Pop','Thrift Sip','Generic Juice','Discount Dew','Coupon Cola','Bottom Shelf','No Frills','Wallet Water','Generic Fizz','Cheap Thrill','Bulk Brew','Basic Batch','Humble Soda','Frugal Fizz','Dollar Dew','Store Brand','Mr Cheap','Passable Pop','Bargain Brew','Clearance Cola','Sale Soda','Nickel Nectar','Adequate Ale','Thrifty Tonic','Rain Check','Price Match','Almost Name Brand','Knockoff Cola','Dupe Dew','B-Side Bubbles','Plan B Pop','Fine I Guess','Broke Brew','Lean Lemon','Meager Melon','Modest Mango','Sensible Sip','Stingy Spritz','Practical Pop','Reasonable Root','Corner Cut Cola','Half Off','Leftovers Lime','Rock Bottom Root','Sparse Spritz','Dime a Dozen Dew','Slim Pickings Pop','Flatline Fizz','Last Pick Lemon','Whatever Works'],
     disruptor: ['Unicorn Juice','Series Ale','Moonshot Pop','Stealth Mode','Snake Oil','Dark Matter','Bitter End','Hard Truth','Bad Blood','Bitter Pill','Cold Comfort','Total Eclipse','Scorched Earth','Heavy Water','Deep State','Sour Grapes','Rogue Wave','Atomic Ale','Quantum Quench','Cold Fusion','Gamma Grape','Black Swan','Burn Rate','Chaos Theory','Pivot Pop','Plot Twist Pop','Contraband Cola','Rebel Ripple','Anarchy Ale','Mutiny Mango','Ruckus Root','Havoc Haze','Defiant Dew','Volatile Vanilla','Radical Raspberry','Savage Sip','Wicked Water','Brazen Brew','Deviant Dew','Maverick Mango','Renegade Root','Sabotage Soda','Venom Vanilla','Outlaw Orange','Dissident Dew','Insurrection IPA','Molotov Mango','Hostile Hops','Coup Cola','Blitz Brew'],
   },
   skincare: {
-    premium: ['Pore Favor','Glossier Than Thou','Pore Choices','In Your Face','Dew Process','Skin In The Game','About Face','Glow Up','Youth Hostage','Wrinkle Room','Pore Relations','Skin Deep','Fine Lines','Skinny Dip','Face Value','Smooth Operator','Best Face Forward','Skin Tight','Dew Diligence','Skin Win','Oil Money','Glow Getter','Clean Queen','Surface Tension','Pearl Finish','Glass Skin','Velvet Veil','Gilt Complex','Luxe Layer','Grand Serum','Status Glow','Crown Jewel','Old Money Mist','Rich Texture','Pristine Pore','Polished Pour','Refined Radiance','Regal Rinse','Proper Pore','Opulent Ointment','Prestige Paste','Posh Polish','Dignified Derm','Decadent Dew','Lavish Lather','Exquisite Elixir','Majestic Mist','Aristocrat Acid','Heirloom Hydration','Gilded Glow','Plush Pore','Swank Serum'],
+    premium: ['Pore Favor','Glowier Than Thou','Pore Choices','In Your Face','Dew Process','Skin In The Game','About Face','Glow Up','Youth Hostage','Wrinkle Room','Pore Relations','Skin Deep','Fine Lines','Skinny Dip','Face Value','Smooth Operator','Best Face Forward','Skin Tight','Dew Diligence','Skin Win','Oil Money','Glow Getter','Clean Queen','Surface Tension','Pearl Finish','Glass Skin','Velvet Veil','Gilt Complex','Luxe Layer','Grand Serum','Status Glow','Crown Jewel','Old Money Mist','Rich Texture','Pristine Pore','Polished Pour','Refined Radiance','Regal Rinse','Proper Pore','Opulent Ointment','Prestige Paste','Posh Polish','Dignified Derm','Decadent Dew','Lavish Lather','Exquisite Elixir','Majestic Mist','Aristocrat Acid','Heirloom Hydration','Gilded Glow','Plush Pore','Swank Serum'],
     lifestyle: ['Dewtiful','Balm Voyage','S\'cream','Derm & Order','Lord of the Rinse','Game of Tones','Scrub Club','Maskerade','You Dew You','Slaycation Skin','Chill & Spill','Lather & Laugh','Bright Side Up','Zen & Tonic','Skin City','Gloss Boss','Pore Galore','Glow Show','Peel Feel','Slick Stick','Butter Better','Main Squeeze','Sunday Reset','Skin & Tonic','Good Glow Days','Resting Glow Face','Mist Congeniality','Hygge Hydration','Spa La La','Tone Poem','Bliss & Blot','Peel Good','Serene Serum','Karma Cream','Glow With The Flow','Rise & Shine','Soft Spot','Fresh to Depth','Mood Cream','Clean Slate','Slow Glow','Balm & Collected','Pore & Simple','Rinse & Repeat','Smooth Sailing','Toner Turner','Inner Glow','Outer Peace','Bloom Room','Blush Hour'],
     value: ['Pore Me','Cents Less','Budget Balm','Spare Change','Bare Minimum','Penny Pore','Thrift Gift','Generic Glow','Second Skin','Payday Paste','Layaway Lotion','Coupon Cream','Recession Rub','Value Visage','Bulk Balm','Basic Batch','Humble Hydration','Almost Luxury','Tube Cream','Plain Paste','Default Derma','Simple Slather','Average Aloe','Dupe Cream','Knockoff Glow','Close Enough Cream','No Logo Lotion','Bargain Bright','Dollar Derm','Factory Direct','Flat Rate Face','Bottom Dollar Balm','Cheapskate Cream','Modest Moisture','Penny Pinch Paste','Sensible Serum','Practical Paste','Corner Cut Cream','Half Price Hydra','No Name Nectar','Reasonable Rinse','Economy Elixir','Lean Lotion','Thrifty Therapy','Meager Moisture','Rock Bottom Rub','Bare Bones Balm','Last Resort Lotion'],
-    disruptor: ['Shock Treatment','Face Off','Skin Sin','Toxic Asset','Raw Deal','Dirty Secret','Active Ingredient','Peptide Party','Formula One','Molecular Mist','Snake Oil','Placebo Effect','Magic Mud','Holy Grail','Secret Sauce','Liquid Ego','Mystic Mist','Acid Test','Chain Reaction','Volatile Compound','Double Blind','Side Effect','Clinical Trial','Controlled Burn','Proof of Concept','Scorched Serum','Calculated Risk','Rogue Rinse','Rebel Rub','Radical Rinse','Deviant Derm','Savage Serum','Brazen Balm','Maverick Mist','Outlaw Ointment','Renegade Rinse','Hostile Hydration','Contraband Cream','Villain Veil','Chaos Cream','Sabotage Serum','Venom Veil','Mutant Moisture','Sinister Smooth','Wicked Wipe','Menace Mist','Danger Dew'],
+    disruptor: ['Shock Treatment','Face Off','Skin Sin','Toxic Asset','Raw Deal','Dirty Secret','Active Ingredient','Peptide Party','Formula X','Molecular Mist','Snake Oil','Placebo Effect','Magic Mud','Holy Grail','Secret Sauce','Liquid Ego','Mystic Mist','Acid Test','Chain Reaction','Volatile Compound','Double Blind','Side Effect','Clinical Trial','Controlled Burn','Proof of Concept','Scorched Serum','Calculated Risk','Rogue Rinse','Rebel Rub','Radical Rinse','Deviant Derm','Savage Serum','Brazen Balm','Maverick Mist','Outlaw Ointment','Renegade Rinse','Hostile Hydration','Contraband Cream','Villain Veil','Chaos Cream','Sabotage Serum','Venom Veil','Mutant Moisture','Sinister Smooth','Wicked Wipe','Menace Mist','Danger Dew'],
   },
   sneakers: {
-    premium: ['Shoe La La','Sole Mate','Heel No','Arch Nemesis','Sole Survivor','In-Step','Oxford Comma','Laced Up','Elite Feet','Posh Pumps','Wealthy Walkers','Silken Soles','Mansion Mocs','Fancy Footies','Palace Platforms','Lavish Loafers','Stately Steps','Velvet Vibe','Rich Run','Opulent Oxfords','Gilt Trip','Trust Fund Treads','Black Card Boots','Old Money Mocs','Platinum Pace','Penthouse Pumps','Runway Ready','Couture Kicks','Bespoke Bounce','Pristine Pumps','Prestige Pace','Dignified Dash','Regal Runner','Proper Pumps','Plush Platforms','Polished Pace','Swanky Striders','Ritzy Racers','Refined Run','Classy Climbers','Dapper Dash','Elegant Elevations','Graceful Gallop','Majestic Mules','Pedigree Pumps','Luxe Laces','Noble Nikes','Exquisite Exits','Uptown Uppers','Prime Pumps'],
+    premium: ['Shoe La La','Sole Mate','Heel No','Arch Nemesis','Sole Survivor','In-Step','Oxford Comma','Laced Up','Elite Feet','Posh Pumps','Wealthy Walkers','Silken Soles','Mansion Mocs','Fancy Footies','Palace Platforms','Lavish Loafers','Stately Steps','Velvet Vibe','Rich Run','Opulent Oxfords','Gilt Trip','Trust Fund Treads','Black Card Boots','Old Money Mocs','Platinum Pace','Penthouse Pumps','Runway Ready','Couture Kicks','Bespoke Bounce','Pristine Pumps','Prestige Pace','Dignified Dash','Regal Runner','Proper Pumps','Plush Platforms','Polished Pace','Swanky Striders','Ritzy Racers','Refined Run','Classy Climbers','Dapper Dash','Elegant Elevations','Graceful Gallop','Majestic Mules','Pedigree Pumps','Luxe Laces','Noble Kicks','Exquisite Exits','Uptown Uppers','Prime Pumps'],
     lifestyle: ['Miss Steps','Social Climber','Sole Searching','Heel Thy Self','Well Heeled','Sole Purpose','Sandal Scandal','Toe Jamz','Sole Seeker','Suede Sway','Loafer Legend','Goal Getter','Slipper Slope','Angel Wingtips','Clog On','Hot Girl Walk','Sunset Stroll','Step Therapy','Wanderlust Walk','Fresh Steps','Zen Stride','Sunday Stroll','Coffee Run','Free Spirit','Bliss Boot','Mood Mules','Soul Stroll','Karma Kicks','Groove Move','Happy Feet','Vibe Stride','Dreamy Dashers','Serene Sneakers','Mellow Mocs','Peaceful Pace','Radiant Runners','Soulful Soles','Tranquil Treads','Wholesome Walkers','Cozy Kicks','Wander Lusters','Roam & Rest','Drift & Dream','Float Foot','Cloud Climber','Gentle Giants','Blissful Boots'],
     value: ['Budget Boots','Cents Able','Sole Less','Payday Pumps','Discount Drifter','Coupon Kick','Recession Runner','Bottom Shelf','Wallet Walk','Humble Heels','Bargain Boots','Penny Pumps','Thrift Lifts','Wallet Walkers','Saver Sneakers','Frugal Footwear','Basic Boots','Knockoff Kicks','Dupe Drops','Dollar Dash','No Name Runner','Clearance Climber','Factory Seconds','Final Sale Flats','Broke Boots','Lean Loafers','Meager Mocs','Modest Mules','Sensible Soles','Stingy Striders','Practical Pumps','Corner Cut Kicks','Half Off Hoppers','Cheap Cheats','Last Chance Laces','Rock Bottom Runners','Sparse Sneakers','Dime a Dozen Dash','Slim Step','Leftovers Laces','Flat Rate Flats','Bare Budget Boots','Plain Pace','Adequate Ankles','Whatever Walkers'],
-    disruptor: ['Mocca Sins','Cobbler Gobbler','Hard Pivot','Sole Crusher','Boot Licker','Carbon Footprint','Kick Back','Rough Tread','Rogue Runner','Cold Feet','Burn Rubber','Lead Foot','Bare Bones','Curb Crushers','Killer Kickz','Sidewalk Slayers','Street Steppers','Dead Stock','Dark Horse','Trojan Kicks','No Brakes','Scorched Sole','Rebel Runner','Renegade Run','Deviant Dash','Savage Sole','Brazen Boots','Maverick Mocs','Outlaw Oxfords','Havoc Heels','Hostile Hoppers','Chaos Kicks','Mutiny Mules','Ruckus Runner','Defiant Dash','Volatile Vans','Radical Runner','Menace Mocs','Wicked Walkers','Sinister Stride','Venom Vibe','Coup Kicks','Sabotage Soles','Blitz Boots','Dissident Dash','Insurrection Inch'],
+    disruptor: ['Mocca Sins','Cobbler Gobbler','Hard Pivot','Sole Crusher','Boot Licker','Carbon Footprint','Kick Back','Rough Tread','Rogue Runner','Cold Feet','Burn Rubber','Lead Foot','Bare Bones','Curb Crushers','Killer Kickz','Sidewalk Slayers','Street Steppers','Dead Stock','Dark Horse','Trojan Kicks','No Brakes','Scorched Sole','Rebel Runner','Renegade Run','Deviant Dash','Savage Sole','Brazen Boots','Maverick Mocs','Outlaw Oxfords','Havoc Heels','Hostile Hoppers','Chaos Kicks','Mutiny Mules','Ruckus Runner','Defiant Dash','Volatile Kicks','Radical Runner','Menace Mocs','Wicked Walkers','Sinister Stride','Venom Vibe','Coup Kicks','Sabotage Soles','Blitz Boots','Dissident Dash','Insurrection Inch'],
   },
   software: {
     enterprise: ['Iron Gate','Vault Logic','Shield Suite','Bunker Build','Granite Grid','Steel Stack','Titanium Tier','Armored API','Concrete Cloud','Fortified Flow','Ironclad Infra','Bombproof Build','Garrison Grid','Command Deck','Mission Control','Central Command','Hardened Hub','Battle Bridge','Classified Cloud','Secure Sector','Lockdown Logic','Compass Code','Pinstripe Pipeline','Corner Office Cloud','Stakeholder Stack','Server & Protect','Suit & Suite','Compliance Crunch','Due Diligence Deploy','Perimeter Protocol','Boardroom Bandwidth','War Room Ware','Bulletproof Build','Vendor Vault'],
@@ -1464,13 +1464,16 @@ function applyConflictChoice(conflictIdx, choiceIdx) {
 // ===== LEADERBOARD =====
 let _cachedLeaderboard = [];
 let _leaderboardLoaded = false;
+let _leaderboardPage = 0;
+const LEADERBOARD_PAGE_SIZE = 25;
 
 function loadLeaderboard(callback) {
   if (!leaderboardRef) {
     if (callback) callback([]);
     return;
   }
-  leaderboardRef.orderByChild('revenue').limitToLast(25).once('value', snapshot => {
+  _leaderboardPage = 0;
+  leaderboardRef.orderByChild('revenue').limitToLast(500).once('value', snapshot => {
     const entries = [];
     snapshot.forEach(child => {
       entries.push(child.val());
@@ -3827,7 +3830,7 @@ function renderFinalResults() {
 function renderGameOver() {
   G.title = '#OpenToWork';
   checkAchievements();
-  logEvent('game_over', { month: G.turn, revenue: G.totalRevenue, product: G.product });
+  logEvent('game_over', { month: G.turn, revenue: G.totalRevenue, brandEquity: Math.round(G.brandEquity), ceoVibes: G.ceoPat, product: G.product, positioning: G.positioning, productName: G.productName });
   saveScore();
   return `<div class="screen game-over">
     <div id="screenshot-area" style="background:var(--bg);padding:20px;border-radius:12px">
@@ -3869,10 +3872,15 @@ function renderGameOver() {
 
 function renderLeaderboard() {
   const lb = getLeaderboard();
-  const rows = lb.length > 0 ? lb.map((e, i) => {
-    const dateStr = e.date ? new Date(e.date).toLocaleDateString() : '';
+  const start = _leaderboardPage * LEADERBOARD_PAGE_SIZE;
+  const end = start + LEADERBOARD_PAGE_SIZE;
+  const page = lb.slice(start, end);
+  const totalPages = Math.ceil(lb.length / LEADERBOARD_PAGE_SIZE);
+
+  const rows = page.length > 0 ? page.map((e, i) => {
+    const rank = start + i;
     return `<tr>
-      <td>${i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</td>
+      <td>${rank === 0 ? '👑' : rank === 1 ? '🥈' : rank === 2 ? '🥉' : rank + 1}</td>
       <td>${e.name}</td>
       <td>${e.product}</td>
       <td class="text-amber">${fmtFull(e.revenue)}</td>
@@ -3880,6 +3888,12 @@ function renderLeaderboard() {
       <td>${e.title}</td>
     </tr>`;
   }).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No scores yet. Be the first!</td></tr>';
+
+  const pagination = totalPages > 1 ? `<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:15px">
+    ${_leaderboardPage > 0 ? '<button class="btn" data-action="leaderboardPrev">← Prev</button>' : ''}
+    <span style="color:var(--muted);font-size:.85rem">Page ${_leaderboardPage + 1} of ${totalPages}</span>
+    ${_leaderboardPage < totalPages - 1 ? '<button class="btn" data-action="leaderboardNext">Next →</button>' : ''}
+  </div>` : '';
 
   return `<div class="screen">
     <div class="section-title">🏆 Hall of Fame</div>
@@ -3890,6 +3904,7 @@ function renderLeaderboard() {
         <tbody>${rows}</tbody>
       </table>
     </div>
+    ${pagination}
     <div class="btn-group" style="margin-top:20px">
       ${G.turn === 0 ? '<button class="btn" data-action="backToTitle">← Back</button>' : ''}
       ${G._prevScreen === 'finalResults' || G._prevScreen === 'gameOver' ? '<button class="btn" data-action="backFromLeaderboard">← Back</button>' : ''}
@@ -4302,7 +4317,7 @@ document.getElementById('app').addEventListener('click', function (e) {
       break;
     }
     case 'showFinalResults':
-      logEvent('game_complete', { title: G.title, rank: G.rank, revenue: G.totalRevenue, product: G.product });
+      logEvent('game_complete', { title: G.title, rank: G.rank, revenue: G.totalRevenue, brandEquity: Math.round(G.brandEquity), ceoVibes: G.ceoPat, product: G.product, positioning: G.positioning, productName: G.productName });
       G.screen = 'finalResults';
       break;
     case 'showLeaderboard':
@@ -4336,6 +4351,14 @@ document.getElementById('app').addEventListener('click', function (e) {
     case 'backFromLeaderboard':
       G.screen = G._prevScreen || 'title';
       break;
+    case 'leaderboardPrev':
+      _leaderboardPage = Math.max(0, _leaderboardPage - 1);
+      render();
+      return;
+    case 'leaderboardNext':
+      _leaderboardPage++;
+      render();
+      return;
     case 'copyShare': {
       const text = getShareText();
       navigator.clipboard?.writeText(text).then(() => {

@@ -1575,7 +1575,7 @@
       console.error('Firebase init failed:', e);
     }
     function logEvent(name, params) {
-      try { if (eventsRef) eventsRef.push({ event: name, ts: Date.now(), ...params }); } catch(e) {}
+      try { if (eventsRef) eventsRef.push({ event: name, ts: Date.now(), date: new Date().toISOString(), ...params }); } catch(e) {}
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
