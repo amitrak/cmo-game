@@ -2043,7 +2043,7 @@ function renderTitle() {
     </div>
   </div>
   <div style="margin-top:auto;padding:20px 0;text-align:center;color:var(--muted);font-size:.75rem">
-    Created by <a href="https://andrewmitrak.com" target="_blank" style="color:var(--muted);text-decoration:underline">Andrew Mitrak</a>
+    Created by <a href="https://andrewmitrak.com/the-cmo-game/" target="_blank" style="color:var(--muted);text-decoration:underline">Andrew Mitrak</a>
   </div>`;
 }
 
