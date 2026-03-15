@@ -464,6 +464,7 @@ function initState() {
     consecutiveZeroSpend: 0,
     _helpOpen: null,
     _submittedToLeaderboard: false,
+    _leaderboardRank: null,
     _cheapVibesWorked: false,
     _valueThriftWorked: false,
     achievements: [],
@@ -1487,7 +1488,7 @@ function loadLeaderboard(callback) {
       return 0; // #OpenToWork
     };
     entries.sort((a, b) => titleRank(b.title) - titleRank(a.title) || b.revenue - a.revenue);
-    _cachedLeaderboard = entries;
+    _cachedLeaderboard = entries.slice(0, 100);
     _leaderboardLoaded = true;
     if (callback) callback(entries);
   }, error => {
@@ -1520,6 +1521,13 @@ function submitToLeaderboard(callback) {
       if (!error) {
         G._submittedToLeaderboard = true;
         loadLeaderboard(() => {
+          const lb = _cachedLeaderboard;
+          const rankIndex = lb.findIndex(e =>
+            e.name === (G.playerName || 'Anonymous') &&
+            e.title === (G.title || 'Director of Marketing') &&
+            e.revenue === (G.totalRevenue || 0)
+          );
+          G._leaderboardRank = rankIndex >= 0 ? rankIndex + 1 : null;
           if (callback) callback(true);
         });
       } else {
@@ -3815,7 +3823,7 @@ function renderFinalResults() {
       <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Your name and score will be publicly visible.</p>
       <button class="btn gold" data-action="submitLeaderboard" id="submitBtn">🏆 Submit to Hall of Fame</button>
     </div>` : `<div class="card" style="text-align:center;margin:15px 0;border-color:var(--green)">
-      <p style="color:var(--green)">✓ Score submitted to leaderboard!</p>
+      <p style="color:var(--green)">${G._leaderboardRank ? `🏆 Score submitted! You're ranked <strong>#${G._leaderboardRank}</strong> in the Hall of Fame!` : `✓ Score submitted! You didn't crack the top 100 this time — but every great CMO started somewhere. Keep grinding! 💪`}</p>
     </div>`}
 
     <div class="btn-group">
@@ -3859,7 +3867,7 @@ function renderGameOver() {
       <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Your name and score will be publicly visible.</p>
       <button class="btn gold" data-action="submitLeaderboard" id="submitBtn">🏆 Submit to Hall of Fame</button>
     </div>` : `<div class="card" style="text-align:center;max-width:500px;margin:15px auto;border-color:var(--green)">
-      <p style="color:var(--green)">✓ Score submitted to leaderboard!</p>
+      <p style="color:var(--green)">${G._leaderboardRank ? `🏆 Score submitted! You're ranked <strong>#${G._leaderboardRank}</strong> in the Hall of Fame!` : `✓ Score submitted! Not in the top 100 yet — but every legend has to start somewhere. Dust off, come back stronger! 💪`}</p>
     </div>`}
     <div class="btn-group">
       <button class="btn primary" data-action="copyShare">📋 Copy Score</button>
@@ -3897,7 +3905,7 @@ function renderLeaderboard() {
 
   return `<div class="screen">
     <div class="section-title">🏆 Hall of Fame</div>
-    <div class="section-sub">Global leaderboard of marketing legends.</div>
+    <div class="section-sub">The top 100 marketing legends worldwide.</div>
     <div class="leaderboard-scroll">
       <table class="leaderboard-table">
         <thead><tr><th>#</th><th>Name</th><th>Product</th><th>Revenue</th><th>Brand</th><th>Title</th></tr></thead>
