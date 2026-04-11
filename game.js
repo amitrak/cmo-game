@@ -2052,6 +2052,7 @@ function renderTitle() {
   </div>
   <div style="margin-top:auto;padding:20px 0;text-align:center;color:var(--muted);font-size:.75rem">
     Created by <a href="https://andrewmitrak.com/the-cmo-game/" target="_blank" style="color:var(--muted);text-decoration:underline">Andrew Mitrak</a>
+    &nbsp;·&nbsp; <a href="/privacy.html" target="_blank" style="color:var(--muted);text-decoration:underline">Privacy Policy</a>
   </div>`;
 }
 
@@ -3809,7 +3810,7 @@ function renderFinalResults() {
       <div class="your-story-title">📖 Your Story</div>
       ${generateStoryRecap()}
     </div>
-    <div style="text-align:center;padding:8px 0;font-size:.75rem;color:var(--muted)">cmogame.com | #CMOGame</div>
+    <div style="text-align:center;padding:8px 0;font-size:.75rem;color:var(--muted)">cmogame.com | #CMOGame | <a href="/privacy.html" target="_blank" style="color:var(--muted)">Privacy Policy</a></div>
     </div>
 
     <div class="share-box" id="shareText">${getShareText()}</div>
@@ -3820,8 +3821,12 @@ function renderFinalResults() {
 
     ${!G._submittedToLeaderboard ? `<div class="card" style="text-align:center;margin:15px 0">
       <p style="margin-bottom:10px">Submit your score to the global leaderboard?</p>
-      <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Your name and score will be publicly visible.</p>
-      <button class="btn gold" data-action="submitLeaderboard" id="submitBtn">🏆 Submit to Hall of Fame</button>
+      <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Your name (<strong>${G.playerName}</strong>) and score will be publicly visible.</p>
+      <label style="display:flex;align-items:flex-start;gap:10px;text-align:left;font-size:.75rem;color:var(--muted);margin-bottom:14px;cursor:pointer;justify-content:center">
+        <input type="checkbox" id="lbConsent" style="margin-top:2px;accent-color:var(--green);flex-shrink:0" onchange="const b=document.getElementById('submitBtn');b.disabled=!this.checked;b.style.opacity=this.checked?'1':'0.5'">
+        <span>I consent to my name and score being stored and displayed publicly on the leaderboard. See our <a href="/privacy.html" target="_blank" style="color:var(--blue)">Privacy Policy</a>.</span>
+      </label>
+      <button class="btn gold" data-action="submitLeaderboard" id="submitBtn" disabled style="opacity:.5">🏆 Submit to Hall of Fame</button>
     </div>` : `<div class="card" style="text-align:center;margin:15px 0;border-color:var(--green)">
       <p style="color:var(--green)">${G._leaderboardRank ? `🏆 Score submitted! You're ranked <strong>#${G._leaderboardRank}</strong> in the Hall of Fame!` : `✓ Score submitted! You didn't crack the top 100 this time — but every great CMO started somewhere. Keep grinding! 💪`}</p>
     </div>`}
@@ -3855,7 +3860,7 @@ function renderGameOver() {
       <div class="stat"><div class="label">Months Survived</div><div class="value danger">${G.turn}/12</div></div>
       <div class="stat"><div class="label">Brand Equity</div><div class="value">${Math.round(G.brandEquity)}/100</div></div>
     </div>
-    <div style="text-align:center;padding:8px 0;font-size:.75rem;color:var(--muted)">cmogame.com | #CMOGame</div>
+    <div style="text-align:center;padding:8px 0;font-size:.75rem;color:var(--muted)">cmogame.com | #CMOGame | <a href="/privacy.html" target="_blank" style="color:var(--muted)">Privacy Policy</a></div>
     </div>
     <div class="share-box" style="max-width:500px;margin:15px auto">${getShareText()}</div>
     <div class="social-cta" style="max-width:500px;margin:10px auto">
@@ -3864,8 +3869,12 @@ function renderGameOver() {
     </div>
     ${!G._submittedToLeaderboard ? `<div class="card" style="text-align:center;max-width:500px;margin:15px auto">
       <p style="margin-bottom:10px">Submit your score to the global leaderboard?</p>
-      <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Your name and score will be publicly visible.</p>
-      <button class="btn gold" data-action="submitLeaderboard" id="submitBtn">🏆 Submit to Hall of Fame</button>
+      <p style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Your name (<strong>${G.playerName}</strong>) and score will be publicly visible.</p>
+      <label style="display:flex;align-items:flex-start;gap:10px;text-align:left;font-size:.75rem;color:var(--muted);margin-bottom:14px;cursor:pointer;justify-content:center">
+        <input type="checkbox" id="lbConsent" style="margin-top:2px;accent-color:var(--green);flex-shrink:0" onchange="const b=document.getElementById('submitBtn');b.disabled=!this.checked;b.style.opacity=this.checked?'1':'0.5'">
+        <span>I consent to my name and score being stored and displayed publicly on the leaderboard. See our <a href="/privacy.html" target="_blank" style="color:var(--blue)">Privacy Policy</a>.</span>
+      </label>
+      <button class="btn gold" data-action="submitLeaderboard" id="submitBtn" disabled style="opacity:.5">🏆 Submit to Hall of Fame</button>
     </div>` : `<div class="card" style="text-align:center;max-width:500px;margin:15px auto;border-color:var(--green)">
       <p style="color:var(--green)">${G._leaderboardRank ? `🏆 Score submitted! You're ranked <strong>#${G._leaderboardRank}</strong> in the Hall of Fame!` : `✓ Score submitted! Not in the top 100 yet — but every legend has to start somewhere. Dust off, come back stronger! 💪`}</p>
     </div>`}
